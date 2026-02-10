@@ -1,5 +1,64 @@
 🚀 The 30-Day SRE War Plan (2026 Tier-1 Prep)
 
+## 📑 Quick Navigation
+
+**Setup & Getting Started**
+- [🤖 AI Learning Assistants](#-ai-learning-assistants---your-study-companions)
+- [🎬 Before You Start - Setup Checklist](#-before-you-start---setup-checklist)
+- [📅 Daily Routine](#the-high-performance-routine-mon-sat)
+
+**📅 Week 1: Systems Internals, Networking & Cloud** 🛠️
+- [Day 1: Process Lifecycle & System Calls](#day-1-the-process-lifecycle--system-calls)
+- [Day 2: Advanced I/O & VFS Layer](#day-2-advanced-io--the-vfs-layer)
+- [Day 3: TCP Internals & Cloud Networking (VPC, Security Groups)](#day-3-tcp-internals--cloud-networking-vpc-security-groups)
+- [Day 4: HTTP/3 & QUIC Protocol](#day-4-http3--the-quic-protocol)
+- [Day 5: Memory Management, OOM Killer & Cloud IAM/Compute](#day-5-memory-management-oom-killer--cloud-iamcompute)
+- [Day 6: eBPF & Kernel Observability](#day-6-ebpf--kernel-observability)
+- [Day 7: Distributed Tracing, OpenTelemetry & Cloud Observability](#day-7-distributed-tracing-opentelemetry--cloud-observability)
+
+**📅 Week 2: Kubernetes, Infrastructure as Code & CI/CD** ☸️
+- [Day 8: The etcd Distributed State Machine](#day-8-the-etcd-distributed-state-machine)
+- [Day 9: CNI & Overlay Networking](#day-9-cni--overlay-networking)
+- [Day 10: Persistent Data & CSI](#day-10-persistent-data--csi)
+- [Day 11: Terraform Fundamentals & Infrastructure as Code](#day-11-terraform-fundamentals--infrastructure-as-code)
+- [Day 12: Kubernetes Security, RBAC, OIDC & Secrets Management](#day-12-kubernetes-security-rbac-oidc--secrets-management)
+- [Day 13: StatefulSets, Headless Services & GitOps with ArgoCD](#day-13-statefulsets-headless-services--gitops-with-argocd)
+- [Day 14: CI/CD Pipelines & Pipeline Security (DevSecOps)](#day-14-cicd-pipelines--pipeline-security-devsecops)
+
+**📅 Week 3: Observability, Security & Incident Management** 📈
+- [Day 15: PromQL & High-Cardinality](#day-15-promql--high-cardinality)
+- [Day 16: SLOs, SLIs, and Error Budgets](#day-16-slos-slis-and-error-budgets)
+- [Day 17: Container Security & Policy Enforcement (OPA, Falco)](#day-17-container-security--policy-enforcement-opa-falco)
+- [Day 18: Incident Management, Communication & Stakeholder Updates](#day-18-incident-management-communication--stakeholder-updates)
+- [Day 19: Alerting Strategy & Runbooks](#day-19-alerting-strategy--runbooks)
+- [Day 20: Modern Observability Stack (VictoriaMetrics, Tempo, Pyroscope)](#day-20-modern-observability-stack-victoriametrics-tempo-pyroscope)
+- [Day 21: Chaos Engineering & Fault Injection](#day-21-chaos-engineering--fault-injection)
+
+**📅 Week 4: Architecture & Global Reliability** 🌍
+- [Day 22: Load Balancing Algorithms & Health Checks](#day-22-load-balancing-algorithms--health-checks)
+- [Day 23: Consistent Hashing & Sharding](#day-23-consistent-hashing--sharding)
+- [Day 24: Cache Stampede & Mitigation](#day-24-cache-stampede--mitigation)
+- [Day 25: Database Replication & Failover](#day-25-database-replication--failover)
+- [Day 26: CDN Architecture & Edge Computing](#day-26-cdn-architecture--edge-computing)
+- [Day 27: Rate Limiting & API Gateway Patterns](#day-27-rate-limiting--api-gateway-patterns)
+- [Day 28: Multi-Region Deployments & Global Traffic Management](#day-28-multi-region-deployments--global-traffic-management)
+- [Day 29: FinOps & Cloud Cost Optimization at Scale](#day-29-finops--cloud-cost-optimization-at-scale)
+- [Day 30: Mock SRE Interview (Technical + Behavioral) & Career Prep](#day-30-mock-sre-interview-technical--behavioral--career-prep)
+
+**📚 Appendices**
+- [Appendix A: Complete Interview Question Bank (100+ Questions)](#-appendix-a-complete-interview-question-bank)
+- [Appendix B: Certification Paths (AWS, CKA, Terraform)](#-appendix-b-certification-paths)
+- [Appendix C: Detailed Portfolio Project Specifications](#-appendix-c-detailed-portfolio-project-specifications)
+- [Appendix D: Common Production Troubleshooting Scenarios](#-appendix-d-common-production-troubleshooting-scenarios)
+- [Appendix E: Salary Negotiation for SRE Roles (2026)](#-appendix-e-salary-negotiation-for-sre-roles-2026)
+- [Appendix F: 90-Day Interview Preparation Timeline](#-appendix-f-90-day-interview-preparation-timeline)
+- [Appendix G: Real Company Interview Processes](#-appendix-g-real-company-interview-processes)
+- [Appendix H: Hands-On Labs & Practice Environments](#-appendix-h-hands-on-labs--practice-environments)
+- [Appendix I: Resume & LinkedIn Optimization](#-appendix-i-resume--linkedin-optimization)
+- [Appendix J: AI Prompts for All 30 Days](#-appendix-j-ai-prompts-for-all-30-days)
+
+---
+
 ## 🤖 AI Learning Assistants - Your Study Companions
 
 Each day includes AI prompts you can use with these tools to generate personalized learning materials:
@@ -150,9 +209,15 @@ The High-Performance Routine (Mon-Sat):
 
 16:40 - 17:00: 🏗️ Closing Sprint (Design & Career)
 
-🛠️ WEEK 1: Systems Internals, Networking & Cloud Foundations
+---
 
-Day 1: The Process Lifecycle & System Calls
+# 🛠️ WEEK 1: Systems Internals, Networking & Cloud Foundations
+
+---
+
+## Day 1: The Process Lifecycle & System Calls
+
+[⬆️ Back to Top](#-quick-navigation)
 
 15:00 Technical Drill (40 min):
 
@@ -292,7 +357,11 @@ Context: I have basic Linux CLI knowledge. Target: FAANG SRE roles. Make example
 - "Give me a cheat sheet of /proc files every SRE should know"
 - "What's the most common process-related production issue you've seen?"
 
-Day 2: Advanced I/O & The VFS Layer
+---
+
+## Day 2: Advanced I/O & The VFS Layer
+
+[⬆️ Back to Top](#-quick-navigation)
 
 15:00 Technical Drill:
 
@@ -312,7 +381,11 @@ Scenario: High iowait troubleshooting: I/O thrashing vs. hardware vs. journal co
 
 Career: LinkedIn Post: Bash script for finding top open file descriptor consumers.
 
-Day 3: TCP Internals & Cloud Networking (VPC, Security Groups)
+---
+
+## Day 3: TCP Internals & Cloud Networking (VPC, Security Groups)
+
+[⬆️ Back to Top](#-quick-navigation)
 
 15:00 Technical Drill:
 
@@ -416,9 +489,15 @@ Scenario: Using distributed tracing to find the "missing 200ms" in a 3-service c
 
 Career: Vibe Coding Goal: Build "Multi-Cloud Observability Dashb oard" (aggregates AWS CloudWatch + Prometheus). Publish to github.io.
 
-☸️ WEEK 2: Kubernetes, Infrastructure as Code & CI/CD
+---
 
-Day 8: The etcd Distributed State Machine
+# ☸️ WEEK 2: Kubernetes, Infrastructure as Code & CI/CD
+
+---
+
+## Day 8: The etcd Distributed State Machine
+
+[⬆️ Back to Top](#-quick-navigation)
 
 15:00 Technical Drill:
 
@@ -562,9 +641,15 @@ Scenario: Pipeline is failing on security scan (critical CVE in base image). Dem
 
 Career: Portfolio Project #2: Build "Production-Grade CI/CD Template Repository" - Complete pipeline: lint → test → build → security scan (Trivy, Snyk, gitleaks) → SBOM generation → sign artifacts → deploy to K8s with ArgoCD. Include branch protection, OIDC auth, rollback procedures. Document DORA metrics achieved (deployment frequency, lead time, MTTR). This is a "show-don't-tell" project that proves pipeline expertise.
 
-📈 WEEK 3: Observability, Security & Incident Management
+---
 
-Day 15: PromQL & High-Cardinality
+# 📈 WEEK 3: Observability, Security & Incident Management
+
+---
+
+## Day 15: PromQL & High-Cardinality
+
+[⬆️ Back to Top](#-quick-navigation)
 
 15:00 Technical Drill:
 
@@ -712,9 +797,15 @@ Achieve: Understand Blast Radius, Steady State Hypothesis, Game Days.
 
 Career: Portfolio Project #4: Build "Chaos Engineering Platform" - Beyond dashboard: experiment scheduler, hypothesis validator, blast radius calculator, automated rollback triggers. Integrates with Chaos Mesh/LitmusChaos. Features: pre-flight checks, steady-state validation, automated reports. Include real chaos experiments you ran (documented with screenshots, metrics before/after). Demonstrates production-readiness mindset.
 
-🌍 WEEK 4: Architecture & Global Reliability
+---
 
-Day 22: Load Balancing Algorithms & Health Checks
+# 🌍 WEEK 4: Architecture & Global Reliability
+
+---
+
+## Day 22: Load Balancing Algorithms & Health Checks
+
+[⬆️ Back to Top](#-quick-navigation)
 
 15:00 Technical Drill:
 
@@ -912,13 +1003,20 @@ Write 1-page summary covering:
 - "How I'll continue learning beyond these 30 days"
 - "My unique value proposition as an SRE candidate"
 
-🏖️ Sunday: Rest Day (Canvas Holiday)
+---
+
+## 🏖️ Sunday: Rest Day (Canvas Holiday)
+
+[⬆️ Back to Top](#-quick-navigation)
 
 Full recovery. No technical input. No terminal. Brain plasticity consolidation.
 
 ---
+---
 
-## 📚 Additional Resources & Links
+# 📚 Additional Resources & Links
+
+[⬆️ Back to Top](#-quick-navigation)
 
 ### Core Books (O'Reilly Learning Platform)
 - Site Reliability Engineering: https://sre.google/sre-book/table-of-contents/
@@ -1061,8 +1159,11 @@ Full recovery. No technical input. No terminal. Brain plasticity consolidation.
   - SRE Roadmap: https://roadmap.sh/devops (SRE path)
 
 ---
+---
 
 ## 💼 2026 Job Market Enhancements - What's New
+
+[⬆️ Back to Top](#-quick-navigation)
 
 This guide has been enhanced based on 30 years of teaching experience and 2026 hiring trends:
 
@@ -1177,8 +1278,15 @@ By Day 30, you should be able to:
 **Job Search Strategy**: Target companies with mature SRE practices (FAANG, unicorn startups, FinTech). Highlight your portfolio in applications. Use LinkedIn to connect with SRE hiring managers at target companies.
 
 ---
+---
+
+# 📋 APPENDICES
+
+---
 
 ## 📋 APPENDIX A: Complete Interview Question Bank
+
+[⬆️ Back to Top](#-quick-navigation)
 
 ### Systems & Linux (Week 1)
 
@@ -1304,6 +1412,8 @@ By Day 30, you should be able to:
 
 ## 📋 APPENDIX B: Certification Paths
 
+[⬆️ Back to Top](#-quick-navigation)
+
 ### Recommended Certification Order
 
 **1. AWS Certifications** (High ROI, most requested)
@@ -1374,6 +1484,8 @@ By Day 30, you should be able to:
 ---
 
 ## 📋 APPENDIX C: Detailed Portfolio Project Specifications
+
+[⬆️ Back to Top](#-quick-navigation)
 
 ### Project #1: Kubernetes FinOps Dashboard
 
@@ -1702,6 +1814,8 @@ Make this the highlight of your GitHub profile with:
 
 ## 📋 APPENDIX D: Common Production Troubleshooting Scenarios
 
+[⬆️ Back to Top](#-quick-navigation)
+
 ### Scenario 1: High CPU But Low Application Load
 
 **Symptoms**:
@@ -1924,6 +2038,8 @@ metric_relabel_configs:
 
 ## 📋 APPENDIX E: Salary Negotiation for SRE Roles (2026)
 
+[⬆️ Back to Top](#-quick-navigation)
+
 ### Market Data (United States, 2026)
 
 **Entry-Level SRE** (0-2 years):
@@ -2063,6 +2179,8 @@ metric_relabel_configs:
 ---
 
 ## 📋 APPENDIX F: 90-Day Interview Preparation Timeline
+
+[⬆️ Back to Top](#-quick-navigation)
 
 ### Month 1: Technical Foundation (Days 1-30)
 **Focus**: Complete this 30-day SRE guide
@@ -2222,6 +2340,8 @@ metric_relabel_configs:
 ---
 
 ## 📋 APPENDIX G: Real Company Interview Processes
+
+[⬆️ Back to Top](#-quick-navigation)
 
 ### Google SRE
 
@@ -2392,6 +2512,8 @@ metric_relabel_configs:
 
 ## 📋 APPENDIX H: Hands-On Labs & Practice Environments
 
+[⬆️ Back to Top](#-quick-navigation)
+
 ### Free Interactive Labs (No Setup Required)
 
 **1. Linux & Systems**
@@ -2544,6 +2666,8 @@ kubectl delete pod -l app=demo --random
 ---
 
 ## 📋 APPENDIX I: Resume & LinkedIn Optimization
+
+[⬆️ Back to Top](#-quick-navigation)
 
 ### Resume Template for SRE Roles
 
@@ -2880,6 +3004,8 @@ Good luck! 🚀
 ---
 
 ## 📋 APPENDIX J: AI Prompts for All 30 Days
+
+[⬆️ Back to Top](#-quick-navigation)
 
 ### How to Use This Appendix
 
