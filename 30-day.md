@@ -363,14 +363,27 @@ Context: I have basic Linux CLI knowledge. Target: FAANG SRE roles. Make example
 
 [⬆️ Back to Top](#-quick-navigation)
 
-15:00 Technical Drill:
+**15:00 Technical Drill (40 min):**
 
-Watch: Linux Operations and Administration (Pluralsight) - Storage.
-Link: https://www.pluralsight.com/courses/linux-operations-administration
+**Watch** (15 min): Linux Operations and Administration (Pluralsight) - Storage.
+- Link: https://www.pluralsight.com/courses/linux-operations-administration
 
-Execute: Exhaust Inodes. Monitor %util with iostat -xz 1. Identify unlinked open files with lsof | grep deleted.
+**Execute** (25 min):
+```bash
+# 1. Monitor disk I/O utilization
+iostat -xz 1
 
-Achieve: Understand Page Cache, Dirty Pages, and fsync() performance impact.
+# 2. Identify unlinked open files (deleted but still consuming space)
+lsof | grep deleted
+
+# 3. Check inode usage
+df -i
+
+# 4. Find directories consuming most inodes
+find / -xdev -type f | cut -d "/" -f 2 | sort | uniq -c | sort -rn | head -10
+```
+
+**Achieve**: Understand Page Cache, Dirty Pages, and fsync() performance impact.
 
 15:50 Logic & DSA: 1. Easy: Valid Anagram.
 2. Medium: Top K Frequent Elements (Analyzing frequent log errors).
@@ -387,16 +400,47 @@ Career: LinkedIn Post: Bash script for finding top open file descriptor consumer
 
 [⬆️ Back to Top](#-quick-navigation)
 
-15:00 Technical Drill:
+**15:00 Technical Drill (40 min):**
 
-Watch: Networking for DevOps Fundamentals (Pluralsight).
-Link: https://www.pluralsight.com/courses/networking-devops-fundamentals
+**Watch** (15 min): Networking for DevOps Fundamentals (Pluralsight).
+- Link: https://www.pluralsight.com/courses/networking-devops-fundamentals
 
-Execute:
-- Part 1: tc qdisc add dev eth0 root netem delay 200ms 50ms 25%. Monitor cwnd and RTT with ss -tie.
-- Part 2: Create AWS VPC with public/private subnets. Configure NAT Gateway, Security Groups, NACLs. Test inter-subnet connectivity.
+**Execute** (25 min):
 
-Achieve: Explain BDP, congestion control (Cubic/BBR). Master VPC CIDR planning, Security Group vs. NACL (stateful vs. stateless).
+**Part 1 - TCP Internals** (10 min):
+```bash
+# Add 200ms network delay with 50ms variance (25% correlation)
+sudo tc qdisc add dev eth0 root netem delay 200ms 50ms 25%
+
+# Monitor TCP congestion window and RTT
+ss -tie | grep -A5 "ESTAB"
+
+# View TCP stats
+nstat -az | grep -i tcp
+
+# Remove delay (cleanup)
+sudo tc qdisc del dev eth0 root
+```
+
+**Part 2 - AWS VPC** (15 min):
+```bash
+# Create VPC with CIDR 10.0.0.0/16
+aws ec2 create-vpc --cidr-block 10.0.0.0/16 --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=my-vpc}]'
+
+# Create public subnet (10.0.1.0/24)
+aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.1.0/24 --availability-zone us-east-1a
+
+# Create private subnet (10.0.2.0/24)
+aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.2.0/24 --availability-zone us-east-1b
+
+# Create Internet Gateway
+aws ec2 create-internet-gateway --tag-specifications 'ResourceType=internet-gateway,Tags=[{Key=Name,Value=my-igw}]'
+
+# Attach IGW to VPC
+aws ec2 attach-internet-gateway --internet-gateway-id <igw-id> --vpc-id <vpc-id>
+```
+
+**Achieve**: Explain BDP (Bandwidth-Delay Product), congestion control (Cubic/BBR). Master VPC CIDR planning, Security Group vs. NACL (stateful vs. stateless).
 
 15:50 Logic & DSA: 1. Easy: Valid Parentheses.
 2. Medium: Min Stack (Tracking state history - maps to VPC routing tables).
@@ -407,16 +451,43 @@ Scenario: Proving "speed of light" vs. app bug for cross-continental API latency
 
 Career: LinkedIn Post: "VPC Design Patterns That Prevent Production Outages."
 
-Day 4: HTTP/3 & The QUIC Protocol
+## Day 4: HTTP/3 & The QUIC Protocol
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: HTTP/3 Explained (O'Reilly).
-Link: https://http3-explained.haxx.se/
+**15:00 Technical Drill (40 min):**
 
-Execute: curl --http3 -v. Identify QUIC Connection ID via tshark capture.
+**Watch** (15 min): HTTP/3 Explained (O'Reilly).
+- Link: https://http3-explained.haxx.se/
 
-Achieve: Explain TCP vs. QUIC streams and Connection Migration (Wi-Fi to 5G).
+**Execute** (25 min):
+```bash
+# 1. Test HTTP/3 support (requires curl 7.66+)
+curl --http3 -v https://cloudflare-quic.com/
+
+# 2. Capture QUIC packets with tshark
+sudo tshark -i any -f "udp port 443" -Y "quic" -V
+
+# 3. Identify QUIC Connection ID
+sudo tshark -i any -f "udp port 443" -Y "quic.connection.id" -T fields -e quic.connection.id
+
+# 4. Compare HTTP/2 vs HTTP/3 timing
+curl -w "@curl-format.txt" -o /dev/null -s https://example.com
+
+# Create curl-format.txt:
+cat > curl-format.txt << 'EOF'
+    time_namelookup:  %{time_namelookup}s\n
+       time_connect:  %{time_connect}s\n
+    time_appconnect:  %{time_appconnect}s\n
+      time_redirect:  %{time_redirect}s\n
+   time_pretransfer:  %{time_pretransfer}s\n
+ time_starttransfer:  %{time_starttransfer}s\n
+                    ----------\n
+         time_total:  %{time_total}s\n
+EOF
+```
+
+**Achieve**: Explain TCP vs. QUIC streams and Connection Migration (Wi-Fi to 5G).
 
 15:50 Logic & DSA: 1. Easy: Best Time to Buy/Sell Stock.
 2. Medium: Longest Substring Without Repeating Characters.
@@ -447,16 +518,38 @@ Scenario: Debug OOM on production EC2. Identify if instance type is undersized o
 
 Career: Vibe Coding Goal: Create "Cloud Cost & Performance Optimizer" tool (EC2 rightsizing calculator) using React. Publish to github.io.
 
-Day 6: eBPF & Kernel Observability
+## Day 6: eBPF & Kernel Observability
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: BPF Performance Tools (O'Reilly) - Introduction.
-Link: https://www.brendangregg.com/bpf-performance-tools-book.html
+**15:00 Technical Drill (40 min):**
 
-Execute: Use bpftrace to trace slow syscalls: bpftrace -e 'tracepoint:syscalls:sys_enter_* { @start[tid] = nsecs; } tracepoint:syscalls:sys_exit_* /@start[tid]/ { @duration = hist((nsecs - @start[tid]) / 1000); delete(@start[tid]); }'.
+**Watch** (15 min): BPF Performance Tools (O'Reilly) - Introduction.
+- Link: https://www.brendangregg.com/bpf-performance-tools-book.html
 
-Achieve: Understand eBPF safety guarantees, CO-RE, and BTF.
+**Execute** (25 min):
+```bash
+# 1. Trace slow syscalls with histogram (shows distribution of syscall latency)
+sudo bpftrace -e '
+tracepoint:syscalls:sys_enter_* {
+    @start[tid] = nsecs;
+}
+tracepoint:syscalls:sys_exit_* /@start[tid]/ {
+    @duration_us = hist((nsecs - @start[tid]) / 1000);
+    delete(@start[tid]);
+}'
+
+# 2. Count syscalls by process
+sudo bpftrace -e 'tracepoint:syscalls:sys_enter_* { @[comm] = count(); }'
+
+# 3. Trace file opens with filename
+sudo bpftrace -e 'tracepoint:syscalls:sys_enter_openat { printf("%s opened %s\n", comm, str(args->filename)); }'
+
+# 4. Monitor TCP connections
+sudo bpftrace -e 'kprobe:tcp_connect { printf("%s connecting to port %d\n", comm, args->dport); }'
+```
+
+**Achieve**: Understand eBPF safety guarantees (verifier, no kernel panics), CO-RE (Compile Once, Run Everywhere), and BTF (BPF Type Format).
 
 15:50 Logic & DSA: 1. Easy: Climbing Stairs.
 2. Medium: Decode Ways (State machine pattern).
@@ -515,16 +608,39 @@ Achieve: Explain Raft Consensus, Quorum, and Leader roles.
 
 Scenario: Using etcd_disk_wal_fsync_duration_seconds to prove disk latency bottlenecks.
 
-Day 9: CNI & Overlay Networking
+## Day 9: CNI & Overlay Networking
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Kubernetes Networking Deep Dive (Pluralsight).
-Link: https://www.pluralsight.com/courses/kubernetes-networking-deep-dive
+**15:00 Technical Drill (40 min):**
 
-Execute: Identify MASQUERADE rules with iptables -t nat -L. Use nsenter for Pod-level tcpdump.
+**Watch** (15 min): Kubernetes Networking Deep Dive (Pluralsight).
+- Link: https://www.pluralsight.com/courses/kubernetes-networking-deep-dive
 
-Achieve: Distinguish Overlay (VXLAN) from Underlay (BGP) networking.
+**Execute** (25 min):
+```bash
+# 1. Identify MASQUERADE rules (K8s uses this for pod-to-external traffic)
+sudo iptables -t nat -L -n -v | grep MASQUERADE
+
+# 2. Get pod network namespace
+kubectl get pod <pod-name> -o jsonpath='{.status.containerStatuses[0].containerID}' | cut -d'/' -f3
+docker inspect <container-id> | jq '.[0].State.Pid'
+
+# 3. Enter pod network namespace and run tcpdump
+sudo nsenter -t <pid> -n tcpdump -i eth0 -nn
+
+# 4. Trace packet flow between pods
+# On source pod:
+kubectl exec -it <source-pod> -- ping <destination-pod-ip>
+# On node, watch iptables counters:
+watch -n1 'sudo iptables -t nat -L -n -v | grep <destination-pod-ip>'
+
+# 5. Check CNI plugin and configuration
+ls /etc/cni/net.d/
+cat /etc/cni/net.d/*.conf | jq .
+```
+
+**Achieve**: Distinguish Overlay (VXLAN - encapsulation, flexible) from Underlay (BGP - native routing, better performance).
 
 15:50 Logic & DSA: 1. Easy: Merge Two Sorted Lists.
 2. Medium: Reorder List.
@@ -533,16 +649,74 @@ Achieve: Distinguish Overlay (VXLAN) from Underlay (BGP) networking.
 
 Scenario: Checking for MTU mismatches and CNI encapsulation overhead in inter-pod timeouts.
 
-Day 10: Persistent Data & CSI
+## Day 10: Persistent Data & CSI
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Kubernetes Patterns (O'Reilly) - Storage.
-Link: https://learning.oreilly.com/library/view/kubernetes-patterns/9781492050285/
+**15:00 Technical Drill (40 min):**
 
-Execute: Force node failure in Kind. Watch PVC re-attach to a new Pod on a different node.
+**Watch** (15 min): Kubernetes Patterns (O'Reilly) - Storage.
+- Link: https://learning.oreilly.com/library/view/kubernetes-patterns/9781492050285/
 
-Achieve: Master CSI lifecycle: Create, Attach, Mount. Explain RWO vs. RWX.
+**Execute** (25 min):
+```bash
+# 1. Create StatefulSet with PVC
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-pvc
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "nginx"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        volumeMounts:
+        - name: data
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+EOF
+
+# 2. Check PVC and PV binding
+kubectl get pvc,pv
+
+# 3. Simulate node failure (drain node)
+kubectl drain <node-name> --delete-emptydir-data --force --ignore-daemonsets
+
+# 4. Watch pod reschedule and PVC re-attach
+kubectl get pods -o wide -w
+
+# 5. Verify data persists after node failure
+kubectl exec web-0 -- cat /usr/share/nginx/html/index.html
+```
+
+**Achieve**: Master CSI lifecycle: Create → Attach → Mount → Unmount → Detach → Delete. Explain RWO (ReadWriteOnce - single node) vs. RWX (ReadWriteMany - multi-node) vs. ROX (ReadOnlyMany).
 
 15:50 Logic & DSA: 1. Easy: Reverse Linked List.
 2. Medium: Copy List with Random Pointer.
@@ -551,19 +725,86 @@ Achieve: Master CSI lifecycle: Create, Attach, Mount. Explain RWO vs. RWX.
 
 Career: Portfolio Project #1: Build "K8s FinOps Dashboard" - Real-time cost analysis per namespace/pod using Kubecost API. Features: cost allocation, resource efficiency score, savings recommendations. Tech: React + FastAPI + Prometheus. Deploy to GitHub Pages with backend on free tier. Document ROI calculation methodology.
 
-Day 11: Terraform Fundamentals & Infrastructure as Code
+## Day 11: Terraform Fundamentals & Infrastructure as Code
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Terraform: Up & Running (O'Reilly) - Ch. 1-3.
-Link: https://learning.oreilly.com/library/view/terraform-up/9781098116736/
+**15:00 Technical Drill (40 min):**
 
-Execute:
-- Write Terraform to provision VPC, EC2, RDS. Apply with terraform plan/apply.
-- Implement remote state (S3 backend with DynamoDB locking).
-- Refactor using modules. Demonstrate terraform import for existing resources.
+**Watch** (15 min): Terraform: Up & Running (O'Reilly) - Ch. 1-3.
+- Link: https://learning.oreilly.com/library/view/terraform-up/9781098116736/
 
-Achieve: Master declarative IaC, state management, workspaces. Understand lifecycle meta-arguments (create_before_destroy, prevent_destroy).
+**Execute** (25 min):
+```hcl
+# main.tf - Simple EC2 instance
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+
+  # Remote state with S3 + DynamoDB locking
+  backend "s3" {
+    bucket         = "my-terraform-state"
+    key            = "prod/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_instance" "example" {
+  ami           = "ami-0c55b159cbfafe1f0" # Ubuntu 22.04
+  instance_type = "t3.micro"
+
+  lifecycle {
+    create_before_destroy = true
+    prevent_destroy       = false
+  }
+
+  tags = {
+    Name = "terraform-example"
+  }
+}
+
+# Output the instance ID
+output "instance_id" {
+  value = aws_instance.example.id
+}
+```
+
+**Commands to run**:
+```bash
+# Initialize Terraform (download providers)
+terraform init
+
+# Validate configuration
+terraform validate
+
+# Preview changes (dry-run)
+terraform plan
+
+# Apply changes
+terraform apply -auto-approve
+
+# Import existing resource
+terraform import aws_instance.example i-1234567890abcdef0
+
+# Show current state
+terraform show
+
+# Destroy resources
+terraform destroy -auto-approve
+```
+
+**Achieve**: Master declarative IaC, state management, workspaces. Understand lifecycle meta-arguments (create_before_destroy, prevent_destroy).
 
 15:50 Logic & DSA: 1. Easy: Implement Queue using Stacks (state machines - maps to Terraform state transitions).
 2. Medium: Evaluate Reverse Polish Notation (dependency resolution - maps to Terraform resource DAG).
@@ -574,18 +815,98 @@ Scenario: Debugging "resource already exists" error. Demonstrate terraform impor
 
 Career: LinkedIn Post: "5 Terraform Anti-Patterns That Cost Us $10K/Month."
 
-Day 12: Kubernetes Security, RBAC, OIDC & Secrets Management
+## Day 12: Kubernetes Security, RBAC, OIDC & Secrets Management
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Kubernetes Security (O'Reilly) - Ch. 4.
-Link: https://learning.oreilly.com/library/view/kubernetes-security/9781492039075/
+**15:00 Technical Drill (40 min):**
 
-Execute:
-- Part 1: Create ClusterRole, RoleBinding. Use kubectl auth can-i --as=system:serviceaccount:default:my-sa get pods.
-- Part 2: Configure OIDC authentication with identity provider. Set up External Secrets Operator to sync from AWS Secrets Manager/Vault. Never store secrets in Git!
+**Watch** (15 min): Kubernetes Security (O'Reilly) - Ch. 4.
+- Link: https://learning.oreilly.com/library/view/kubernetes-security/9781492039075/
 
-Achieve: Understand least-privilege design, BoundServiceAccountTokenVolume, OIDC token flow. Master secrets management (sealed-secrets, external-secrets, Vault integration).
+**Execute** (25 min):
+
+**Part 1 - RBAC** (10 min):
+```bash
+# 1. Create ServiceAccount
+kubectl create serviceaccount my-sa
+
+# 2. Create ClusterRole (least-privilege: read-only pods)
+kubectl apply -f - <<EOF
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pod-reader
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+EOF
+
+# 3. Create RoleBinding (bind ServiceAccount to ClusterRole)
+kubectl create rolebinding my-sa-binding \
+  --clusterrole=pod-reader \
+  --serviceaccount=default:my-sa \
+  --namespace=default
+
+# 4. Test permissions
+kubectl auth can-i get pods --as=system:serviceaccount:default:my-sa
+kubectl auth can-i delete pods --as=system:serviceaccount:default:my-sa  # Should return "no"
+
+# 5. View effective permissions
+kubectl auth can-i --list --as=system:serviceaccount:default:my-sa
+```
+
+**Part 2 - External Secrets Operator** (15 min):
+```bash
+# 1. Install External Secrets Operator
+helm repo add external-secrets https://charts.external-secrets.io
+helm install external-secrets external-secrets/external-secrets -n external-secrets-system --create-namespace
+
+# 2. Create SecretStore (AWS Secrets Manager backend)
+kubectl apply -f - <<EOF
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: aws-secretsmanager
+  namespace: default
+spec:
+  provider:
+    aws:
+      service: SecretsManager
+      region: us-east-1
+      auth:
+        jwt:
+          serviceAccountRef:
+            name: external-secrets-sa
+EOF
+
+# 3. Create ExternalSecret (sync from AWS)
+kubectl apply -f - <<EOF
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: database-credentials
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: aws-secretsmanager
+    kind: SecretStore
+  target:
+    name: db-secret
+    creationPolicy: Owner
+  data:
+  - secretKey: password
+    remoteRef:
+      key: prod/database/password
+EOF
+
+# 4. Verify secret synced
+kubectl get externalsecret database-credentials
+kubectl get secret db-secret -o yaml
+```
+
+**Achieve**: Understand least-privilege design, BoundServiceAccountTokenVolume, OIDC token flow. Master secrets management (sealed-secrets, external-secrets, Vault integration). **Never store secrets in Git!**
 
 15:50 Logic & DSA: 1. Easy: Diameter of Binary Tree (trust chains - maps to certificate chains).
 2. Medium: Validate Binary Search Tree (access control hierarchy validation).
@@ -596,18 +917,121 @@ Scenario: Auditing unexpected pod escalations via kubectl audit logs. Investigat
 
 Career: LinkedIn Post: "RBAC Anti-Patterns That Create Production Vulnerabilities + How We Implemented Zero-Trust K8s."
 
-Day 13: StatefulSets, Headless Services & GitOps with ArgoCD
+## Day 13: StatefulSets, Headless Services & GitOps with ArgoCD
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Managing Kubernetes (O'Reilly) - StatefulSets.
-Link: https://learning.oreilly.com/library/view/managing-kubernetes/9781492033905/
+**15:00 Technical Drill (40 min):**
 
-Execute:
-- Part 1: Deploy Kafka/Zookeeper StatefulSet. Use nslookup to verify stable network identity (pod-0.svc.ns.svc.cluster.local).
-- Part 2: Install ArgoCD. Create GitOps pipeline: Git commit → ArgoCD sync → K8s deployment. Implement sync waves and health checks.
+**Watch** (15 min): Managing Kubernetes (O'Reilly) - StatefulSets.
+- Link: https://learning.oreilly.com/library/view/managing-kubernetes/9781492033905/
 
-Achieve: Master ordinal index, PVC retention, podManagementPolicy. Understand GitOps principles (Git as single source of truth), ArgoCD sync strategies (auto vs. manual), app-of-apps pattern.
+**Execute** (25 min):
+
+**Part 1 - StatefulSets** (10 min):
+```bash
+# 1. Deploy StatefulSet with headless service
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 80
+    name: web
+  clusterIP: None  # Headless service
+  selector:
+    app: nginx
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "nginx"
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.25
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+EOF
+
+# 2. Verify stable network identity (each pod gets predictable DNS)
+kubectl run -it --rm debug --image=busybox --restart=Never -- nslookup web-0.nginx.default.svc.cluster.local
+kubectl run -it --rm debug --image=busybox --restart=Never -- nslookup web-1.nginx.default.svc.cluster.local
+
+# 3. Check ordinal index and PVC
+kubectl get pods -l app=nginx
+kubectl get pvc
+```
+
+**Part 2 - GitOps with ArgoCD** (15 min):
+```bash
+# 1. Install ArgoCD
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# 2. Access ArgoCD UI
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+# 3. Get initial admin password
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+# 4. Create ArgoCD application (GitOps)
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/yourusername/k8s-manifests
+    targetRevision: HEAD
+    path: manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+EOF
+
+# 5. Check sync status
+kubectl get applications -n argocd
+argocd app list
+argocd app sync my-app
+```
+
+**Achieve**: Master ordinal index (web-0, web-1, web-2), PVC retention, podManagementPolicy (OrderedReady vs Parallel). Understand GitOps principles (Git as single source of truth), ArgoCD sync strategies (auto vs. manual), app-of-apps pattern.
 
 15:50 Logic & DSA: 1. Easy: Invert Binary Tree (state reconciliation - maps to GitOps desired state).
 2. Medium: Construct Binary Tree from Preorder and Inorder (DAG construction - maps to ArgoCD app dependencies).
@@ -618,19 +1042,131 @@ Scenario: Debugging Cassandra split-brain during rolling restart. Compare kubect
 
 Career: LinkedIn Post: "How GitOps Reduced Our Deployment Incidents by 80%."
 
-Day 14: CI/CD Pipelines & Pipeline Security (DevSecOps)
+## Day 14: CI/CD Pipelines & Pipeline Security (DevSecOps)
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Continuous Delivery in Practice (O'Reilly) - CI/CD Pipelines.
-Link: https://learning.oreilly.com/library/view/continuous-delivery/9780136892656/
+**15:00 Technical Drill (40 min):**
 
-Execute:
-- Build end-to-end GitHub Actions pipeline: lint → test → build → security scan (Trivy, Snyk) → push image → deploy to K8s.
-- Implement branch protection, required checks, OIDC authentication (no long-lived secrets!).
-- Add SBOM generation (syft/cyclonedx). Scan for secrets (gitleaks).
+**Watch** (15 min): Continuous Delivery in Practice (O'Reilly) - CI/CD Pipelines.
+- Link: https://learning.oreilly.com/library/view/continuous-delivery/9780136892656/
 
-Achieve: Master CI/CD stages, pipeline-as-code, security gates (SAST, DAST, SCA). Understand shift-left security, artifact attestation, supply chain security (SLSA framework).
+**Execute** (25 min):
+
+Create `.github/workflows/ci-cd.yml`:
+```yaml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  id-token: write  # OIDC authentication
+  contents: read
+  security-events: write
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Lint code
+        run: |
+          pip install flake8
+          flake8 . --count --max-line-length=127
+
+      - name: Run tests
+        run: |
+          pip install pytest pytest-cov
+          pytest --cov=. --cov-report=xml
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Secret scanning (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+
+      - name: Dependency scanning (Snyk)
+        uses: snyk/actions/python@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Build Docker image
+        run: docker build -t myapp:${{ github.sha }} .
+
+      - name: Container scanning (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: myapp:${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Generate SBOM
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+          syft myapp:${{ github.sha }} -o cyclonedx-json > sbom.json
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: security-scan
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC - no long-lived secrets!)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::123456789012:role/GitHubActions
+          aws-region: us-east-1
+
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 123456789012.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Push image to ECR
+        run: |
+          docker tag myapp:${{ github.sha }} 123456789012.dkr.ecr.us-east-1.amazonaws.com/myapp:${{ github.sha }}
+          docker push 123456789012.dkr.ecr.us-east-1.amazonaws.com/myapp:${{ github.sha }}
+
+      - name: Update K8s manifest (trigger ArgoCD sync)
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          sed -i "s|image: .*|image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/myapp:${{ github.sha }}|" k8s/deployment.yaml
+          git add k8s/deployment.yaml
+          git commit -m "Update image to ${{ github.sha }}"
+          git push
+```
+
+**Branch Protection Setup**:
+```bash
+# Via GitHub CLI
+gh repo edit --enable-branch-protection main \
+  --require-status-checks lint-and-test,security-scan \
+  --require-pull-request-reviews 2 \
+  --require-signed-commits
+```
+
+**Achieve**: Master CI/CD stages, pipeline-as-code, security gates (SAST, DAST, SCA). Understand shift-left security, artifact attestation, supply chain security (SLSA framework).
 
 15:50 Logic & DSA: 1. Easy: Balanced Binary Tree (build validation - maps to CI health checks).
 2. Medium: Flatten Binary Tree to Linked List (pipeline stage linearization).
@@ -651,14 +1187,56 @@ Career: Portfolio Project #2: Build "Production-Grade CI/CD Template Repository"
 
 [⬆️ Back to Top](#-quick-navigation)
 
-15:00 Technical Drill:
+**15:00 Technical Drill (40 min):**
 
-Watch: Prometheus: Up & Running (O'Reilly) - Ch. 4.
-Link: https://learning.oreilly.com/library/view/prometheus-up/9781492034131/
+**Watch** (15 min): Prometheus: Up & Running (O'Reilly) - Ch. 4.
+- Link: https://learning.oreilly.com/library/view/prometheus-up/9781492034131/
 
-Execute: Build histogram_quantile SLO query. Simulate Cardinality Explosion with UUID labels.
+**Execute** (25 min):
+```promql
+# 1. Calculate p95 and p99 latency using histogram_quantile
+histogram_quantile(0.95,
+  rate(http_request_duration_seconds_bucket[5m])
+)
 
-Achieve: Explain why high cardinality kills Prometheus memory.
+histogram_quantile(0.99,
+  rate(http_request_duration_seconds_bucket[5m])
+)
+
+# 2. Calculate availability SLO (99.9% = error rate < 0.1%)
+(
+  sum(rate(http_requests_total{code!~"5.."}[30d]))
+  /
+  sum(rate(http_requests_total[30d]))
+) > 0.999
+
+# 3. Identify high-cardinality metrics (>10K series)
+topk(10, count by (__name__)({__name__=~".+"}))
+
+# 4. Find metrics with most labels (cardinality explosion indicator)
+topk(10, count by (__name__)(group by (__name__, job, instance, pod, namespace)({__name__=~".+"})))
+
+# 5. Simulate cardinality explosion (DON'T DO THIS IN PROD!)
+# Example of BAD practice: Using UUID in labels
+# http_requests_total{user_id="550e8400-e29b-41d4-a716-446655440000"}  # BAD!
+# Good practice: Use it as a dimension in logs, not metrics
+```
+
+**Check cardinality via Prometheus API**:
+```bash
+# Get total series count
+curl -s http://localhost:9090/api/v1/status/tsdb | jq .data.seriesCountByMetricName
+
+# Find metrics with highest cardinality
+curl -s 'http://localhost:9090/api/v1/label/__name__/values' | \
+  jq -r '.data[]' | \
+  while read metric; do
+    count=$(curl -s "http://localhost:9090/api/v1/query?query=count($metric)" | jq -r '.data.result[0].value[1]')
+    echo "$count $metric"
+  done | sort -rn | head -20
+```
+
+**Achieve**: Explain why high cardinality kills Prometheus memory (each unique label combination = new time series = more RAM). 1M series ≈ 1-2GB RAM.
 
 15:50 Logic & DSA: 1. Easy: Kth Largest Element in a Stream.
 2. Medium: Kth Largest Element in an Array (Heap logic).
@@ -667,16 +1245,72 @@ Achieve: Explain why high cardinality kills Prometheus memory.
 
 Scenario: Slow-loading dashboards: identifying "heavy" queries and namespace label optimization.
 
-Day 16: SLOs, SLIs, and Error Budgets
+## Day 16: SLOs, SLIs, and Error Budgets
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Implementing Service Level Objectives (O'Reilly).
-Link: https://learning.oreilly.com/library/view/implementing-service-level/9781492076803/
+**15:00 Technical Drill (40 min):**
 
-Execute: Define 99.9% availability SLO. Calculate error budget: (1 - 0.999) * 30 days * 24 * 60 = 43.2 minutes/month.
+**Watch** (15 min): Implementing Service Level Objectives (O'Reilly).
+- Link: https://learning.oreilly.com/library/view/implementing-service-level/9781492076803/
 
-Achieve: Master Request-based vs. Window-based SLIs. Understand burn rate alerts.
+**Execute** (25 min):
+```python
+# 1. Calculate error budget from SLO
+slo_target = 0.999  # 99.9% availability
+error_budget_percentage = 1 - slo_target  # 0.001 = 0.1%
+
+# For 30-day month
+days_per_month = 30
+minutes_per_day = 24 * 60
+total_minutes = days_per_month * minutes_per_day  # 43,200 minutes
+error_budget_minutes = total_minutes * error_budget_percentage  # 43.2 minutes
+
+print(f"99.9% SLO allows {error_budget_minutes:.1f} minutes of downtime per month")
+
+# 2. Calculate current error budget consumption
+total_requests = 10_000_000
+failed_requests = 5_000
+error_rate = failed_requests / total_requests  # 0.0005 = 0.05%
+budget_consumed = (error_rate / error_budget_percentage) * 100  # 50%
+
+print(f"Current error rate: {error_rate:.4%}")
+print(f"Error budget consumed: {budget_consumed:.1f}%")
+print(f"Remaining budget: {100 - budget_consumed:.1f}%")
+```
+
+**PromQL queries for SLO monitoring**:
+```promql
+# Request-based SLI (availability)
+(
+  sum(rate(http_requests_total{code!~"5.."}[30d]))
+  /
+  sum(rate(http_requests_total[30d]))
+)
+
+# Latency SLI (p99 < 500ms for 99% of requests)
+histogram_quantile(0.99,
+  rate(http_request_duration_seconds_bucket[5m])
+) < 0.5
+
+# Multi-window burn rate alert (page immediately if burning too fast)
+# Alert if: (5m burn > 14.4x AND 1h burn > 14.4x) OR (30m burn > 6x AND 6h burn > 6x)
+(
+  (
+    (1 - sum(rate(http_requests_total{code!~"5.."}[5m])) / sum(rate(http_requests_total[5m]))) > 14.4 * 0.001
+    and
+    (1 - sum(rate(http_requests_total{code!~"5.."}[1h])) / sum(rate(http_requests_total[1h]))) > 14.4 * 0.001
+  )
+  or
+  (
+    (1 - sum(rate(http_requests_total{code!~"5.."}[30m])) / sum(rate(http_requests_total[30m]))) > 6 * 0.001
+    and
+    (1 - sum(rate(http_requests_total{code!~"5.."}[6h])) / sum(rate(http_requests_total[6h]))) > 6 * 0.001
+  )
+)
+```
+
+**Achieve**: Master Request-based (count good/bad requests) vs. Window-based (uptime windows) SLIs. Understand burn rate alerts (detect when consuming error budget too fast).
 
 15:50 Logic & DSA: 1. Easy: Contains Duplicate.
 2. Medium: Product of Array Except Self.
@@ -687,19 +1321,115 @@ Scenario: Defending a controlled rollout that consumed 20% of monthly error budg
 
 Career: LinkedIn Post: "Why Error Budgets Changed How We Ship Features."
 
-Day 17: Container Security & Policy Enforcement (OPA, Falco)
+## Day 17: Container Security & Policy Enforcement (OPA, Falco)
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Container Security (O'Reilly) - Runtime Security.
-Link: https://learning.oreilly.com/library/view/container-security/9781492056690/
+**15:00 Technical Drill (40 min):**
 
-Execute:
-- Deploy Falco for runtime security. Detect suspicious container behavior (unexpected file access, privilege escalation).
-- Implement Open Policy Agent (OPA/Gatekeeper). Write admission policies: block privileged pods, enforce resource limits, require security contexts.
-- Scan images with Trivy/Grype. Identify CVEs and block deployment of critical vulnerabilities.
+**Watch** (15 min): Container Security (O'Reilly) - Runtime Security.
+- Link: https://learning.oreilly.com/library/view/container-security/9781492056690/
 
-Achieve: Understand container security layers (image, runtime, network). Master admission controllers, Pod Security Standards (restricted/baseline/privileged), runtime detection vs. prevention.
+**Execute** (25 min):
+
+**Part 1 - Falco Runtime Security** (8 min):
+```bash
+# 1. Install Falco
+helm repo add falcosecurity https://falcosecurity.github.io/charts
+helm install falco falcosecurity/falco --namespace falco --create-namespace
+
+# 2. Create custom Falco rule
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: falco-rules
+  namespace: falco
+data:
+  custom-rules.yaml: |
+    - rule: Unauthorized file access
+      desc: Detect when sensitive files are accessed
+      condition: open_read and container and fd.name in (/etc/shadow, /etc/sudoers)
+      output: "Sensitive file opened (user=%user.name file=%fd.name container=%container.name)"
+      priority: WARNING
+
+    - rule: Privilege escalation attempt
+      desc: Detect privilege escalation in containers
+      condition: container and spawned_process and proc.name in (sudo, su)
+      output: "Privilege escalation detected (user=%user.name command=%proc.cmdline container=%container.name)"
+      priority: CRITICAL
+EOF
+
+# 3. Test Falco (trigger alert)
+kubectl run test-pod --image=alpine -- /bin/sh -c "cat /etc/shadow"
+
+# 4. View Falco alerts
+kubectl logs -n falco -l app.kubernetes.io/name=falco | grep "Sensitive file opened"
+```
+
+**Part 2 - OPA Gatekeeper** (10 min):
+```bash
+# 1. Install Gatekeeper
+kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/deploy/gatekeeper.yaml
+
+# 2. Create ConstraintTemplate (block privileged pods)
+kubectl apply -f - <<EOF
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8spspprivilegedcontainer
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sPSPPrivilegedContainer
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8spspprivileged
+
+        violation[{"msg": msg}] {
+          c := input.review.object.spec.containers[_]
+          c.securityContext.privileged
+          msg := sprintf("Privileged container is not allowed: %v", [c.name])
+        }
+EOF
+
+# 3. Create Constraint (enforce policy)
+kubectl apply -f - <<EOF
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPPrivilegedContainer
+metadata:
+  name: block-privileged-pods
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+EOF
+
+# 4. Test policy (should be blocked)
+kubectl run privileged-pod --image=nginx --privileged=true
+# Expected: Error from server: admission webhook denied the request
+```
+
+**Part 3 - Container Scanning** (7 min):
+```bash
+# 1. Scan image with Trivy
+trivy image nginx:latest --severity HIGH,CRITICAL
+
+# 2. Scan with JSON output (for automation)
+trivy image nginx:latest --format json --output trivy-report.json
+
+# 3. Scan filesystem for IaC misconfigurations
+trivy fs . --scanners config,secret
+
+# 4. Block deployment with critical CVEs in CI/CD
+trivy image myapp:latest --exit-code 1 --severity CRITICAL
+# exit-code 1 = fail pipeline if critical CVE found
+```
+
+**Achieve**: Understand container security layers (image scanning → admission control → runtime detection). Master admission controllers, Pod Security Standards (restricted/baseline/privileged), runtime detection (Falco) vs. prevention (OPA).
 
 15:50 Logic & DSA: 1. Easy: Missing Number (anomaly detection - maps to security outliers).
 2. Medium: Find the Duplicate Number (finding compromised containers in fleet).
@@ -710,18 +1440,78 @@ Scenario: Falco alert triggers on production pod accessing /etc/shadow. Investig
 
 Career: LinkedIn Post: "How We Prevented a Container Breakout Using Runtime Security."
 
-Day 18: Incident Management, Communication & Stakeholder Updates
+## Day 18: Incident Management, Communication & Stakeholder Updates
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: SRE Workbook (O'Reilly) - Ch. 9 & Incident Management.
-Link: https://learning.oreilly.com/library/view/the-site-reliability-workbook/9781492029496/
+**15:00 Technical Drill (40 min):**
 
-Execute:
-- Part 1: Parse multi-GB logs with awk/sed. Trace correlation IDs. Filter JSON with jq.
-- Part 2: Practice incident communication: Write executive status updates (non-technical). Draft customer-facing incident notification. Create internal timeline with technical details.
+**Watch** (15 min): SRE Workbook (O'Reilly) - Ch. 9 & Incident Management.
+- Link: https://learning.oreilly.com/library/view/the-site-reliability-workbook/9781492029496/
 
-Achieve: Master "Triage-first" mindset (Mitigate > Root-Cause). Learn incident roles (Commander, Scribe, Communications Lead). Practice translating technical issues to business impact.
+**Execute** (25 min):
+
+**Part 1 - Log Analysis** (10 min):
+```bash
+# 1. Find errors in multi-GB logs (efficient)
+zcat /var/log/app/app.log.*.gz | grep -i error | tail -1000
+
+# 2. Trace correlation IDs across services
+correlation_id="abc-123-def"
+grep -r "$correlation_id" /var/log/ --include="*.log"
+
+# 3. Filter JSON logs with jq
+cat app.log | jq 'select(.level == "error" or .level == "fatal")'
+
+# 4. Extract top error messages
+cat app.log | jq -r 'select(.level == "error") | .message' | sort | uniq -c | sort -rn | head -20
+
+# 5. Find slow requests (>5 seconds)
+cat app.log | jq 'select(.duration_ms > 5000) | {timestamp, duration_ms, endpoint, user_id}'
+
+# 6. Parse with awk (non-JSON logs)
+awk '/error/ {count[$5]++} END {for (msg in count) print count[msg], msg}' /var/log/app.log | sort -rn
+```
+
+**Part 2 - Incident Communication** (15 min):
+
+**Initial Notification Template**:
+```
+Subject: [P1] Payment Processing Delays - Investigating
+
+Status: INVESTIGATING
+Impact: Payment processing delayed 2-3 minutes. No data loss.
+Started: 2024-01-15 14:30 PST
+Next Update: 15:00 PST (in 30 min)
+
+What Happened:
+- Database replication lag increased to 180 seconds
+- Payment confirmations delayed
+- No transactions lost
+
+What We're Doing:
+- Incident Commander: Alice (SRE)
+- Investigating replica database performance
+- Payments queuing for retry
+- No customer action needed
+
+Customer Impact:
+- Low: Payments delayed but will process
+- 0.5% of users affected
+```
+
+**Technical to Executive Translation**:
+```
+❌ Technical: "Database replication lag is 180 seconds due to long-running query blocking the SQL thread"
+
+✅ Executive: "Payment processing is delayed 2-3 minutes. We've identified the cause and are implementing a fix. ETA: 30 minutes. No revenue loss."
+
+❌ Technical: "CPU throttling on pod web-7d9f8b due to hitting resource limits"
+
+✅ Executive: "Website experiencing slow page loads for 5% of users. Fix being deployed now. Expected resolution in 10 minutes."
+```
+
+**Achieve**: Master "Triage-first" mindset (Mitigate > Root-Cause). Learn incident roles (Commander, Scribe, Communications Lead). Practice translating technical issues to business impact.
 
 Soft Skills Practice:
 - "Our database is experiencing high replication lag" → Executive version: "Payment processing may be delayed 2-3 minutes. No data loss risk. ETA to resolution: 30 minutes."
@@ -736,16 +1526,111 @@ Scenario: P1 incident during business hours. You're the Incident Commander. Walk
 
 Career: Portfolio Project #3: Build "Incident Management Platform" - Not just postmortem generator, but full incident lifecycle tool: PagerDuty webhook integration, auto-create Slack channel, postmortem template with severity calculator, action item tracker with Jira integration, timeline builder. Include executive summary auto-generator (translates technical details to business impact). Demonstrate "soft skills + technical skills" combination.
 
-Day 19: Alerting Strategy & Runbooks
+## Day 19: Alerting Strategy & Runbooks
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Practical Monitoring (O'Reilly) - Ch. 3.
-Link: https://learning.oreilly.com/library/view/practical-monitoring/9781491957349/
+**15:00 Technical Drill (40 min):**
 
-Execute: Design multi-window burn rate alert: (5m burn > 14.4x AND 1h burn > 14.4x) OR (30m burn > 6x AND 6h burn > 6x).
+**Watch** (15 min): Practical Monitoring (O'Reilly) - Ch. 3.
+- Link: https://learning.oreilly.com/library/view/practical-monitoring/9781491957349/
 
-Achieve: Understand alert fatigue. Differentiate symptoms vs. causes alerts.
+**Execute** (25 min):
+
+**Multi-window burn rate alert** (Prometheus AlertManager):
+```yaml
+# prometheus-rules.yaml
+groups:
+  - name: slo-burn-rate-alerts
+    interval: 30s
+    rules:
+      # Page immediately: burning error budget 14.4x faster than sustainable
+      - alert: ErrorBudgetBurnRateCritical
+        expr: |
+          (
+            (1 - (sum(rate(http_requests_total{code!~"5.."}[5m])) / sum(rate(http_requests_total[5m])))) > (14.4 * 0.001)
+            and
+            (1 - (sum(rate(http_requests_total{code!~"5.."}[1h])) / sum(rate(http_requests_total[1h])))) > (14.4 * 0.001)
+          )
+          or
+          (
+            (1 - (sum(rate(http_requests_total{code!~"5.."}[30m])) / sum(rate(http_requests_total[30m])))) > (6 * 0.001)
+            and
+            (1 - (sum(rate(http_requests_total{code!~"5.."}[6h])) / sum(rate(http_requests_total[6h])))) > (6 * 0.001)
+          )
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical error budget burn rate"
+          description: "Error budget burning too fast. At this rate, monthly budget will be exhausted in <2 days."
+
+      # Ticket alert: slower burn (will exhaust budget in ~1 week)
+      - alert: ErrorBudgetBurnRateWarning
+        expr: |
+          (1 - (sum(rate(http_requests_total{code!~"5.."}[6h])) / sum(rate(http_requests_total[6h])))) > (3 * 0.001)
+          and
+          (1 - (sum(rate(http_requests_total{code!~"5.."}[3d])) / sum(rate(http_requests_total[3d])))) > (1 * 0.001)
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Elevated error rate"
+          description: "Error rate elevated but not critical. Review in next business day."
+```
+
+**Runbook Template**:
+```markdown
+# Runbook: High Error Rate (5xx)
+
+## Symptom
+- Alert: `ErrorBudgetBurnRateCritical` firing
+- Grafana: 5xx rate >0.1%
+- Impact: Users seeing errors, error budget burning fast
+
+## Triage (5 min - do this FIRST)
+1. Check: Is this affecting all users or specific segment?
+   ```bash
+   # Query error rate by endpoint
+   curl -s "http://prometheus:9090/api/v1/query?query=topk(10,sum by(endpoint)(rate(http_requests_total{code=~\"5..\"}[5m])))" | jq
+   ```
+
+2. Check: Recent deployments?
+   ```bash
+   kubectl rollout history deployment/api
+   ```
+
+3. Check: Infrastructure issues (DB, cache, external API)?
+   ```bash
+   kubectl top pods
+   kubectl get pods | grep -v Running
+   ```
+
+## Action
+- **IF: Recent deployment** → Rollback immediately
+  ```bash
+  kubectl rollout undo deployment/api
+  ```
+
+- **IF: Database overloaded** → Scale read replicas or reduce traffic
+  ```bash
+  kubectl scale deployment/api --replicas=5  # Reduce load
+  ```
+
+- **IF: External API failing** → Enable circuit breaker or use cached data
+
+## Resolution
+1. Confirm error rate dropped to <0.05%
+2. Update incident timeline
+3. Schedule postmortem within 48h
+
+## Prevention
+- [ ] Add integration tests covering this scenario
+- [ ] Improve monitoring (add canary deployment checks)
+- [ ] Document new failure mode
+```
+
+**Achieve**: Understand alert fatigue (too many alerts → ignored → incidents missed). Differentiate **symptom alerts** (page: users affected) vs. **cause alerts** (ticket: might cause issue later).
 
 15:50 Logic & DSA: 1. Easy: Symmetric Tree.
 2. Medium: Binary Tree Zigzag Level Order Traversal.
@@ -756,19 +1641,111 @@ Scenario: Refactoring 200+ noisy alerts down to 15 actionable ones using SLO met
 
 Career: LinkedIn Post: "The Anatomy of a Perfect Runbook (with Template)."
 
-Day 20: Modern Observability Stack (VictoriaMetrics, Tempo, Pyroscope)
+## Day 20: Modern Observability Stack (VictoriaMetrics, Tempo, Pyroscope)
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Efficient Go (O'Reilly) - Profiling & Modern Observability.
-Link: https://learning.oreilly.com/library/view/efficient-go/9781098105709/
+**15:00 Technical Drill (40 min):**
 
-Execute:
-- Part 1: Deploy VictoriaMetrics (Prometheus alternative at scale). Compare query performance and resource usage vs. Prometheus.
-- Part 2: Set up Grafana Tempo for distributed tracing (Jaeger alternative). Configure trace-to-logs correlation.
-- Part 3: Implement Pyroscope for continuous profiling. Generate CPU/heap flame graphs. Identify hot paths.
+**Watch** (15 min): Efficient Go (O'Reilly) - Profiling & Modern Observability.
+- Link: https://learning.oreilly.com/library/view/efficient-go/9781098105709/
 
-Achieve: Understand trade-offs: Prometheus vs. VictoriaMetrics (cost, scale, compatibility), Jaeger vs. Tempo (backend storage), commercial vs. open-source observability (Datadog, New Relic use cases).
+**Execute** (25 min):
+
+**Part 1 - VictoriaMetrics** (8 min):
+```bash
+# 1. Install VictoriaMetrics (single-node)
+helm repo add vm https://victoriametrics.github.io/helm-charts/
+helm install victoria-metrics vm/victoria-metrics-single
+
+# 2. Configure Prometheus remote_write (migrate existing metrics)
+kubectl edit configmap prometheus-config
+# Add:
+# remote_write:
+#   - url: http://victoria-metrics:8428/api/v1/write
+
+# 3. Query VictoriaMetrics (PromQL compatible)
+curl 'http://victoria-metrics:8428/api/v1/query?query=up'
+
+# 4. Compare query performance
+time curl 'http://prometheus:9090/api/v1/query?query=rate(http_requests_total[5m])'
+time curl 'http://victoria-metrics:8428/api/v1/query?query=rate(http_requests_total[5m])'
+
+# 5. Check resource usage
+kubectl top pod -l app=victoria-metrics
+kubectl top pod -l app=prometheus
+```
+
+**Part 2 - Grafana Tempo** (10 min):
+```bash
+# 1. Install Tempo
+helm repo add grafana https://grafana.github.io/helm-charts
+helm install tempo grafana/tempo
+
+# 2. Configure OpenTelemetry exporter to send to Tempo
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+data:
+  config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+    exporters:
+      tempo:
+        endpoint: tempo:4317
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          exporters: [tempo]
+EOF
+
+# 3. Query traces in Grafana
+# Add Tempo data source: http://tempo:3100
+# Explore → TraceID → View trace
+
+# 4. Configure trace-to-logs correlation
+# In Grafana Tempo data source settings:
+# - Derived fields: traceID -> Loki query
+```
+
+**Part 3 - Pyroscope** (7 min):
+```bash
+# 1. Install Pyroscope
+helm repo add pyroscope-io https://pyroscope-io.github.io/helm-chart
+helm install pyroscope pyroscope-io/pyroscope
+
+# 2. Instrument Go application
+# Add to app code:
+import "github.com/pyroscope-io/client/pyroscope"
+
+pyroscope.Start(pyroscope.Config{
+    ApplicationName: "myapp",
+    ServerAddress:   "http://pyroscope:4040",
+    ProfileTypes: []pyroscope.ProfileType{
+        pyroscope.ProfileCPU,
+        pyroscope.ProfileAllocObjects,
+        pyroscope.ProfileInuseObjects,
+        pyroscope.ProfileInuseSpace,
+    },
+})
+
+# 3. View flame graphs
+# Visit http://pyroscope:4040
+# Select: Application → Time Range → Profile Type (CPU, Memory)
+
+# 4. Identify hot paths (CPU bottlenecks)
+# Look for wide bars in flame graph = expensive functions
+```
+
+**Achieve**: Understand trade-offs: Prometheus vs. VictoriaMetrics (cost: 50% less storage, scale: 10x more metrics, compatibility: PromQL), Jaeger vs. Tempo (backend: object storage vs. Cassandra), commercial vs. open-source (Datadog: $$$, better UX; open-source: free, self-managed).
 
 15:50 Logic & DSA: 1. Easy: Merge Sorted Array (merging time-series from multiple sources).
 2. Medium: Sort Colors (categorizing metrics by severity - P0/P1/P2).
@@ -779,16 +1756,102 @@ Scenario: Prometheus is OOMing due to high cardinality. Pitch migration to Victo
 
 Career: LinkedIn Post: "How We Scaled Observability to 10M metrics/sec with VictoriaMetrics."
 
-Day 21: Chaos Engineering & Fault Injection
+## Day 21: Chaos Engineering & Fault Injection
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Chaos Engineering (O'Reilly).
-Link: https://learning.oreilly.com/library/view/chaos-engineering/9781492043850/
+**15:00 Technical Drill (40 min):**
 
-Execute: Use Chaos Mesh to inject network delay. Verify circuit breaker triggers. Validate graceful degradation.
+**Watch** (15 min): Chaos Engineering (O'Reilly).
+- Link: https://learning.oreilly.com/library/view/chaos-engineering/9781492043850/
 
-Achieve: Understand Blast Radius, Steady State Hypothesis, Game Days.
+**Execute** (25 min):
+```bash
+# 1. Install Chaos Mesh
+curl -sSL https://mirrors.chaos-mesh.org/latest/install.sh | bash
+
+# 2. Inject network delay (200ms) to payment service
+kubectl apply -f - <<EOF
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: network-delay
+spec:
+  action: delay
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: payment-service
+  delay:
+    latency: "200ms"
+    correlation: "25"
+    jitter: "50ms"
+  duration: "5m"
+EOF
+
+# 3. Verify circuit breaker triggers
+# Monitor metrics during chaos experiment:
+kubectl logs -l app=api-gateway -f | grep "circuit breaker"
+
+# Expected: Circuit breaker OPEN after 5 consecutive timeouts
+
+# 4. Inject pod failure (kill random pod)
+kubectl apply -f - <<EOF
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: pod-failure
+spec:
+  action: pod-kill
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: web
+  duration: "30s"
+  scheduler:
+    cron: "@every 2m"
+EOF
+
+# 5. Validate graceful degradation
+# Check: Are requests failing or being handled by replicas?
+curl -s http://api-gateway/health | jq .
+
+# 6. CPU stress test
+kubectl apply -f - <<EOF
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: cpu-stress
+spec:
+  mode: one
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      app: web
+  stressors:
+    cpu:
+      workers: 4
+      load: 80
+  duration: "3m"
+EOF
+
+# 7. Monitor steady state during chaos
+# Define steady state: p95 latency < 500ms, error rate < 1%
+# If violated, abort experiment
+watch -n1 'curl -s "http://prometheus:9090/api/v1/query?query=histogram_quantile(0.95,rate(http_request_duration_seconds_bucket[1m]))" | jq -r ".data.result[0].value[1]"'
+
+# 8. Cleanup
+kubectl delete networkchaos network-delay
+kubectl delete podchaos pod-failure
+kubectl delete stresschaos cpu-stress
+```
+
+**Achieve**: Understand **Blast Radius** (limit % of fleet affected), **Steady State Hypothesis** (define "normal" before experiment), **Game Days** (scheduled chaos testing with team observing).
 
 15:50 Logic & DSA: 1. Easy: Pascals Triangle.
 2. Medium: Unique Paths (Grid DP).
@@ -807,14 +1870,140 @@ Career: Portfolio Project #4: Build "Chaos Engineering Platform" - Beyond dashbo
 
 [⬆️ Back to Top](#-quick-navigation)
 
-15:00 Technical Drill:
+**15:00 Technical Drill (40 min):**
 
-Watch: Web Scalability for Startup Engineers (Manning).
-Link: https://www.manning.com/books/web-scalability-for-startup-engineers
+**Watch** (15 min): Web Scalability for Startup Engineers (Manning).
+- Link: https://www.manning.com/books/web-scalability-for-startup-engineers
 
-Execute: Configure Envoy with weighted clusters. Simulate backend failure and observe circuit breaker (consecutive_5xx).
+**Execute** (25 min):
+```yaml
+# Envoy configuration with weighted clusters and circuit breaker
+# envoy-config.yaml
+static_resources:
+  listeners:
+  - name: listener_0
+    address:
+      socket_address:
+        address: 0.0.0.0
+        port_value: 8080
+    filter_chains:
+    - filters:
+      - name: envoy.filters.network.http_connection_manager
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+          stat_prefix: ingress_http
+          route_config:
+            name: local_route
+            virtual_hosts:
+            - name: backend
+              domains: ["*"]
+              routes:
+              - match:
+                  prefix: "/"
+                route:
+                  weighted_clusters:
+                    clusters:
+                    - name: backend_v1
+                      weight: 80  # 80% traffic
+                    - name: backend_v2
+                      weight: 20  # 20% traffic (canary)
+          http_filters:
+          - name: envoy.filters.http.router
 
-Achieve: Compare Round-Robin vs. Least-Request vs. Consistent Hash. Master active vs. passive health checks.
+  clusters:
+  - name: backend_v1
+    connect_timeout: 1s
+    type: STRICT_DNS
+    lb_policy: ROUND_ROBIN  # Round-Robin load balancing
+    load_assignment:
+      cluster_name: backend_v1
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: backend-v1
+                port_value: 8080
+    # Circuit breaker configuration
+    circuit_breakers:
+      thresholds:
+      - priority: DEFAULT
+        max_connections: 100
+        max_pending_requests: 100
+        max_requests: 100
+        max_retries: 3
+    outlier_detection:
+      consecutive_5xx: 5  # Eject backend after 5 consecutive 5xx errors
+      interval: 10s
+      base_ejection_time: 30s
+      max_ejection_percent: 50
+    # Active health checks
+    health_checks:
+    - timeout: 1s
+      interval: 5s
+      unhealthy_threshold: 3
+      healthy_threshold: 2
+      http_health_check:
+        path: /health
+
+  - name: backend_v2
+    connect_timeout: 1s
+    type: STRICT_DNS
+    lb_policy: LEAST_REQUEST  # Least-Request load balancing
+    load_assignment:
+      cluster_name: backend_v2
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: backend-v2
+                port_value: 8080
+```
+
+**Deploy and test**:
+```bash
+# 1. Deploy Envoy with config
+kubectl create configmap envoy-config --from-file=envoy-config.yaml
+kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: envoy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: envoy
+  template:
+    metadata:
+      labels:
+        app: envoy
+    spec:
+      containers:
+      - name: envoy
+        image: envoyproxy/envoy:v1.28-latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config
+          mountPath: /etc/envoy
+      volumes:
+      - name: configMap
+        configMap:
+          name: envoy-config
+EOF
+
+# 2. Simulate backend failure (return 500 errors)
+kubectl exec backend-v1-pod -- curl -X POST http://localhost/simulate-failure
+
+# 3. Observe circuit breaker in Envoy stats
+kubectl exec envoy-pod -- curl -s http://localhost:9901/stats | grep circuit_breakers
+
+# Expected: outlier_detection.ejections_active > 0
+```
+
+**Achieve**: Compare **Round-Robin** (equal distribution), **Least-Request** (send to least busy), **Consistent Hash** (sticky sessions). Master **active** (periodic health probe) vs. **passive** (outlier detection based on errors) health checks.
 
 15:50 Logic & DSA: 1. Easy: Single Number.
 2. Medium: Find Peak Element.
@@ -825,15 +2014,111 @@ Scenario: Debugging why 1% of requests fail: connection pool exhaustion vs. back
 
 Career: LinkedIn Post: "5 Load Balancer Configs That Saved Us During Black Friday."
 
-Day 23: Consistent Hashing & Sharding
+## Day 23: Consistent Hashing & Sharding
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Designing Data-Intensive Applications (O'Reilly) - Ch. 5.
+**15:00 Technical Drill (40 min):**
 
-Execute: Implement Consistent Hashing in Python. Compare migration % vs. $n \pmod N$ sharding.
+**Watch** (15 min): Designing Data-Intensive Applications (O'Reilly) - Ch. 5.
 
-Achieve: Understand Consistent Hashing as the backbone of CDNs/Load Balancers.
+**Execute** (25 min):
+```python
+# consistent_hashing.py
+import hashlib
+import bisect
+
+class ConsistentHash:
+    def __init__(self, nodes=None, virtual_nodes=150):
+        """
+        nodes: List of server names
+        virtual_nodes: Number of virtual nodes per physical node
+        """
+        self.virtual_nodes = virtual_nodes
+        self.ring = {}
+        self.sorted_keys = []
+
+        if nodes:
+            for node in nodes:
+                self.add_node(node)
+
+    def _hash(self, key):
+        """MD5 hash function"""
+        return int(hashlib.md5(key.encode()).hexdigest(), 16)
+
+    def add_node(self, node):
+        """Add a node with virtual nodes"""
+        for i in range(self.virtual_nodes):
+            virtual_key = f"{node}:{i}"
+            hash_val = self._hash(virtual_key)
+            self.ring[hash_val] = node
+            bisect.insort(self.sorted_keys, hash_val)
+        print(f"Added {node} with {self.virtual_nodes} virtual nodes")
+
+    def remove_node(self, node):
+        """Remove a node and its virtual nodes"""
+        for i in range(self.virtual_nodes):
+            virtual_key = f"{node}:{i}"
+            hash_val = self._hash(virtual_key)
+            del self.ring[hash_val]
+            self.sorted_keys.remove(hash_val)
+        print(f"Removed {node}")
+
+    def get_node(self, key):
+        """Get the node responsible for this key"""
+        if not self.ring:
+            return None
+
+        hash_val = self._hash(key)
+        # Find the first node clockwise on the ring
+        index = bisect.bisect_right(self.sorted_keys, hash_val)
+        if index == len(self.sorted_keys):
+            index = 0
+
+        return self.ring[self.sorted_keys[index]]
+
+# Test: Calculate key migration when adding/removing nodes
+def calculate_migration(old_hash, new_hash, num_keys=10000):
+    """Calculate % of keys that migrate"""
+    migrations = 0
+    for i in range(num_keys):
+        key = f"user_{i}"
+        old_node = old_hash.get_node(key)
+        new_node = new_hash.get_node(key)
+        if old_node != new_node:
+            migrations += 1
+    return (migrations / num_keys) * 100
+
+# Compare: Consistent Hashing vs Modulo Sharding
+def modulo_shard(key, num_nodes):
+    """Traditional modulo sharding: key % N"""
+    return hash(key) % num_nodes
+
+# Scenario: 3 nodes → 4 nodes
+print("=== Consistent Hashing ===")
+ch_old = ConsistentHash(['node1', 'node2', 'node3'])
+ch_new = ConsistentHash(['node1', 'node2', 'node3', 'node4'])
+migration_ch = calculate_migration(ch_old, ch_new)
+print(f"Keys migrated: {migration_ch:.2f}%")  # Expected: ~25% (1/4)
+
+print("\n=== Modulo Sharding ===")
+migrations_modulo = 0
+for i in range(10000):
+    key = f"user_{i}"
+    old_node = modulo_shard(key, 3)
+    new_node = modulo_shard(key, 4)
+    if old_node != new_node:
+        migrations_modulo += 1
+migration_modulo = (migrations_modulo / 10000) * 100
+print(f"Keys migrated: {migration_modulo:.2f}%")  # Expected: ~75% (all keys rehash!)
+```
+
+**Run the test**:
+```bash
+python3 consistent_hashing.py
+```
+
+**Achieve**: Understand Consistent Hashing as the backbone of CDNs (Akamai, Cloudflare), Load Balancers (Envoy, HAProxy), and distributed caches (Redis Cluster, Memcached). **Key insight**: Adding 1 node out of N only migrates ~1/N keys, vs. modulo sharding which migrates ~(N-1)/N keys.
 
 15:50 Logic & DSA: 1. Easy: Path Sum.
 2. Medium: Subarray Sum Equals K (Prefix sum logic).
@@ -842,16 +2127,126 @@ Achieve: Understand Consistent Hashing as the backbone of CDNs/Load Balancers.
 
 Scenario: "Hot Key" shard issues: Pitching a "Virtual Node" solution.
 
-Day 24: Cache Stampede & Mitigation
+## Day 24: Cache Stampede & Mitigation
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Caching Strategies in Distributed Systems (Pluralsight).
-Link: https://www.pluralsight.com/courses/distributed-caching
+**15:00 Technical Drill (40 min):**
 
-Execute: Load test API. Expire hot key. Implement Probabilistic Early Re-computation to mitigate.
+**Watch** (15 min): Caching Strategies in Distributed Systems (Pluralsight).
+- Link: https://www.pluralsight.com/courses/distributed-caching
 
-Achieve: Explain Cache-Aside vs. Write-Through vs. Write-Back risks.
+**Execute** (25 min):
+```python
+# cache_stampede_mitigation.py
+import time
+import random
+import threading
+import redis
+
+# Connect to Redis
+r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+
+def expensive_query():
+    """Simulate expensive database query"""
+    time.sleep(2)  # 2 second query
+    return f"Result at {time.time()}"
+
+# ❌ BAD: Cache-Aside without stampede protection
+def get_data_naive(key):
+    value = r.get(key)
+    if value is None:
+        # Cache miss: query database
+        print(f"[{threading.current_thread().name}] Cache MISS - querying DB")
+        value = expensive_query()
+        r.setex(key, 60, value)  # Cache for 60 seconds
+    else:
+        print(f"[{threading.current_thread().name}] Cache HIT")
+    return value
+
+# ✅ GOOD: Probabilistic Early Recomputation
+def get_data_optimized(key, ttl=60, delta=10):
+    """
+    delta: Early recomputation window (seconds)
+    If TTL is close to expiring, probabilistically refresh early
+    """
+    value = r.get(key)
+    ttl_remaining = r.ttl(key)
+
+    if value is None:
+        # Cache miss
+        print(f"[{threading.current_thread().name}] Cache MISS - querying DB")
+        value = expensive_query()
+        r.setex(key, ttl, value)
+    elif ttl_remaining < delta:
+        # Early recomputation probability: higher as TTL approaches 0
+        xfetch = delta * random.random()
+        if ttl_remaining < xfetch:
+            print(f"[{threading.current_thread().name}] Early refresh (TTL={ttl_remaining}s)")
+            value = expensive_query()
+            r.setex(key, ttl, value)
+        else:
+            print(f"[{threading.current_thread().name}] Cache HIT (TTL={ttl_remaining}s)")
+    else:
+        print(f"[{threading.current_thread().name}] Cache HIT (TTL={ttl_remaining}s)")
+
+    return value
+
+# Simulate cache stampede: 10 threads hit expired key simultaneously
+def simulate_stampede():
+    key = "popular_product"
+    r.delete(key)  # Force cache miss
+
+    threads = []
+    for i in range(10):
+        t = threading.Thread(target=get_data_naive, args=(key,), name=f"Thread-{i}")
+        threads.append(t)
+        t.start()
+
+    for t in threads:
+        t.join()
+
+print("=== Simulating Cache Stampede ===")
+simulate_stampede()
+# Expected: All 10 threads query DB (10x 2-second queries = 20 seconds wasted!)
+
+time.sleep(3)
+
+print("\n=== With Probabilistic Early Recomputation ===")
+# Set initial cache value
+r.setex("popular_product", 5, "initial_value")
+time.sleep(4)  # Wait until TTL is low
+
+threads = []
+for i in range(10):
+    t = threading.Thread(target=get_data_optimized, args=("popular_product",), name=f"Thread-{i}")
+    threads.append(t)
+    t.start()
+
+for t in threads:
+    t.join()
+# Expected: Only 1-2 threads refresh, others use cached value
+```
+
+**Load test to trigger stampede**:
+```bash
+# Install Redis
+docker run -d -p 6379:6379 redis:7-alpine
+
+# Install Python dependencies
+pip install redis
+
+# Run simulation
+python3 cache_stampede_mitigation.py
+
+# Load test with wrk (trigger stampede)
+wrk -t10 -c100 -d30s http://localhost:8080/popular-item
+```
+
+**Achieve**: Explain caching patterns:
+- **Cache-Aside**: App checks cache, queries DB on miss (risk: stampede)
+- **Write-Through**: Write to cache + DB synchronously (slower writes, always fresh)
+- **Write-Back**: Write to cache, async write to DB (fast writes, risk of data loss)
 
 15:50 Logic & DSA: 1. Easy: Lowest Common Ancestor of a BST.
 2. Medium: Design Twitter (Combining OOD and DSA).
@@ -860,16 +2255,98 @@ Achieve: Explain Cache-Aside vs. Write-Through vs. Write-Back risks.
 
 Career: Enhancement to Project #3: Add caching strategy simulator to your Incident Management Platform showing cache stampede scenarios.
 
-Day 25: Database Replication & Failover
+## Day 25: Database Replication & Failover
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Designing Data-Intensive Applications (O'Reilly) - Ch. 5.
-Link: https://learning.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/
+**15:00 Technical Drill (40 min):**
 
-Execute: Set up Postgres streaming replication. Simulate primary failure. Measure RPO/RTO during promotion.
+**Watch** (15 min): Designing Data-Intensive Applications (O'Reilly) - Ch. 5.
+- Link: https://learning.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/
 
-Achieve: Master synchronous vs. asynchronous replication trade-offs. Understand split-brain scenarios.
+**Execute** (25 min):
+```bash
+# 1. Set up PostgreSQL primary-replica replication
+# Primary setup
+docker run -d --name postgres-primary \
+  -e POSTGRES_PASSWORD=secret \
+  -e POSTGRES_USER=admin \
+  -p 5432:5432 \
+  postgres:16
+
+# Create replication user on primary
+docker exec -it postgres-primary psql -U admin -c \
+  "CREATE ROLE replicator WITH REPLICATION LOGIN PASSWORD 'repl_pass';"
+
+# Configure primary for replication
+docker exec -it postgres-primary bash -c \
+  "echo \"host replication replicator 0.0.0.0/0 md5\" >> /var/lib/postgresql/data/pg_hba.conf"
+
+docker restart postgres-primary
+
+# 2. Set up replica with streaming replication
+docker run -d --name postgres-replica \
+  -e PGPASSWORD=repl_pass \
+  postgres:16 \
+  bash -c "rm -rf /var/lib/postgresql/data/* && \
+           pg_basebackup -h postgres-primary -U replicator -D /var/lib/postgresql/data -P -R && \
+           postgres"
+
+# 3. Verify replication status
+docker exec postgres-primary psql -U admin -c \
+  "SELECT client_addr, state, sync_state FROM pg_stat_replication;"
+
+# Expected output:
+# client_addr | state     | sync_state
+# 172.17.0.3  | streaming | async
+
+# 4. Test replication lag
+docker exec postgres-primary psql -U admin -c \
+  "SELECT pg_current_wal_lsn();"  # Primary LSN
+
+docker exec postgres-replica psql -U admin -c \
+  "SELECT pg_last_wal_replay_lsn();"  # Replica LSN
+
+# Calculate lag in bytes
+docker exec postgres-primary psql -U admin -c \
+  "SELECT client_addr,
+          pg_wal_lsn_diff(pg_current_wal_lsn(), replay_lsn) AS lag_bytes
+   FROM pg_stat_replication;"
+
+# 5. Simulate primary failure and promotion
+docker stop postgres-primary
+
+# Promote replica to primary
+docker exec postgres-replica pg_ctl promote -D /var/lib/postgresql/data
+
+# Measure RTO (Recovery Time Objective)
+start_time=$(date +%s)
+# Wait for promotion
+sleep 5
+end_time=$(date +%s)
+rto=$((end_time - start_time))
+echo "RTO: ${rto} seconds"
+
+# 6. Measure RPO (Recovery Point Objective)
+# RPO = Data loss during failover = Replication lag at time of failure
+# In async replication: RPO can be several seconds
+# In sync replication: RPO = 0 (no data loss)
+```
+
+**Switch to synchronous replication (zero RPO)**:
+```sql
+-- On primary, require synchronous commit
+ALTER SYSTEM SET synchronous_commit = 'on';
+ALTER SYSTEM SET synchronous_standby_names = 'postgres-replica';
+SELECT pg_reload_conf();
+
+-- Trade-off:
+-- - RPO = 0 (no data loss)
+-- - Slower writes (wait for replica ACK)
+-- - If replica down, writes block!
+```
+
+**Achieve**: Master **synchronous** (zero RPO, slower writes, blocks if replica down) vs. **asynchronous** (fast writes, data loss risk, non-blocking) replication trade-offs. Understand **split-brain** (two primaries accepting writes → data divergence).
 
 15:50 Logic & DSA: 1. Easy: Happy Number.
 2. Medium: Word Break (DP with memoization).
@@ -880,16 +2357,95 @@ Scenario: Investigating replica lag during peak traffic: network saturation vs. 
 
 Career: LinkedIn Post: "How We Achieved <5 Second RTO with Automated Postgres Failover."
 
-Day 26: CDN Architecture & Edge Computing
+## Day 26: CDN Architecture & Edge Computing
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Edge Computing in Practice (O'Reilly).
-Link: https://learning.oreilly.com/library/view/learning-modern-linux/9781098108939/
+**15:00 Technical Drill (40 min):**
 
-Execute: Deploy Cloudflare Worker. Implement request coalescing at edge. Monitor cache HIT ratio.
+**Watch** (15 min): Edge Computing in Practice (O'Reilly).
+- Link: https://learning.oreilly.com/library/view/learning-modern-linux/9781098108939/
 
-Achieve: Understand PoP placement, Anycast routing, and TLS termination at edge.
+**Execute** (25 min):
+```javascript
+// Cloudflare Worker - Request coalescing at edge
+addEventListener('fetch', event => {
+  event.respondWith(handleRequest(event.request))
+})
+
+// Cache API for request coalescing
+const pendingRequests = new Map()
+
+async function handleRequest(request) {
+  const cacheKey = new URL(request.url)
+
+  // Check if request is already in-flight (request coalescing)
+  if (pendingRequests.has(cacheKey.href)) {
+    console.log('Request coalescing - waiting for in-flight request')
+    return pendingRequests.get(cacheKey.href)
+  }
+
+  // Check cache first
+  const cache = caches.default
+  let response = await cache.match(request)
+
+  if (response) {
+    console.log('Cache HIT')
+    return response
+  }
+
+  // Cache MISS - fetch from origin (with coalescing)
+  console.log('Cache MISS - fetching from origin')
+  const fetchPromise = fetch(request).then(async (response) => {
+    // Clone response for caching
+    const responseToCache = response.clone()
+
+    // Cache for 1 hour
+    const headers = new Headers(responseToCache.headers)
+    headers.set('Cache-Control', 'public, max-age=3600')
+
+    const cachedResponse = new Response(responseToCache.body, {
+      status: responseToCache.status,
+      statusText: responseToCache.statusText,
+      headers: headers
+    })
+
+    event.waitUntil(cache.put(request, cachedResponse))
+    pendingRequests.delete(cacheKey.href)
+
+    return response
+  })
+
+  // Store in-flight request for coalescing
+  pendingRequests.set(cacheKey.href, fetchPromise)
+
+  return fetchPromise
+}
+```
+
+**Deploy Worker**:
+```bash
+# Install Wrangler CLI
+npm install -g wrangler
+
+# Login to Cloudflare
+wrangler login
+
+# Create worker project
+wrangler init my-worker
+
+# Deploy
+wrangler publish
+```
+
+**Monitor cache HIT ratio**:
+```bash
+# Cloudflare Analytics API
+curl -X GET "https://api.cloudflare.com/client/v4/zones/{zone_id}/analytics/dashboard" \
+  -H "Authorization: Bearer {api_token}" | jq .result.totals.requests.cached_percentage
+```
+
+**Achieve**: Understand **PoP placement** (place servers geographically near users), **Anycast routing** (same IP announced from multiple locations, BGP routes to nearest), **TLS termination at edge** (decrypt at edge, faster for users).
 
 15:50 Logic & DSA: 1. Easy: Isomorphic Strings.
 2. Medium: LRU Cache (Implement doubly-linked list + HashMap).
@@ -898,16 +2454,106 @@ Achieve: Understand PoP placement, Anycast routing, and TLS termination at edge.
 
 Scenario: Proving that 200ms latency is CDN cache miss (origin fetch) vs. actual origin slowness.
 
-Day 27: Rate Limiting & API Gateway Patterns
+## Day 27: Rate Limiting & API Gateway Patterns
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Building Microservices, 2nd Ed (O'Reilly) - Ch. 11.
-Link: https://learning.oreilly.com/library/view/building-microservices-2nd/9781492034018/
+**15:00 Technical Drill (40 min):**
 
-Execute: Implement Token Bucket in Redis. Compare Fixed Window vs. Sliding Window Log accuracy.
+**Watch** (15 min): Building Microservices, 2nd Ed (O'Reilly) - Ch. 11.
+- Link: https://learning.oreilly.com/library/view/building-microservices-2nd/9781492034018/
 
-Achieve: Master distributed rate limiting (Redis vs. local limits). Understand 429 response strategies.
+**Execute** (25 min):
+```lua
+-- Token Bucket Rate Limiter in Redis (Lua script for atomicity)
+-- token_bucket.lua
+local key = KEYS[1]  -- e.g., "rate_limit:user:123"
+local capacity = tonumber(ARGV[1])  -- max tokens (e.g., 100)
+local refill_rate = tonumber(ARGV[2])  -- tokens per second (e.g., 10)
+local tokens_requested = tonumber(ARGV[3])  -- tokens for this request (usually 1)
+local now = tonumber(ARGV[4])  -- current timestamp
+
+-- Get current tokens and last refill time
+local tokens = tonumber(redis.call('HGET', key, 'tokens'))
+local last_refill = tonumber(redis.call('HGET', key, 'last_refill'))
+
+if tokens == nil then
+  -- Initialize bucket
+  tokens = capacity
+  last_refill = now
+end
+
+-- Refill tokens based on time elapsed
+local elapsed = now - last_refill
+local tokens_to_add = elapsed * refill_rate
+tokens = math.min(capacity, tokens + tokens_to_add)
+
+-- Check if enough tokens available
+if tokens >= tokens_requested then
+  -- Allow request
+  tokens = tokens - tokens_requested
+  redis.call('HSET', key, 'tokens', tokens)
+  redis.call('HSET', key, 'last_refill', now)
+  redis.call('EXPIRE', key, 3600)  -- Expire key after 1 hour
+  return 1  -- Request allowed
+else
+  -- Rate limited
+  return 0  -- Request denied
+end
+```
+
+**Python client**:
+```python
+import redis
+import time
+
+r = redis.Redis(host='localhost', port=6379)
+
+# Load Lua script
+with open('token_bucket.lua') as f:
+    token_bucket_script = r.register_script(f.read())
+
+def rate_limit(user_id, capacity=100, refill_rate=10, tokens_requested=1):
+    """
+    capacity: Max tokens in bucket
+    refill_rate: Tokens added per second
+    tokens_requested: Tokens needed for this request
+    """
+    key = f"rate_limit:user:{user_id}"
+    now = time.time()
+
+    allowed = token_bucket_script(
+        keys=[key],
+        args=[capacity, refill_rate, tokens_requested, now]
+    )
+
+    if allowed:
+        return True, "Request allowed"
+    else:
+        return False, "Rate limit exceeded (429 Too Many Requests)"
+
+# Test
+for i in range(150):
+    allowed, msg = rate_limit(user_id="123", capacity=100, refill_rate=10)
+    if not allowed:
+        print(f"Request {i+1}: {msg}")
+        break
+    time.sleep(0.05)  # 50ms between requests
+```
+
+**Compare algorithms**:
+```python
+# Fixed Window (simple but inaccurate)
+# Problem: 200 requests at end of minute 1 + 200 at start of minute 2 = 400 in 1 second!
+
+# Sliding Window Log (accurate but expensive)
+# Store timestamp of each request, count requests in last N seconds
+
+# Token Bucket (good balance)
+# Smooth bursts, accurate, efficient
+```
+
+**Achieve**: Master **distributed rate limiting** (use Redis for shared state across API servers). Understand **429 response strategies** (return Retry-After header, exponential backoff).
 
 15:50 Logic & DSA: 1. Easy: Majority Element.
 2. Medium: Container With Most Water.
@@ -918,16 +2564,116 @@ Scenario: Defending API quotas during DDoS vs. legitimate traffic spike (Olympic
 
 Career: LinkedIn Post: "Rate Limiting Algorithms Compared: Token Bucket vs. Leaky Bucket vs. Sliding Window."
 
-Day 28: Multi-Region Deployments & Global Traffic Management
+## Day 28: Multi-Region Deployments & Global Traffic Management
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: Cloud Native Infrastructure (O'Reilly) - Ch. 8.
-Link: https://learning.oreilly.com/library/view/cloud-native-infrastructure/9781491984291/
+**15:00 Technical Drill (40 min):**
 
-Execute: Configure GeoDNS routing. Simulate region failure, observe traffic failover. Measure cross-region latency.
+**Watch** (15 min): Cloud Native Infrastructure (O'Reilly) - Ch. 8.
+- Link: https://learning.oreilly.com/library/view/cloud-native-infrastructure/9781491984291/
 
-Achieve: Understand Active-Active vs. Active-Passive strategies. Master data sovereignty.
+**Execute** (25 min):
+```bash
+# 1. Configure AWS Route53 GeoDNS with health checks
+aws route53 create-health-check \
+  --health-check-config \
+  IPAddress=52.1.1.1,Port=443,Type=HTTPS,ResourcePath=/health,FullyQualifiedDomainName=us-east-api.example.com
+
+# 2. Create geo-routing policy
+aws route53 change-resource-record-sets \
+  --hosted-zone-id Z123456 \
+  --change-batch '{
+    "Changes": [{
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "api.example.com",
+        "Type": "A",
+        "SetIdentifier": "US-East-1",
+        "GeoLocation": {
+          "ContinentCode": "NA"
+        },
+        "TTL": 60,
+        "ResourceRecords": [{"Value": "52.1.1.1"}],
+        "HealthCheckId": "abc123"
+      }
+    }, {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "api.example.com",
+        "Type": "A",
+        "SetIdentifier": "EU-West-1",
+        "GeoLocation": {
+          "ContinentCode": "EU"
+        },
+        "TTL": 60,
+        "ResourceRecords": [{"Value": "34.2.2.2"}],
+        "HealthCheckId": "def456"
+      }
+    }]
+  }'
+
+# 3. Simulate region failure
+# Stop US-East-1 health check endpoint
+aws ec2 stop-instances --instance-ids i-12345
+
+# Wait for Route53 to detect failure (typically 30-60 seconds)
+watch -n5 'dig api.example.com +short'
+
+# Expected: Traffic fails over to EU-West-1
+
+# 4. Measure cross-region latency
+# From different regions:
+for region in us-east-1 eu-west-1 ap-southeast-1; do
+  echo "Testing from $region"
+  aws ec2 run-instances \
+    --region $region \
+    --image-id ami-xyz \
+    --instance-type t3.micro \
+    --user-data '#!/bin/bash
+curl -w "@curl-timing.txt" -o /dev/null -s https://api.example.com
+'
+done
+```
+
+**Active-Active vs Active-Passive**:
+```yaml
+# Active-Active (both regions serve traffic)
+Pros:
+  - Better resource utilization
+  - Load distributed
+  - Faster failover (no cold start)
+Cons:
+  - Complex data sync (eventual consistency)
+  - Higher cost (2x infrastructure)
+  - Potential split-brain
+
+# Active-Passive (primary + standby)
+Pros:
+  - Simpler data consistency
+  - Lower cost
+  - Easier to manage
+Cons:
+  - Wasted standby capacity
+  - Slower failover (cold start)
+  - Risk of standby drift
+```
+
+**Data sovereignty compliance**:
+```python
+# GDPR requires EU data to stay in EU
+# Implementation:
+def route_user_data(user_location, data):
+    if user_location in ['DE', 'FR', 'IT', 'ES']:
+        # EU users → EU region
+        return store_in_region('eu-west-1', data)
+    elif user_location == 'US':
+        return store_in_region('us-east-1', data)
+    else:
+        return store_in_region('default', data)
+```
+
+**Achieve**: Understand **Active-Active** (both regions active, complex sync) vs. **Active-Passive** (standby, simpler, slower failover). Master **data sovereignty** (GDPR: EU data must stay in EU, not cross borders).
 
 15:50 Logic & DSA: 1. Easy: Power of Two.
 2. Medium: 3Sum (Two-pointer technique).
@@ -938,19 +2684,153 @@ Scenario: Deciding between Global Load Balancer vs. Regional Isolation for GDPR 
 
 Career: Portfolio Project #5 (Capstone): Build "SRE Platform Toolkit" - Your comprehensive portfolio site showcasing all 4 previous projects PLUS: Infrastructure-as-Code for entire deployment (Terraform for AWS/K8s), unified observability (Prometheus/Grafana/Loki), cost tracking, security scanning, uptime monitoring. This is your "full SRE platform" demonstration. Include architecture diagram, cost breakdown, SLO dashboard, incident history. Make this your GitHub profile README showcase.
 
-Day 29: FinOps & Cloud Cost Optimization at Scale
+## Day 29: FinOps & Cloud Cost Optimization at Scale
 
-15:00 Technical Drill:
+[⬆️ Back to Top](#-quick-navigation)
 
-Watch: The Art of Capacity Planning + Cloud FinOps (O'Reilly).
-Link: https://learning.oreilly.com/library/view/cloud-finops/9781492054610/
+**15:00 Technical Drill (40 min):**
 
-Execute:
-- Build capacity model: (Current RPS * Growth Rate) / (Resource Utilization Target). Forecast 6-month compute needs.
-- Implement cost optimization: Identify idle resources (AWS Cost Explorer, Kubecost). Rightsize EC2 instances using CloudWatch metrics. Migrate to Graviton (ARM) for 20% savings.
-- Calculate TCO: Reserved Instances vs. Savings Plans vs. Spot instances vs. On-Demand for various workload patterns.
+**Watch** (15 min): The Art of Capacity Planning + Cloud FinOps (O'Reilly).
+- Link: https://learning.oreilly.com/library/view/cloud-finops/9781492054610/
 
-Achieve: Master FinOps principles (unit economics, showback/chargeback, tagging strategy). Understand cloud waste categories: idle resources, over-provisioning, unattached volumes, old snapshots. Learn commitment strategies (1-year vs. 3-year RIs, Compute Savings Plans).
+**Execute** (25 min):
+
+**1. Build capacity model**:
+```python
+# capacity_planning.py
+def forecast_capacity(current_rps, growth_rate_monthly, months=6, target_utilization=0.7):
+    """
+    current_rps: Current requests per second
+    growth_rate_monthly: Monthly growth rate (e.g., 0.10 for 10%)
+    target_utilization: Target CPU/memory utilization (0.7 = 70%)
+    """
+    forecasts = []
+
+    for month in range(1, months + 1):
+        # Calculate future RPS
+        future_rps = current_rps * ((1 + growth_rate_monthly) ** month)
+
+        # Current capacity at target utilization
+        current_capacity_rps = current_rps / target_utilization
+
+        # Required capacity
+        required_capacity_rps = future_rps / target_utilization
+
+        # Additional instances needed (assume 100 RPS per instance)
+        rps_per_instance = 100
+        current_instances = current_capacity_rps / rps_per_instance
+        required_instances = required_capacity_rps / rps_per_instance
+        additional_instances = required_instances - current_instances
+
+        forecasts.append({
+            'month': month,
+            'rps': future_rps,
+            'instances_needed': int(required_instances),
+            'additional_instances': int(additional_instances)
+        })
+
+    return forecasts
+
+# Example
+forecasts = forecast_capacity(
+    current_rps=500,
+    growth_rate_monthly=0.10,  # 10% growth/month
+    months=6,
+    target_utilization=0.7
+)
+
+for f in forecasts:
+    print(f"Month {f['month']}: {f['rps']:.0f} RPS, need {f['instances_needed']} instances (+{f['additional_instances']})")
+```
+
+**2. Identify idle resources**:
+```bash
+# Find idle EC2 instances (CPU < 5% for 7 days)
+aws cloudwatch get-metric-statistics \
+  --namespace AWS/EC2 \
+  --metric-name CPUUtilization \
+  --dimensions Name=InstanceId,Value=i-12345 \
+  --start-time $(date -u -d '7 days ago' +%Y-%m-%dT%H:%M:%S) \
+  --end-time $(date -u +%Y-%m-%dT%H:%M:%S) \
+  --period 86400 \
+  --statistics Average \
+  --query 'Datapoints[?Average<5.0]'
+
+# Find unattached EBS volumes
+aws ec2 describe-volumes \
+  --filters Name=status,Values=available \
+  --query 'Volumes[*].[VolumeId,Size,VolumeType]'
+
+# Find old snapshots (> 30 days)
+aws ec2 describe-snapshots --owner-ids self \
+  --query 'Snapshots[?StartTime<`2024-01-01`].[SnapshotId,StartTime,VolumeSize]'
+
+# Kubernetes idle resources (using Kubecost)
+kubectl port-forward -n kubecost svc/kubecost-cost-analyzer 9090:9090
+curl http://localhost:9090/model/allocation \
+  | jq '.data[] | select(.efficiency < 0.5)'  # <50% utilization
+```
+
+**3. Rightsizing recommendations**:
+```bash
+# Get EC2 rightsizing recommendations
+aws ce get-rightsizing-recommendation \
+  --service AmazonEC2 \
+  --configuration '{"RecommendationTarget":"SAME_INSTANCE_FAMILY","BenefitsConsidered":true}' \
+  | jq '.RightsizingRecommendations[] | {
+      InstanceId: .CurrentInstance.ResourceId,
+      CurrentType: .CurrentInstance.InstanceName,
+      RecommendedType: .ModifyRecommendationDetail.TargetInstances[0].InstanceName,
+      MonthlySavings: .ModifyRecommendationDetail.TargetInstances[0].EstimatedMonthlySavings
+    }'
+```
+
+**4. TCO Calculation** (Reserved vs Spot vs On-Demand):
+```python
+# tco_calculator.py
+def calculate_tco(hours_per_month=730, on_demand_rate=0.10):
+    """
+    on_demand_rate: $ per hour (e.g., $0.10 for t3.medium)
+    """
+    # On-Demand
+    od_cost = hours_per_month * on_demand_rate
+
+    # Spot (70% discount, but 10% interruption rate)
+    spot_rate = on_demand_rate * 0.30  # 70% discount
+    spot_cost = hours_per_month * spot_rate * 1.10  # +10% for interruption overhead
+
+    # 1-Year Reserved Instance (40% discount)
+    ri_1y_upfront = on_demand_rate * hours_per_month * 12 * 0.60  # 40% discount
+    ri_1y_monthly = ri_1y_upfront / 12
+
+    # 3-Year Reserved Instance (60% discount)
+    ri_3y_upfront = on_demand_rate * hours_per_month * 36 * 0.40  # 60% discount
+    ri_3y_monthly = ri_3y_upfront / 36
+
+    # Savings Plan (similar to RI, flexible)
+    sp_cost = hours_per_month * on_demand_rate * 0.65  # 35% discount
+
+    return {
+        'On-Demand': od_cost,
+        'Spot': spot_cost,
+        'RI-1Y': ri_1y_monthly,
+        'RI-3Y': ri_3y_monthly,
+        'Savings Plan': sp_cost
+    }
+
+costs = calculate_tco(hours_per_month=730, on_demand_rate=0.10)
+for option, cost in costs.items():
+    print(f"{option}: ${cost:.2f}/month")
+
+# Output:
+# On-Demand: $73.00/month
+# Spot: $24.09/month (70% savings)
+# RI-1Y: $43.80/month (40% savings)
+# RI-3Y: $29.20/month (60% savings)
+# Savings Plan: $47.45/month (35% savings)
+```
+
+**Achieve**: Master **FinOps principles** (unit economics: cost per transaction, showback/chargeback: allocate costs to teams, tagging strategy: env=prod, team=payments). Understand **cloud waste**: idle (no usage), over-provisioning (unused capacity), zombies (unattached volumes), snapshots (old backups). Learn **commitment strategies**: 1-year RI (40% discount, moderate risk), 3-year RI (60% discount, high risk), Spot (70% discount, interruptions).
 
 15:50 Logic & DSA: 1. Easy: Reverse Bits (cost bit-packing optimization).
 2. Medium: Gas Station (optimal resource allocation - greedy algorithm maps to spot instance strategy).
@@ -3189,7 +5069,516 @@ Context: Migrating from monolith to microservices.
 
 ### 🤖 Week 2 Prompts: Kubernetes, IaC & CI/CD
 
-**Day 8-14 Prompts**: *(Continue pattern for all 30 days)*
+**Day 8: etcd Distributed State Machine**
+```
+Day 8: Understanding etcd for Kubernetes
+
+Topics:
+- etcd architecture and Raft consensus
+- Quorum and leader election
+- etcdctl commands for monitoring
+- Watching K8s state changes in real-time
+- Performance tuning (etcd_disk_wal_fsync_duration_seconds)
+
+Provide:
+1. Conceptual overview: How K8s uses etcd for state management
+2. etcdctl commands: watch, get, performance metrics
+3. Debugging scenario: etcd showing high disk latency - how to prove disk is bottleneck
+4. Interview question: "Explain what happens when etcd loses quorum"
+5. Convergence demo: Delete an etcd key and watch K8s recreate it
+
+Context: K8s SRE role, need deep understanding of control plane.
+```
+
+**Day 9: CNI & Overlay Networking**
+```
+Day 9: Kubernetes networking internals
+
+Topics:
+- CNI (Container Network Interface) plugins
+- Overlay networking (VXLAN) vs Underlay (BGP)
+- Pod-to-pod communication across nodes
+- iptables MASQUERADE rules
+- Network debugging (nsenter, tcpdump at pod level)
+
+Provide:
+1. Packet flow diagram: Pod A (node 1) → Pod B (node 2)
+2. Commands: nsenter to enter pod network namespace, tcpdump
+3. Calico vs Flannel vs Cilium comparison
+4. Debugging scenario: Inter-pod timeouts - MTU mismatch investigation
+5. Interview question: "How does kube-proxy implement ClusterIP services?"
+
+Make examples focused on production debugging.
+```
+
+**Day 10: Persistent Data & CSI**
+```
+Day 10: Kubernetes storage with CSI
+
+Topics:
+- CSI (Container Storage Interface) lifecycle
+- PVC (PersistentVolumeClaim) and PV binding
+- StorageClass and dynamic provisioning
+- RWO vs RWX vs ROX access modes
+- StatefulSet volume management
+
+Provide:
+1. CSI workflow: Create → Attach → Mount → Delete
+2. Commands to simulate node failure and PVC re-attachment
+3. When to use RWO vs RWX (with real examples)
+4. Debugging scenario: Pod stuck in ContainerCreating - PVC mount issue
+5. Interview question: "Design storage for a database StatefulSet"
+
+Context: Running stateful workloads on K8s (databases, Kafka).
+```
+
+**Day 11: Terraform Fundamentals**
+```
+Day 11: Infrastructure as Code with Terraform
+
+Topics:
+- Declarative IaC principles
+- Terraform state management (local vs remote)
+- S3 backend with DynamoDB locking
+- Modules and code reusability
+- terraform import for existing infrastructure
+
+Provide:
+1. Complete example: VPC + EC2 + RDS with Terraform
+2. Remote state configuration (S3 + DynamoDB)
+3. Module structure for reusable VPC
+4. Debugging scenario: "Resource already exists" error - how to import
+5. Interview question: "Compare Terraform vs CloudFormation vs Pulumi"
+
+Context: AWS infrastructure, need production-grade IaC skills.
+```
+
+**Day 12: Kubernetes Security & RBAC**
+```
+Day 12: K8s security, RBAC, and secrets management
+
+Topics:
+- RBAC: ClusterRole, RoleBinding, ServiceAccount
+- kubectl auth can-i for testing permissions
+- OIDC authentication with external identity providers
+- External Secrets Operator (sync from Vault/AWS Secrets Manager)
+- Pod Security Standards (restricted/baseline/privileged)
+
+Provide:
+1. Create least-privilege RBAC for CI/CD pipeline
+2. OIDC token flow for kubectl authentication
+3. External Secrets Operator setup (AWS Secrets Manager example)
+4. Debugging scenario: Unexpected pod escalations - audit logs investigation
+5. Interview question: "Design zero-trust authentication for K8s"
+
+Context: Security-focused SRE role, need compliance knowledge.
+```
+
+**Day 13: StatefulSets & GitOps**
+```
+Day 13: StatefulSets and GitOps with ArgoCD
+
+Topics:
+- StatefulSet ordinal index and stable network identity
+- Headless services for pod discovery
+- PVC retention and management
+- ArgoCD installation and configuration
+- GitOps workflow: Git commit → ArgoCD sync → deployment
+- Sync waves and health checks
+
+Provide:
+1. Deploy Kafka StatefulSet with headless service
+2. nslookup commands to verify stable DNS (pod-0.svc.ns.svc.cluster.local)
+3. ArgoCD app-of-apps pattern
+4. Debugging scenario: Cassandra split-brain during rolling restart
+5. Interview question: "Compare kubectl apply vs GitOps for production"
+
+Context: Running stateful distributed systems on K8s.
+```
+
+**Day 14: CI/CD Pipelines & DevSecOps**
+```
+Day 14: Production CI/CD with security scanning
+
+Topics:
+- CI/CD pipeline stages (lint → test → build → scan → deploy)
+- Security scanning: Trivy (containers), Snyk (dependencies), gitleaks (secrets)
+- SBOM (Software Bill of Materials) generation
+- GitHub Actions with OIDC (no long-lived secrets)
+- Branch protection and required checks
+- ArgoCD deployment with automated rollback
+
+Provide:
+1. Complete GitHub Actions workflow (all stages)
+2. Trivy scan integration with failure threshold
+3. OIDC authentication setup (GitHub → AWS)
+4. Debugging scenario: Pipeline fails on CVE - how to fix and re-deploy
+5. Calculate DORA metrics: deployment frequency, lead time, MTTR
+
+Context: Building production-grade CI/CD for microservices.
+```
+
+---
+
+### 🤖 Week 3 Prompts: Observability, Security & Incidents
+
+**Day 15: PromQL & High-Cardinality**
+```
+Day 15: Prometheus query language and cardinality management
+
+Topics:
+- PromQL basics: rate(), histogram_quantile(), aggregations
+- Four Golden Signals (latency, traffic, errors, saturation)
+- High cardinality problem (UUID in labels)
+- Memory impact of cardinality
+- Label optimization strategies
+
+Provide:
+1. PromQL queries for SLO calculation (99.9% availability)
+2. histogram_quantile for p95, p99 latency
+3. Identify cardinality explosion using /tsdb-status
+4. Debugging scenario: Grafana dashboard slow to load - heavy queries
+5. Interview question: "Why does high cardinality kill Prometheus?"
+
+Context: Running Prometheus at scale (1M+ time series).
+```
+
+**Day 16: SLOs, SLIs & Error Budgets**
+```
+Day 16: Service Level Objectives and error budgets
+
+Topics:
+- SLI (Service Level Indicator) definition
+- SLO (Service Level Objective) targets
+- SLA (Service Level Agreement) vs SLO
+- Error budget calculation from SLO
+- Burn rate alerts (multi-window)
+
+Provide:
+1. Calculate error budget: 99.9% SLO → 43.2 min downtime/month
+2. Request-based vs window-based SLIs (pros/cons)
+3. Burn rate alert: (5m burn > 14.4x AND 1h burn > 14.4x)
+4. Real scenario: Should we deploy? Error budget at 80%
+5. Interview question: "Design SLO for a payment processing service"
+
+Context: SRE implementing Google-style SLO/error budget practice.
+```
+
+**Day 17: Container Security**
+```
+Day 17: Container security with OPA and Falco
+
+Topics:
+- Container security layers (image, runtime, network)
+- Trivy/Grype for CVE scanning
+- OPA Gatekeeper for admission policies
+- Falco for runtime security detection
+- Pod Security Standards enforcement
+
+Provide:
+1. Write OPA policy: Block privileged pods, enforce resource limits
+2. Falco rule: Detect unexpected file access in containers
+3. Trivy scan integration in CI/CD
+4. Debugging scenario: Falco alert - pod accessing /etc/shadow
+5. Interview question: "Design defense-in-depth for K8s security"
+
+Context: Security-focused SRE, need to prevent container breakouts.
+```
+
+**Day 18: Incident Management & Communication**
+```
+Day 18: Leading incidents and stakeholder communication
+
+Topics:
+- Incident roles (Commander, Scribe, Communications Lead)
+- Triage-first mindset (Mitigate > Root cause)
+- Executive status updates (technical → business impact)
+- Customer-facing notifications
+- Blameless postmortem structure
+
+Provide:
+1. Translate technical to business impact examples
+2. Executive update template (1-2 sentences)
+3. Incident timeline best practices
+4. Role-play scenario: You're IC for database outage
+5. STAR answer: "Tell me about your worst production incident"
+
+Context: Senior SRE expected to lead P0 incidents.
+```
+
+**Day 19: Alerting Strategy & Runbooks**
+```
+Day 19: Designing actionable alerts and runbooks
+
+Topics:
+- Alert fatigue causes and solutions
+- Symptom vs cause alerts
+- Multi-window burn rate alerts
+- Runbook structure (STAR: Symptom, Triage, Action, Resolution)
+- Alert routing and escalation
+
+Provide:
+1. Refactor noisy alerts using SLO methodology
+2. Runbook template with real example
+3. Multi-window burn rate alert design
+4. Debugging scenario: 200 alerts firing, which to investigate first?
+5. Interview question: "How do you reduce alert fatigue?"
+
+Context: On-call engineer drowning in alerts.
+```
+
+**Day 20: Modern Observability Stack**
+```
+Day 20: VictoriaMetrics, Tempo, Pyroscope
+
+Topics:
+- VictoriaMetrics vs Prometheus (scale, cost, compatibility)
+- Grafana Tempo for distributed tracing (vs Jaeger)
+- Pyroscope for continuous profiling (CPU, heap flame graphs)
+- Trace-to-logs correlation
+- Commercial vs open-source observability
+
+Provide:
+1. Deploy VictoriaMetrics, compare query performance vs Prometheus
+2. Tempo setup with OTel instrumentation
+3. Pyroscope CPU/heap profiling - identify hot paths
+4. Scenario: Prometheus OOMing - migration path to VictoriaMetrics
+5. Interview question: "Design observability for 10M metrics/sec"
+
+Context: Scaling observability beyond Prometheus limits.
+```
+
+**Day 21: Chaos Engineering**
+```
+Day 21: Chaos engineering and fault injection
+
+Topics:
+- Chaos engineering principles (blast radius, steady state)
+- Chaos Mesh / LitmusChaos experiments
+- Fault types (pod kill, network delay, CPU stress)
+- Hypothesis validation
+- Automated rollback triggers
+
+Provide:
+1. Design chaos experiment: Network delay to payment service
+2. Steady-state validation with Prometheus queries
+3. Blast radius controls (max 20% pods)
+4. Scenario: Experiment causes SLO violation - auto-rollback
+5. Interview question: "Convince leadership to allow chaos testing in prod"
+
+Context: Building resilient systems, need chaos testing approval.
+```
+
+---
+
+### 🤖 Week 4 Prompts: Architecture & Global Reliability
+
+**Day 22: Load Balancing**
+```
+Day 22: Load balancing algorithms and health checks
+
+Topics:
+- Load balancing algorithms (Round-Robin, Least-Request, Consistent Hash)
+- Active vs passive health checks
+- Circuit breaker pattern (consecutive_5xx)
+- Connection pool exhaustion
+- Envoy proxy configuration
+
+Provide:
+1. Configure Envoy with weighted clusters
+2. When to use each algorithm (with examples)
+3. Circuit breaker tuning
+4. Debugging scenario: 1% requests fail - one bad pod vs network issue
+5. Interview question: "Design load balancing for 10K RPS"
+
+Context: Microservices with service mesh.
+```
+
+**Day 23: Consistent Hashing**
+```
+Day 23: Consistent hashing and sharding strategies
+
+Topics:
+- Consistent hashing algorithm
+- Virtual nodes for load distribution
+- Comparison: Consistent hashing vs modulo sharding
+- Hot key problem
+- Rebalancing during node addition/removal
+
+Provide:
+1. Implement consistent hashing in Python
+2. Calculate % of keys migrated when adding node
+3. Virtual node strategy for hot key mitigation
+4. Scenario: One shard is hot - pitching virtual node solution
+5. Interview question: "Design sharding for 1B users"
+
+Context: Distributed caching (Redis, Memcached).
+```
+
+**Day 24: Cache Stampede**
+```
+Day 24: Cache stampede mitigation
+
+Topics:
+- Cache stampede / thundering herd problem
+- Mitigation: Probabilistic early recomputation, request coalescing
+- Cache-Aside vs Write-Through vs Write-Back
+- TTL strategies
+- Cache warming
+
+Provide:
+1. Reproduce cache stampede with load test
+2. Implement probabilistic early recomputation
+3. Compare cache patterns with pros/cons
+4. Scenario: Hot key expires, 10K requests hit DB
+5. Interview question: "Design caching for Black Friday traffic"
+
+Context: High-traffic e-commerce site.
+```
+
+**Day 25: Database Replication**
+```
+Day 25: Database replication and failover
+
+Topics:
+- Synchronous vs asynchronous replication
+- RPO (Recovery Point Objective) and RTO (Recovery Time Objective)
+- Split-brain scenarios
+- Postgres streaming replication
+- Automated failover (Patroni, Stolon)
+
+Provide:
+1. Set up Postgres replication, simulate failover
+2. Measure RPO/RTO during promotion
+3. Trade-offs: Sync replication (consistency) vs Async (performance)
+4. Debugging scenario: Replica lag during peak traffic
+5. Interview question: "Design database HA for 99.99% uptime"
+
+Context: Running stateful databases in production.
+```
+
+**Day 26: CDN & Edge Computing**
+```
+Day 26: CDN architecture and edge computing
+
+Topics:
+- CDN PoP (Point of Presence) placement
+- Anycast routing
+- TLS termination at edge
+- Edge computing (Cloudflare Workers, Lambda@Edge)
+- Cache HIT ratio optimization
+
+Provide:
+1. Deploy Cloudflare Worker with request coalescing
+2. Calculate cache HIT ratio improvement
+3. When to use edge vs origin processing
+4. Scenario: 200ms latency - CDN miss vs origin slow?
+5. Interview question: "Design global CDN for video streaming"
+
+Context: Global content delivery, millions of users.
+```
+
+**Day 27: Rate Limiting**
+```
+Day 27: Rate limiting algorithms and API gateways
+
+Topics:
+- Rate limiting algorithms (Token Bucket, Leaky Bucket, Sliding Window)
+- Distributed rate limiting with Redis
+- 429 response strategies
+- API gateway patterns (Kong, Envoy)
+- DDoS vs legitimate traffic spikes
+
+Provide:
+1. Implement Token Bucket in Redis (Lua script)
+2. Compare algorithms: accuracy, memory, complexity
+3. Distributed vs local rate limiting
+4. Scenario: Defending API during legitimate spike (Olympics)
+5. Interview question: "Design rate limiting for public API"
+
+Context: API gateway for external-facing services.
+```
+
+**Day 28: Multi-Region Deployments**
+```
+Day 28: Multi-region architecture and global traffic management
+
+Topics:
+- Active-Active vs Active-Passive strategies
+- GeoDNS routing (Route53, Cloud DNS)
+- Cross-region latency measurement
+- Data sovereignty and GDPR compliance
+- Regional failover testing
+
+Provide:
+1. Configure GeoDNS with health checks
+2. Simulate region failure, observe failover
+3. Data residency requirements for EU/US
+4. Scenario: Choose between global LB vs regional isolation
+5. Interview question: "Design multi-region for 99.99% availability"
+
+Context: Global SaaS application.
+```
+
+**Day 29: FinOps & Cost Optimization**
+```
+Day 29: Cloud cost optimization at scale
+
+Topics:
+- FinOps principles (unit economics, showback/chargeback)
+- Cloud waste categories (idle, over-provisioned, zombie resources)
+- Rightsizing using CloudWatch metrics
+- Commitment strategies (RI, Savings Plans, Spot)
+- TCO (Total Cost of Ownership) calculation
+
+Provide:
+1. Build capacity model: (RPS × Growth Rate) / Utilization Target
+2. Identify $50K/month savings opportunities
+3. RI vs Savings Plans vs Spot comparison
+4. Scenario: CFO wants 40% cost reduction without SLO impact
+5. Interview question: "Calculate cost per transaction"
+
+Context: SRE with P&L responsibility, need to reduce $500K/year.
+```
+
+**Day 30: Mock Interview**
+```
+Day 30: Complete SRE interview preparation
+
+Full interview simulation:
+
+1. **System Design** (45 min):
+   Design a URL shortener with 99.99% availability and 100M daily users
+   - Requirements gathering
+   - Capacity estimation
+   - API design
+   - Database choice
+   - Caching, CDN, monitoring
+   - Multi-region deployment
+   - Disaster recovery
+
+2. **Behavioral Prep** (45 min):
+   Generate STAR answers for:
+   - Worst production outage
+   - Conflict with teammate
+   - Multiple P0 incidents simultaneously
+   - Automation that saved time/cost
+   - Explaining technical to non-technical
+   - On-call best practices
+   - Mistake that caused outage
+
+3. **Coding** (40 min):
+   - LeetCode medium: Longest Consecutive Sequence
+   - LeetCode hard: Trapping Rain Water
+
+4. **Career Finalization**:
+   - Resume review with quantified achievements
+   - LinkedIn headline optimization
+   - 3 technical stories + 3 behavioral stories ready
+   - List of target companies
+
+Provide specific, actionable feedback on each section.
+```
 
 ---
 
