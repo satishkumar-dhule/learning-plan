@@ -579,8 +579,16 @@ Context: I have basic Linux CLI knowledge. Target: FAANG SRE roles. Make example
 
 **15:00 Technical Drill (40 min):**
 
-**Watch** (15 min): Linux Operations and Administration (Pluralsight) - Storage.
-- Link: https://www.pluralsight.com/courses/linux-operations-administration
+**Watch** (15 min): Linux Storage & I/O Performance
+
+**Choose one** (all free):
+1. **Linux I/O and Storage** (YouTube - Learn Linux TV): https://www.youtube.com/watch?v=EqO1uJ1d5uw (18 min)
+2. **Brendan Gregg's I/O Performance** (Blog): https://www.brendangregg.com/linuxperf.html (scroll to I/O section, 10 min read)
+3. **Red Hat Guide - Storage Administration**: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_storage_devices/ (official docs)
+
+**Alternative paid**:
+- O'Reilly: "Systems Performance" by Brendan Gregg (Chapter 9: Disks)
+- Linux Foundation: "Linux System Administration" course
 
 **Execute** (25 min):
 ```bash
@@ -616,8 +624,16 @@ Career: LinkedIn Post: Bash script for finding top open file descriptor consumer
 
 **15:00 Technical Drill (40 min):**
 
-**Watch** (15 min): Networking for DevOps Fundamentals (Pluralsight).
-- Link: https://www.pluralsight.com/courses/networking-devops-fundamentals
+**Watch** (15 min): TCP/IP & Networking Fundamentals
+
+**Choose one** (all free):
+1. **Hussein Nasser - TCP/IP Explained** (YouTube): https://www.youtube.com/watch?v=qqRYkcta6IE (20 min, excellent)
+2. **NetworkChuck - TCP Explained** (YouTube): https://www.youtube.com/watch?v=cA9ZJdqzOoU (18 min, beginner-friendly)
+3. **AWS VPC Fundamentals** (Official Docs): https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html
+
+**Alternative paid** (if you have subscriptions):
+- O'Reilly: "TCP/IP Illustrated, Vol 1" by W. Richard Stevens (classic)
+- LinkedIn Learning: "Learning Amazon Web Services Networking"
 
 **Execute** (25 min):
 
@@ -828,8 +844,16 @@ Scenario: Using etcd_disk_wal_fsync_duration_seconds to prove disk latency bottl
 
 **15:00 Technical Drill (40 min):**
 
-**Watch** (15 min): Kubernetes Networking Deep Dive (Pluralsight).
-- Link: https://www.pluralsight.com/courses/kubernetes-networking-deep-dive
+**Watch** (15 min): Kubernetes Networking Deep Dive
+
+**Choose one** (all free):
+1. **Kubernetes Networking Explained** (YouTube - TechWorld with Nana): https://www.youtube.com/watch?v=5cNrTU6o3Fw (15 min, visual)
+2. **Kubernetes Networking Fundamentals** (CNCF): https://www.cncf.io/blog/2021/10/13/kubernetes-networking-fundamentals/ (article, 10 min read)
+3. **Calico Networking Guide** (Official): https://docs.tigera.io/calico/latest/about/ (detailed CNI explanation)
+
+**Alternative paid**:
+- O'Reilly: "Kubernetes Networking" by James Strong and Vallery Lancey
+- KodeKloud: "Certified Kubernetes Administrator (CKA)" - Networking section
 
 **Execute** (25 min):
 ```bash
@@ -2955,8 +2979,16 @@ Scenario: "Hot Key" shard issues: Pitching a "Virtual Node" solution.
 
 **15:00 Technical Drill (40 min):**
 
-**Watch** (15 min): Caching Strategies in Distributed Systems (Pluralsight).
-- Link: https://www.pluralsight.com/courses/distributed-caching
+**Watch** (15 min): Caching Strategies & Distributed Systems
+
+**Choose one** (all free):
+1. **System Design Interview - Caching** (YouTube - Gaurav Sen): https://www.youtube.com/watch?v=DUbEgNw-F3c (12 min, excellent)
+2. **Redis University - Caching Strategies** (Free course): https://university.redis.com/courses/ru101/ (full course, focus on Module 3)
+3. **AWS Caching Best Practices** (Official): https://aws.amazon.com/caching/best-practices/ (article, 15 min read)
+
+**Alternative paid**:
+- O'Reilly: "Web Scalability for Startup Engineers" by Artur Ejsmont (Chapter on Caching)
+- Udemy: "System Design Interview Guide" by Frank Kane
 
 **Execute** (25 min):
 ```python
