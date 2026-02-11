@@ -313,6 +313,220 @@ cat /proc/$SERVER_PID/status | grep -E "Pid|PPid|Threads"
 
 ---
 
+### 🎯 Why This Matters at Scale (For Experienced Engineers)
+
+**Memory Amplification Problem:**
+- You have a 2GB Python application server with 50 worker processes (pre-fork model like Gunicorn)
+- Naive calculation: 2GB × 50 = 100GB RAM needed
+- Reality with COW: ~15-20GB (most pages stay shared until written)
+- **But**: If application has high mutation rate (writes to memory), COW duplication → actual usage approaches 100GB
+- **Production case**: Redis with BGSAVE + heavy writes = 2x memory spike → OOM
+
+**Zombie Process Impact at Scale:**
+- Kubernetes nodes with 1000+ pods, each spawning child processes
+- If PID 1 in containers doesn't reap zombies → accumulate
+- Linux default: max 32,768 PIDs per namespace
+- Seen production: 15,000 zombies → new process creation fails → cascading outages
+- **Fix**: Use `tini` as PID 1, or ensure proper signal handling
+
+**File Descriptor Inheritance:**
+- Parent process has 100 open connections (sockets, files)
+- fork() 20 children → all inherit those FDs
+- If parent didn't set FD_CLOEXEC → children leak FDs
+- **Production impact**: Reached 65,536 FD limit (ulimit -n) → accept() fails → service unavailable
+
+### ⚠️ Production Pitfalls & War Stories
+
+**Pitfall #1: strace in Production (The 5-10x Slowdown)**
+```bash
+# This killed a production service:
+# Engineer attached strace to debug slow API
+# strace overhead (ptrace system call interception) → 10x slower
+# Service couldn't keep up with traffic → queue backlog → cascading failure
+
+# Better approach:
+# 1. Use eBPF (Day 6): <1% overhead
+# 2. Use perf record: 2-3% overhead, statistical sampling
+# 3. Application-level instrumentation (OpenTelemetry)
+```
+
+**Pitfall #2: Ignoring oom_score (OOM Killer Victim Selection)**
+```bash
+# Default: OOM killer picks process using oom_score
+# Bad: Critical database gets killed because it uses most memory
+
+# Fix: Adjust oom_score_adj (-1000 to 1000)
+echo -1000 > /proc/<critical-pid>/oom_score_adj  # Never kill this
+echo 1000 > /proc/<cache-pid>/oom_score_adj      # Kill this first
+
+# Kubernetes equivalent:
+# livenessProbe + readinessProbe + OOMKilled detection → auto-restart
+```
+
+**Pitfall #3: /proc Traversal at Scale**
+```bash
+# BAD: This brought down a production monitoring agent
+for pid in /proc/[0-9]*; do
+  cat $pid/status
+done
+# On system with 10,000 processes → forked monitoring process for each → fork bomb
+
+# GOOD: Use optimized tools
+pgrep -a java              # Find Java processes (fast, no fork)
+pidstat 1 5                # CPU stats (sysstat package)
+ps -eo pid,comm,rss --sort=-rss | head -20  # Top memory consumers
+```
+
+### 🔬 Advanced Deep Dive (Optional - For the Curious)
+
+**1. What Actually Happens During fork()?**
+```c
+// Simplified kernel flow (Linux 5.x)
+1. sys_fork() → kernel/fork.c
+2. Allocate new task_struct (process control block)
+3. copy_process():
+   - Copy page tables (NOT pages themselves - COW optimization)
+   - Mark all writable pages as read-only in BOTH parent and child
+   - Set up copy-on-write handler
+4. On first write to COW page:
+   - Page fault (permission violation)
+   - Kernel allocates new physical page
+   - Copies content
+   - Remaps virtual address to new page
+   - Marks as writable
+5. Return: child PID to parent, 0 to child (so they know their role)
+```
+
+**2. Why vfork() is Deprecated:**
+- `vfork()` was optimization: child shares parent's address space until `execve()`
+- Problem: Child can corrupt parent (write to parent's stack/heap)
+- Modern COW + lazy page allocation made `fork()` nearly as fast
+- Security risk not worth the marginal performance gain
+
+**3. clone() vs fork() - The Truth:**
+```bash
+# fork() is actually a wrapper around clone()
+# strace shows:
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, ...)
+
+# clone() allows fine-grained control:
+# - CLONE_VM: Share memory space (threads)
+# - CLONE_FS: Share filesystem info
+# - CLONE_FILES: Share file descriptors
+# - CLONE_SIGHAND: Share signal handlers
+# - CLONE_THREAD: Share thread group
+# - CLONE_NEWNS: New mount namespace (containers!)
+
+# Docker/Kubernetes use clone() with namespace flags:
+clone(CLONE_NEWPID | CLONE_NEWNET | CLONE_NEWNS | CLONE_NEWUTS | CLONE_NEWIPC | ...)
+```
+
+### 🎤 Interview Gotchas (Questions That Separate Seniors from Juniors)
+
+**Q1: "strace shows read() taking 2 seconds, but network is fine. What's wrong?"**
+
+❌ Junior answer: "Network must be slow"
+
+✅ Senior answer: "read() is blocking. Need to determine what it's waiting for:
+```bash
+# 1. Is it actually network I/O?
+ss -tp | grep <pid>          # Check established connections
+tcpdump -i any port 443 -c 100  # Look for packet retransmits
+
+# 2. Is it disk I/O? (Maybe buffered read)
+iostat -xz 1                 # Check %util and await
+lsof -p <pid> | grep REG     # What files are open?
+
+# 3. Is it waiting on another process? (IPC, socket)
+lsof -p <pid> | grep unix    # Unix domain sockets
+lsof -p <pid> | grep pipe    # Pipes
+
+# 4. Application-level blocking? (lock before I/O)
+pstack <pid>                 # Stack trace (if available)
+/proc/<pid>/stack            # Kernel stack
+
+# Real case: Application held mutex while doing I/O → serialized all requests"
+```
+
+**Q2: "Process stuck in 'D' state (uninterruptible sleep). Can't kill it. What do you do?"**
+
+❌ Junior answer: "Use kill -9"
+
+✅ Senior answer: "Can't kill -9 (processes in D state ignore signals). Debug what it's blocked on:
+```bash
+# Check what kernel function it's waiting for:
+cat /proc/<pid>/wchan        # Example: "io_schedule"
+cat /proc/<pid>/stack        # Full kernel stack trace
+
+# Common causes:
+# 1. NFS mount hung (server unreachable)
+#    → umount -f, or reboot server
+# 2. Disk hardware issue (controller hung)
+#    → Check: dmesg | grep -i "I/O error"
+# 3. Deadlock in kernel module (rare, buggy driver)
+#    → Identify with 'echo w > /proc/sysrq-trigger' (shows blocked tasks)
+
+# Real incident: NFS server restart → all clients hung in D state
+# → Had to reboot 50 app servers (no way to recover gracefully)
+# → Lesson: Don't use hard NFS mounts for critical apps, use soft mounts with timeout"
+```
+
+**Q3: "You have 10,000 zombie processes. What's the root cause and how do you fix it?"**
+
+✅ Answer:
+```bash
+# Zombies exist because parent didn't call wait()/waitpid()
+
+# 1. Find parent process:
+ps -eo pid,ppid,stat,comm | grep Z  # Z = zombie
+# Example: All have PPID 1234
+
+# 2. Check what PID 1234 is:
+ps -p 1234 -o comm=              # Example: "gunicorn-master"
+
+# 3. Why isn't it reaping?
+# a) Application bug (forgot to handle SIGCHLD)
+# b) Application hung (not processing signals)
+# c) In containers: PID 1 is shell script (shells don't reap by default)
+
+# 4. Fix:
+# Short-term: Kill parent → zombies get reparented to init (PID 1) → reaped
+kill 1234
+
+# Long-term:
+# - Fix application to call wait()
+# - In containers, use proper init:
+FROM ubuntu
+RUN apt-get install tini
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["/app/server"]
+
+# Real case: Kubernetes cluster → all nodes filled with zombies
+# → PID namespace exhaustion → new pods couldn't start
+# → Root cause: PID 1 in container was bash script that didn't reap
+# → Fix: Updated base images to use tini"
+```
+
+### 🔗 How This Connects to Other Days
+
+- **Day 5 (Memory & OOM)**: OOM killer uses `oom_score` calculated from process memory + adjustments. Understanding process memory from `/proc/<pid>/status` helps you predict OOM victims.
+
+- **Day 6 (eBPF)**: eBPF is the modern replacement for `strace` in production. Both trace system calls, but eBPF has <1% overhead vs strace's 10x slowdown.
+
+- **Day 12 (K8s Security)**: Container isolation uses `clone()` with namespace flags (CLONE_NEWPID, CLONE_NEWNET). Understanding process creation helps you understand container escapes.
+
+- **Day 18 (Incident Management)**: Zombie accumulation is a common production incident. Methodology: Identify parent → Check if hung → Kill parent → Update deployment to use proper init.
+
+### 📊 Numbers That Matter
+
+- **fork() memory overhead**: ~1-2ms for small process, ~100ms for 10GB process (COW page table copy time)
+- **strace overhead**: 5-10x slowdown (use eBPF in production)
+- **PID limit**: Default 32,768 per namespace (can increase with `kernel.pid_max`, but zombie accumulation indicates design flaw)
+- **File descriptor limit**: Default 1024 (soft), 4096 (hard) per process. System-wide: Check `cat /proc/sys/fs/file-nr`
+- **Zombie accumulation rate**: If parent doesn't reap, 1 zombie per child process per second → 3,600/hour → exhaust PID namespace in ~9 hours
+
+---
+
 ### 🤖 AI PROMPT FOR DAY 1
 
 **Copy this into Claude, ChatGPT, Gemini, or Grok**:
@@ -805,6 +1019,292 @@ terraform destroy -auto-approve
 ```
 
 **Achieve**: Master declarative IaC, state management, workspaces. Understand lifecycle meta-arguments (create_before_destroy, prevent_destroy).
+
+---
+
+### 🎯 Why This Matters at Scale
+
+**State Management is Your Biggest Risk:**
+- State file contains EVERYTHING: resource IDs, secrets, outputs
+- Lost state = manual cleanup of $50K+ of cloud resources
+- Corrupted state = terraform thinks reality doesn't match code → destroys working infrastructure
+- **Real incident**: Engineer ran `terraform destroy` on prod (pointed to wrong workspace) → $200K infrastructure gone in 5 minutes
+
+**Dependency Hell at Scale:**
+- 500-resource Terraform configuration with implicit dependencies
+- One resource change triggers cascading changes (destroy/recreate)
+- **Example**: Change VPC CIDR → destroys all subnets → destroys all EC2 → destroys all EBS → data loss
+- Takes 2 hours to apply, halfway through → AWS API rate limit → partial state → manually fix inconsistencies
+
+**Team Collaboration Challenges:**
+- 10 engineers running terraform → state locking critical
+- DynamoDB lock table prevents concurrent applies
+- But: Engineer runs terraform on laptop → laptop crashes mid-apply → lock never released → all other engineers blocked
+- Manual lock cleanup: `terraform force-unlock <lock-id>` (dangerous if apply actually still running)
+
+### ⚠️ Production Pitfalls
+
+**Pitfall #1: Hardcoded Secrets in State**
+```hcl
+# BAD: This secret ends up in state file (plaintext!)
+resource "aws_db_instance" "main" {
+  password = "SuperSecret123"  # ❌ Now in S3 state file
+}
+
+# GOOD: Use Secrets Manager + data source
+data "aws_secretsmanager_secret_version" "db_password" {
+  secret_id = "prod/db/password"
+}
+
+resource "aws_db_instance" "main" {
+  password = data.aws_secretsmanager_secret_version.db_password.secret_string
+}
+# State still contains password, but:
+# 1. Encrypted at rest (S3 encryption)
+# 2. Secret rotated independently of Terraform
+# 3. Audit trail in Secrets Manager
+```
+
+**Pitfall #2: No State Locking = Concurrent Apply Disaster**
+```bash
+# Real incident:
+# Engineer A: terraform apply (creating 50 resources)
+# Engineer B: terraform apply (different changes, no lock configured)
+# Result:
+# - Both see same initial state
+# - Both try to modify same resources
+# - AWS API errors, partial success
+# - State file corrupted (A's changes, B's changes, mixed)
+# - Required state file surgery to recover
+
+# Fix: ALWAYS configure state locking
+terraform {
+  backend "s3" {
+    bucket         = "terraform-state"
+    key            = "prod/state"
+    dynamodb_table = "terraform-locks"  # This is critical!
+  }
+}
+```
+
+**Pitfall #3: Using count for Conditional Resources (DON'T)**
+```hcl
+# BAD: Change count from 1 to 0 → DESTROYS resource
+resource "aws_instance" "app" {
+  count = var.enable_instance ? 1 : 0  # ❌ Dangerous!
+}
+
+# Better: Separate config, or use create_before_destroy
+# If you must delete, do it explicitly with terraform destroy -target
+```
+
+**Pitfall #4: Implicit Dependencies Cause Cascading Failures**
+```hcl
+# Implicit dependency: Subnet references VPC
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+}
+
+resource "aws_subnet" "public" {
+  vpc_id = aws_vpc.main.id  # Implicitly depends on VPC
+  cidr_block = "10.0.1.0/24"
+}
+
+# Problem: Change VPC CIDR (requires replacement)
+# Terraform will:
+# 1. Destroy subnet (depends on VPC)
+# 2. Destroy VPC
+# 3. Create new VPC
+# 4. Create new subnet
+# Everything in that subnet is DOWN during this!
+
+# Fix: Use explicit lifecycle + create_before_destroy
+resource "aws_vpc" "main" {
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+```
+
+### 🔬 Advanced Deep Dive
+
+**Terraform State: What's Actually Stored?**
+```json
+{
+  "version": 4,
+  "terraform_version": "1.5.0",
+  "serial": 123,  // Increments on each change (optimistic locking)
+  "lineage": "abc-123",  // Unique ID for this state (detects state file forks)
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "example",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "attributes": {
+            "id": "i-1234567890abcdef0",
+            "private_ip": "10.0.1.50",
+            "password": "ThisIsStoredInPlaintext"  // ⚠️ Security risk!
+          },
+          "sensitive_attributes": [
+            {
+              "type": "get_attr",
+              "value": "password"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Dependency Graph (DAG) Resolution:**
+```bash
+# Visualize dependencies
+terraform graph | dot -Tpng > graph.png
+
+# Terraform builds a DAG (Directed Acyclic Graph)
+# Nodes = resources
+# Edges = dependencies
+
+# Parallelization:
+# Terraform applies resources in parallel when possible
+# Example: 10 independent EC2 instances → created simultaneously
+# But: VPC → Subnet → EC2 must be sequential
+
+# If cycle detected → error:
+# "Cycle: aws_route_table.public -> aws_route.internet -> aws_route_table.public"
+```
+
+**State Locking with DynamoDB:**
+```bash
+# What happens during terraform apply:
+1. Acquire lock (PutItem to DynamoDB with conditional write)
+   - Key: "md5(state_path)"
+   - Attributes: {"LockID": "uuid", "Who": "user@host", "Created": "timestamp"}
+
+2. If lock exists and not expired:
+   - Terraform waits (polls every 2 seconds)
+   - After 15 minutes → error (force-unlock required)
+
+3. Apply changes
+
+4. Release lock (DeleteItem from DynamoDB)
+
+# If terraform crashes:
+# - Lock remains in DynamoDB
+# - Next apply sees lock → blocks
+# - Manual cleanup:
+terraform force-unlock <lock-id>  # Get lock-id from error message
+# Dangerous: Only do if you're SURE no apply is running
+```
+
+### 🎤 Interview Gotchas
+
+**Q: "How would you migrate 500 EC2 instances from manually created to Terraform-managed?"**
+
+❌ Bad answer: "Use terraform import for each"
+
+✅ Good answer:
+```bash
+# Manual approach doesn't scale (500 * 2 minutes = 16 hours)
+
+# Better: Use terraformer or similar tool
+# https://github.com/GoogleCloudPlatform/terraformer
+
+# 1. Auto-generate Terraform code from existing AWS resources
+terraformer import aws --resources=ec2_instance --regions=us-east-1
+
+# 2. Review generated code (clean up, add variables, organize modules)
+
+# 3. Import state in batches
+# Create script:
+for instance_id in $(aws ec2 describe-instances --query 'Reservations[].Instances[].InstanceId' --output text); do
+  terraform import "module.ec2.aws_instance.imported[\"$instance_id\"]" "$instance_id"
+done
+
+# 4. Validate: terraform plan should show NO changes
+terraform plan | grep "No changes"
+
+# Real case: Migrated 2,000 resources using this approach
+# Took 2 weeks (mostly code review and testing)
+# Alternative (manual): Would have taken 6+ months
+```
+
+**Q: "State file is corrupted. How do you recover?"**
+
+✅ Answer:
+```bash
+# State corruption causes:
+# 1. Concurrent applies without locking
+# 2. Manual state file edits
+# 3. Terraform crash during state write
+# 4. S3 versioning enabled → wrong version pulled
+
+# Recovery steps:
+
+# 1. Check S3 versions (if versioning enabled)
+aws s3api list-object-versions --bucket terraform-state --prefix prod/terraform.tfstate
+
+# 2. Download previous version
+aws s3api get-object --bucket terraform-state --key prod/terraform.tfstate --version-id <version-id> state-backup.json
+
+# 3. Compare with current AWS state
+terraform refresh  # Updates state from AWS (doesn't modify resources)
+
+# 4. If refresh fails, manual state surgery:
+# - terraform state list  (list all resources)
+# - terraform state show <resource>  (inspect specific resource)
+# - terraform state rm <resource>  (remove from state)
+# - terraform import <resource> <id>  (re-import correct state)
+
+# 5. Validate
+terraform plan  # Should match reality
+
+# Prevention:
+# - Enable S3 versioning
+# - State file backups (automated)
+# - State locking (DynamoDB)
+# - Never edit state file manually (use terraform state commands)
+```
+
+**Q: "Terraform vs CloudFormation vs Pulumi - when would you use each?"**
+
+| Feature | Terraform | CloudFormation | Pulumi |
+|---------|-----------|----------------|---------|
+| **Multi-cloud** | ✅ AWS, GCP, Azure | ❌ AWS only | ✅ All clouds |
+| **Language** | HCL (declarative) | YAML/JSON | Python, TypeScript, Go |
+| **State management** | Manual (S3 + DynamoDB) | AWS-managed | Cloud-managed |
+| **Provider ecosystem** | Huge (1000+) | AWS services only | Growing |
+| **Learning curve** | Medium | Low (if know YAML) | Low (if know Python) |
+| **Team size** | Any (most popular) | AWS-only shops | Small teams (newer) |
+| **Cost** | Free (OSS) | Free | Free tier, paid for teams |
+
+**When to use:**
+- **Terraform**: Multi-cloud, large teams, mature ecosystem (most common choice)
+- **CloudFormation**: AWS-only, simple deployments, tight AWS integration, no external state management
+- **Pulumi**: Developers who hate HCL, want to use real programming languages, complex logic in IaC
+
+**Real experience**: Started with CloudFormation → hit limits (complex logic, multi-cloud) → migrated to Terraform → much more flexible but state management overhead
+
+### 🔗 Connections to Other Days
+
+- **Day 13 (GitOps)**: ArgoCD for K8s is like Terraform for cloud infrastructure - declarative desired state
+- **Day 29 (FinOps)**: Terraform state shows all resources → can tag resources for cost allocation → automated cost tracking
+- **Day 18 (Incidents)**: "terraform apply destroyed production" is a common P0 incident. Prevention: CI/CD pipeline, approval gates, blast radius limits
+
+### 📊 Numbers That Matter
+
+- **State file size**: 1 KB per resource average → 1000 resources = 1 MB state file
+- **Apply time**: ~2 seconds per resource → 500 resources = 16 minutes (parallelization helps, but limited by dependency chains)
+- **Lock timeout**: Default 15 minutes → if terraform crashes, other engineers blocked for 15 min (unless force-unlock)
+- **API rate limits**: AWS ~100 API calls/second → large terraform applies can hit limits → need exponential backoff
+- **S3 state file cost**: Negligible ($0.023 per GB/month), but state file access: 1000s of GET requests per day across team → $1-5/month
+
+---
 
 15:50 Logic & DSA: 1. Easy: Implement Queue using Stacks (state machines - maps to Terraform state transitions).
 2. Medium: Evaluate Reverse Polish Notation (dependency resolution - maps to Terraform resource DAG).
@@ -1311,6 +1811,328 @@ histogram_quantile(0.99,
 ```
 
 **Achieve**: Master Request-based (count good/bad requests) vs. Window-based (uptime windows) SLIs. Understand burn rate alerts (detect when consuming error budget too fast).
+
+---
+
+### 🎯 Why This Matters at Scale (For Experienced Engineers)
+
+**Error Budgets Are Currency for Innovation:**
+- Traditional mindset: "Never have outages" → fear of change → slow innovation
+- SRE mindset: "100% availability is wrong target" → 99.9% allows 43.2 min downtime/month → **spend this budget on velocity**
+- Real example: Team ships 5 deploys/month carefully → switch to error budget model → 50 deploys/month → faster features, same reliability
+- Key insight: If you're not spending error budget, you're being too conservative
+
+**The Math That Changes Behavior:**
+```python
+# 99.9% SLO = 43.2 minutes downtime allowed per month
+# Your outage: 10 minutes
+# Error budget consumed: 10/43.2 = 23%
+
+# Decision framework:
+if budget_consumed < 70%:
+    "Green: Ship new features aggressively"
+elif budget_consumed < 100%:
+    "Yellow: Focus on reliability for rest of month"
+else:
+    "Red: Feature freeze, only reliability work"
+
+# This objective framework prevents:
+# - "That outage was too long!" (subjective)
+# - Political blame games
+# - Overreaction to normal incidents
+```
+
+**Multi-Window Burn Rate Prevents Alert Fatigue:**
+- Simple alert: `error_rate > 0.1%` → fires constantly (spiky traffic)
+- Burn rate: "At current error rate, how fast are we consuming budget?"
+- 14.4x burn rate = exhaust monthly budget in 2 days → **page immediately**
+- 6x burn rate = exhaust in 5 days → **ticket for next business day**
+- Prevents: Alert on every blip, miss the real fire
+
+### ⚠️ Production Pitfalls
+
+**Pitfall #1: Choosing Wrong SLI (Most Common Mistake)**
+```python
+# BAD SLIs (common mistakes):
+# 1. "Our API returns 200 OK 99.9% of time"
+#    Problem: What if 200 OK but response takes 30 seconds? Users see failure.
+
+# 2. "Our servers are up 99.9% of time"
+#    Problem: Users don't care about server uptime, they care about request success.
+
+# 3. "Average latency < 100ms"
+#    Problem: Average hides tail latency. 99% fast, 1% timing out = poor UX.
+
+# GOOD SLIs (user-focused):
+# 1. "99% of API requests complete successfully in < 500ms"
+#    - Success = 2xx status AND latency < 500ms
+#    - Captures both availability and latency
+#    - Uses percentile (p99), not average
+
+# 2. "95% of login attempts succeed in < 2 seconds"
+#    - User journey based
+#    - Accounts for expected failures (wrong password = not error)
+
+# 3. "99.9% of writes are durable (not lost)"
+#    - For databases
+#    - Measures data integrity
+```
+
+**Pitfall #2: SLO Too Strict (The 99.99% Trap)**
+```python
+# 99.99% SLO = 4.32 minutes downtime/month
+
+# Sounds good, but:
+# - AWS S3 SLA: 99.9% (they don't promise 99.99%!)
+# - If you depend on S3, your SLO is capped at 99.9%
+# - Cost: 99.99% requires 10x redundancy compared to 99.9%
+# - Opportunity cost: Team spends 80% time on reliability, 20% on features
+
+# Better: Start with 99.5% or 99.9%, measure actual performance
+# If you're hitting 99.95% consistently, then tighten to 99.9%
+# If you're missing 99.9%, loosen to 99.5% or invest in reliability
+
+# Real case: Team set 99.99% SLO → missed every month → demoralized
+# → Changed to 99.5% → hit it easily → built confidence → gradually improved
+```
+
+**Pitfall #3: Not Excluding Expected Failures**
+```python
+# BAD: Count all 4xx errors as failures
+error_rate = (status_4xx_count + status_5xx_count) / total_requests
+
+# Problem:
+# - 401 Unauthorized (bad API key) = user error, not service failure
+# - 404 Not Found (user typo) = expected, not your fault
+# - 429 Rate Limit (user exceeding quota) = intended behavior
+
+# GOOD: Only count unexpected failures
+# Success: 2xx, 3xx, 4xx (expected user errors)
+# Failure: 5xx (server errors), timeouts, network errors
+
+success_count = requests{code=~"[2-4].."}
+failure_count = requests{code=~"5.."} + timeouts + network_errors
+
+# Real incident: Team counted 404s as failures
+# → Crawler bot hit site with bad URLs → error budget exhausted in 1 day
+# → Feature freeze even though real users unaffected
+```
+
+**Pitfall #4: Burn Rate Windows Too Short (False Alarms)**
+```promql
+# BAD: Alert on 1-minute error rate spike
+error_rate_1m > threshold
+
+# Problem: Normal traffic spikes (deploy, cache expiration) trigger alerts
+# Team gets paged → checks → "everything's fine now" → alert fatigue
+
+# GOOD: Multi-window burn rate
+# Must meet BOTH short AND long window conditions
+# Example: (5m burn > 14.4x) AND (1h burn > 14.4x)
+# Filters out temporary blips, catches sustained issues
+
+# Real numbers from production:
+# - Single window (1m): 50 false alarms/month
+# - Multi-window (5m AND 1h): 3 alerts/month (all real issues)
+```
+
+### 🔬 Advanced Deep Dive
+
+**Where Does 14.4x Burn Rate Come From?**
+```python
+# SLO: 99.9% availability (0.1% error budget)
+# Monthly budget: 43.2 minutes
+
+# If you burn at 14.4x rate:
+budget_exhaustion_time = 30 days / 14.4 = 2.08 days
+
+# Google's research: 2 days gives you time to:
+# 1. Detect problem (multi-window filter prevents false alarms)
+# 2. Page oncall
+# 3. Investigate
+# 4. Deploy fix
+# 5. Recover before budget exhausted
+
+# Other common thresholds:
+# - 14.4x = 2 days → page immediately
+# - 6x = 5 days → create ticket (investigate during business hours)
+# - 3x = 10 days → monitor (may be normal variance)
+
+# Formula:
+burn_rate_threshold = (SLO_window_days / acceptable_response_time_days)
+# Example: 30 days / 2 days = 15x (rounded to 14.4 in practice)
+```
+
+**Request-Based vs Window-Based SLIs:**
+```python
+# Request-based (most common for APIs):
+SLI = successful_requests / total_requests
+# Pros:
+# - Accurate (counts every request)
+# - Good for high-volume services (millions of requests/day)
+# - Aligns with user experience (each request matters)
+# Cons:
+# - Requires instrumentation (count every request)
+# - Doesn't work for batch jobs (single job = single request?)
+
+# Window-based (useful for uptime monitoring):
+SLI = successful_probes / total_probes
+# Example: Probe every 10 seconds, success = 200 OK
+# Pros:
+# - Simple (external monitoring, no instrumentation)
+# - Works for services that don't have "requests" (batch jobs)
+# Cons:
+# - Coarse granularity (1 failed probe = 10 seconds downtime)
+# - Doesn't capture user volume (1 probe failure at 2 AM = same weight as 2 PM)
+
+# Hybrid approach (best):
+# Use request-based for SLI calculation
+# Use window-based for external validation (synthetic monitoring)
+```
+
+**Calculating SLOs for Dependent Services:**
+```python
+# Your service depends on:
+# - Database (99.95% SLA)
+# - Cache (99.9% SLA)
+# - External API (99.5% SLA)
+
+# Naive calculation (series):
+combined_slo = 0.9995 * 0.999 * 0.995 = 0.9935 = 99.35%
+# Your service can't be more reliable than weakest dependency
+
+# With graceful degradation:
+# - Cache miss → database (slower but works)
+# - External API timeout → cached response (stale but works)
+# Then your SLO can exceed dependencies
+
+# Real example:
+# Dependency chain: 5 services × 99.9% each = 99.5% combined
+# Can't promise 99.9% SLO to customers (would violate constantly)
+# Solution:
+# 1. Add redundancy (multiple API providers)
+# 2. Graceful degradation (serve cached/stale data)
+# 3. Set realistic SLO (99.5% based on dependencies)
+```
+
+### 🎤 Interview Gotchas
+
+**Q: "Your team is consistently hitting 99.95% availability, but SLO is 99.9%. Should you tighten the SLO?"**
+
+❌ Junior answer: "Yes, we're exceeding expectations"
+
+✅ Senior answer: "Not necessarily. Questions to ask:
+
+1. **Are we spending error budget on velocity?**
+   - If we're deploying 50x/month and still hitting 99.95%, we have room for more velocity
+   - If we're deploying 2x/month cautiously, we're being too conservative
+
+2. **Is 99.95% sustainable?**
+   - Maybe we got lucky this month (no major incidents)
+   - Need 6-12 months of data to confirm consistency
+
+3. **What's the cost of 99.95% vs 99.9%?**
+   - If 99.95% requires 2x infrastructure cost, it's waste
+   - If we're hitting it naturally, no extra cost
+
+4. **Do users care about the difference?**
+   - 99.9% = 43.2 min downtime/month
+   - 99.95% = 21.6 min downtime/month
+   - For most services, users don't notice 20 min difference
+   - For payment processing, they might
+
+**Better approach:**
+- Keep SLO at 99.9%
+- Use extra reliability budget to deploy faster
+- Monitor if faster deploys consume budget → steady state achieved
+- Only tighten SLO if users complain or business requires it"
+
+**Q: "We had a 15-minute outage (100% error rate). How much error budget did we consume?"**
+
+❌ Wrong answer: "15 minutes out of 43.2 minutes = 35%"
+
+✅ Right answer: "Need more information. Error budget depends on **request volume**:
+
+```python
+# Scenario 1: Low-traffic period (2 AM)
+requests_during_outage = 10_000
+total_requests_per_month = 100_000_000
+error_budget_consumed = 10_000 / 100_000_000 = 0.01% of budget
+
+# Scenario 2: High-traffic period (2 PM)
+requests_during_outage = 500_000
+error_budget_consumed = 500_000 / 100_000_000 = 0.5% of budget
+
+# Key insight:
+# - Time-based error budget (43.2 minutes) only works for window-based SLIs
+# - Request-based SLIs: outage impact depends on traffic volume at time of failure
+# - 15-minute outage at 2 AM << 15-minute outage at Black Friday peak
+```
+
+This is why Google uses **request-based** error budgets, not time-based."
+
+**Q: "Should we set different SLOs for different endpoints?"**
+
+✅ Answer: "Yes, for user-facing APIs:
+
+```python
+# Internal endpoints (admin dashboard):
+SLO = 99.0%  # Lower, users are employees, can tolerate more failures
+
+# Public API (free tier):
+SLO = 99.5%  # Medium, users expect good service but know it's free
+
+# Payment processing:
+SLO = 99.95%  # Higher, losing payments = losing money
+
+# Critical auth:
+SLO = 99.99%  # Highest, if users can't log in, they can't do anything
+```
+
+**But don't go overboard:**
+- Start with service-level SLO (one for whole service)
+- Only split if:
+  1. Different user expectations
+  2. Different business criticality
+  3. Different technical constraints
+- Too many SLOs = impossible to manage → alert fatigue
+
+**Real example:**
+- Started with 50 endpoint-level SLOs
+- Team couldn't track which ones were important
+- Consolidated to 5 user-journey SLOs
+- Much clearer, actionable"
+
+### 🔗 Connections to Other Days
+
+- **Day 15 (PromQL)**: SLI queries use `histogram_quantile()` for latency SLIs. High cardinality in labels breaks SLO calculations.
+- **Day 19 (Alerting)**: Multi-window burn rate alerts implement SLO-based alerting (symptoms, not causes).
+- **Day 18 (Incidents)**: During incidents, track error budget consumption in real-time. "We've consumed 15% of monthly budget in 1 hour."
+- **Day 29 (FinOps)**: Error budget is like cloud cost budget. Both require: measurement, monitoring, trade-offs (speed vs cost, speed vs reliability).
+
+### 📊 Numbers That Matter
+
+| SLO | Downtime/Month | Downtime/Year | Use Case |
+|-----|----------------|---------------|----------|
+| 99% | 7.2 hours | 3.65 days | Internal tools, non-critical |
+| 99.5% | 3.6 hours | 1.83 days | Public API, good service |
+| 99.9% | 43.2 min | 8.76 hours | Production services (common) |
+| 99.95% | 21.6 min | 4.38 hours | Payment processing |
+| 99.99% | 4.32 min | 52.56 min | Critical infrastructure (expensive!) |
+| 99.999% | 26 sec | 5.26 min | Telco (five-nines, very expensive) |
+
+**Burn rate alert thresholds:**
+- **Page immediately (P0)**: 14.4x burn (budget exhausted in 2 days)
+- **Next business day (P2)**: 6x burn (budget exhausted in 5 days)
+- **Monitor only**: 3x burn (budget exhausted in 10 days)
+
+**Real-world SLO examples:**
+- Google Search: 99.9% availability (they publicly publish this)
+- AWS S3: 99.9% availability (per SLA)
+- Stripe API: 99.99% availability (payment critical)
+- Netflix: 99.9% availability (can tolerate brief outages)
+
+---
 
 15:50 Logic & DSA: 1. Easy: Contains Duplicate.
 2. Medium: Product of Array Except Self.
