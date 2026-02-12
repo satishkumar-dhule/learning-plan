@@ -43,13 +43,19 @@ async function loadMarkdownContent() {
         const contentDiv = document.getElementById('content');
         contentDiv.innerHTML = html;
 
-        // Add IDs to sections for navigation
-        addSectionIds();
-
         state.contentLoaded = true;
+
+        // Rebuild navigation from actual content
+        rebuildNavigation();
 
         // Initialize features after content is loaded
         initializeFeatures();
+
+        // Log all header IDs for debugging
+        console.log('Available section IDs:',
+            Array.from(document.querySelectorAll('h1[id], h2[id], h3[id]'))
+                .map(h => ({ id: h.id, text: h.textContent.substring(0, 50) }))
+        );
     } catch (error) {
         console.error('Error loading content:', error);
         document.getElementById('content').innerHTML = `
@@ -63,76 +69,97 @@ async function loadMarkdownContent() {
 }
 
 // ===========================
-// Add IDs to Sections
+// Rebuild Navigation from Content
 // ===========================
-function addSectionIds() {
+function rebuildNavigation() {
     const content = document.getElementById('content');
+    const headers = content.querySelectorAll('h1[id], h2[id]');
 
-    // Map section titles to IDs
-    const sectionMap = {
-        'AI Learning Assistants': 'ai-assistants',
-        'Before You Start': 'setup-checklist',
-        'The High-Performance Routine': 'daily-routine',
-        'Day 1:': 'day-1',
-        'Day 2:': 'day-2',
-        'Day 3:': 'day-3',
-        'Day 4:': 'day-4',
-        'Day 5:': 'day-5',
-        'Day 6:': 'day-6',
-        'Day 7:': 'day-7',
-        'Day 8:': 'day-8',
-        'Day 9:': 'day-9',
-        'Day 10:': 'day-10',
-        'Day 11:': 'day-11',
-        'Day 12:': 'day-12',
-        'Day 13:': 'day-13',
-        'Day 14:': 'day-14',
-        'Day 15:': 'day-15',
-        'Day 16:': 'day-16',
-        'Day 17:': 'day-17',
-        'Day 18:': 'day-18',
-        'Day 19:': 'day-19',
-        'Day 20:': 'day-20',
-        'Day 21:': 'day-21',
-        'Day 22:': 'day-22',
-        'Day 23:': 'day-23',
-        'Day 24:': 'day-24',
-        'Day 25:': 'day-25',
-        'Day 26:': 'day-26',
-        'Day 27:': 'day-27',
-        'Day 28:': 'day-28',
-        'Day 29:': 'day-29',
-        'Day 30:': 'day-30',
-        'Appendix A:': 'appendix-a',
-        'Appendix B:': 'appendix-b',
-        'Appendix C:': 'appendix-c',
-        'Appendix D:': 'appendix-d',
-        'Appendix E:': 'appendix-e',
-        'Appendix F:': 'appendix-f',
-        'Appendix G:': 'appendix-g',
-        'Appendix H:': 'appendix-h',
-        'Appendix I:': 'appendix-i',
-        'Appendix J:': 'appendix-j'
+    // Categorize headers into sections
+    const sections = categorizeHeaders(headers);
+
+    // Rebuild each navigation section
+    rebuildNavSection('Setup', sections.setup, 0);
+    rebuildNavSection('Week 1', sections.week1, 1);
+    rebuildNavSection('Week 2', sections.week2, 2);
+    rebuildNavSection('Week 3', sections.week3, 3);
+    rebuildNavSection('Week 4', sections.week4, 4);
+    rebuildNavSection('Appendices', sections.appendix, 5);
+
+    console.log('Navigation rebuilt successfully');
+}
+
+function categorizeHeaders(headers) {
+    const sections = {
+        setup: [],
+        week1: [],
+        week2: [],
+        week3: [],
+        week4: [],
+        appendix: []
     };
 
-    // Add IDs to h2 and h3 elements
-    const headers = content.querySelectorAll('h2, h3');
     headers.forEach(header => {
         const text = header.textContent;
-        for (const [key, id] of Object.entries(sectionMap)) {
-            if (text.includes(key)) {
-                header.id = id;
-                break;
+        const id = header.id;
+
+        // Extract day number if present
+        const dayMatch = /Day (\d+)/i.exec(text);
+        if (dayMatch) {
+            const day = Number.parseInt(dayMatch[1], 10);
+            const shortText = `Day ${day}: ${text.split(':')[1]?.trim().substring(0, 30) || text.substring(0, 40)}`;
+
+            if (day >= 1 && day <= 7) {
+                sections.week1.push({ id, text: shortText, fullText: text });
+            } else if (day >= 8 && day <= 14) {
+                sections.week2.push({ id, text: shortText, fullText: text });
+            } else if (day >= 15 && day <= 21) {
+                sections.week3.push({ id, text: shortText, fullText: text });
+            } else if (day >= 22 && day <= 30) {
+                sections.week4.push({ id, text: shortText, fullText: text });
             }
+            return;
         }
 
-        // If no ID was set, create one from the text
-        if (!header.id) {
-            header.id = text.toLowerCase()
-                .replace(/[^\w\s-]/g, '')
-                .replace(/\s+/g, '-')
-                .substring(0, 50);
+        // Check for appendix
+        if (/Appendix [A-J]/i.test(text)) {
+            const shortText = text.substring(0, 50);
+            sections.appendix.push({ id, text: shortText, fullText: text });
+            return;
         }
+
+        // Setup sections
+        const lowerText = text.toLowerCase();
+        if (lowerText.includes('ai') || lowerText.includes('assistant') ||
+            lowerText.includes('setup') || lowerText.includes('checklist') ||
+            lowerText.includes('navigation') || lowerText.includes('routine')) {
+            sections.setup.push({ id, text: text.substring(0, 40), fullText: text });
+        }
+    });
+
+    return sections;
+}
+
+function rebuildNavSection(title, items, sectionIndex) {
+    const navSections = document.querySelectorAll('.nav-section');
+    if (sectionIndex >= navSections.length) return;
+
+    const navSection = navSections[sectionIndex];
+    const ul = navSection.querySelector('ul');
+    if (!ul || items.length === 0) return;
+
+    // Clear existing items
+    ul.innerHTML = '';
+
+    // Add new items
+    items.forEach(item => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `#${item.id}`;
+        a.textContent = item.text;
+        a.title = item.fullText;
+        li.appendChild(a);
+        ul.appendChild(li);
     });
 }
 
@@ -160,7 +187,7 @@ function initializeNavigation() {
                 });
 
                 // Close mobile menu if open
-                if (window.innerWidth <= 1024) {
+                if (globalThis.innerWidth <= 1024) {
                     toggleMobileMenu();
                 }
 
@@ -264,18 +291,17 @@ function initializeSearch() {
 // ===========================
 function initializeBackToTop() {
     const backToTopBtn = document.querySelector('.back-to-top');
-    const mainContent = document.querySelector('.main-content');
 
     backToTopBtn.addEventListener('click', () => {
-        window.scrollTo({
+        globalThis.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
     });
 
     // Show/hide button based on scroll position
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
+    globalThis.addEventListener('scroll', () => {
+        if (globalThis.pageYOffset > 300) {
             backToTopBtn.classList.add('visible');
         } else {
             backToTopBtn.classList.remove('visible');
@@ -301,7 +327,7 @@ function updateScrollProgress() {
 // Handle URL Hash Navigation
 // ===========================
 function handleHashNavigation() {
-    const hash = window.location.hash;
+    const hash = globalThis.location.hash;
     if (hash) {
         const targetElement = document.querySelector(hash);
         if (targetElement) {
@@ -326,7 +352,7 @@ function initializeFeatures() {
 
     // Scroll event listeners
     let scrollTimeout;
-    window.addEventListener('scroll', () => {
+    globalThis.addEventListener('scroll', () => {
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
             updateActiveSection();
@@ -336,7 +362,7 @@ function initializeFeatures() {
 
     // Handle hash navigation
     handleHashNavigation();
-    window.addEventListener('hashchange', handleHashNavigation);
+    globalThis.addEventListener('hashchange', handleHashNavigation);
 
     // Initial updates
     updateActiveSection();
