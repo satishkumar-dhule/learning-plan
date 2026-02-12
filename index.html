@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="30-Day SRE War Plan - Comprehensive Site Reliability Engineering preparation guide for 2026">
+    <title>30-Day SRE War Plan | 2026 Tier-1 Prep</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar" role="navigation" aria-label="Main navigation">
+        <div class="sidebar-header">
+            <h1>🚀 30-Day SRE</h1>
+            <p>War Plan 2026</p>
+        </div>
+
+        <div class="nav-search">
+            <input type="text" id="navSearch" placeholder="Search topics..." aria-label="Search navigation">
+        </div>
+
+        <div class="nav-content">
+            <!-- Setup & Getting Started -->
+            <div class="nav-section">
+                <h3 class="nav-section-title">Setup & Getting Started</h3>
+                <ul>
+                    <li><a href="#ai-assistants" data-section="ai-assistants">🤖 AI Learning Assistants</a></li>
+                    <li><a href="#setup-checklist" data-section="setup-checklist">🎬 Setup Checklist</a></li>
+                    <li><a href="#daily-routine" data-section="daily-routine">📅 Daily Routine</a></li>
+                </ul>
+            </div>
+
+            <!-- Week 1 -->
+            <div class="nav-section">
+                <h3 class="nav-section-title">📅 Week 1: Systems & Cloud 🛠️</h3>
+                <ul>
+                    <li><a href="#day-1" data-section="day-1">Day 1: Process Lifecycle</a></li>
+                    <li><a href="#day-2" data-section="day-2">Day 2: Advanced I/O & VFS</a></li>
+                    <li><a href="#day-3" data-section="day-3">Day 3: TCP & Cloud Networking</a></li>
+                    <li><a href="#day-4" data-section="day-4">Day 4: HTTP/3 & QUIC</a></li>
+                    <li><a href="#day-5" data-section="day-5">Day 5: Memory & OOM Killer</a></li>
+                    <li><a href="#day-6" data-section="day-6">Day 6: eBPF & Observability</a></li>
+                    <li><a href="#day-7" data-section="day-7">Day 7: Distributed Tracing</a></li>
+                </ul>
+            </div>
+
+            <!-- Week 2 -->
+            <div class="nav-section">
+                <h3 class="nav-section-title">📅 Week 2: Kubernetes & IaC ☸️</h3>
+                <ul>
+                    <li><a href="#day-8" data-section="day-8">Day 8: etcd State Machine</a></li>
+                    <li><a href="#day-9" data-section="day-9">Day 9: CNI & Networking</a></li>
+                    <li><a href="#day-10" data-section="day-10">Day 10: Persistent Data & CSI</a></li>
+                    <li><a href="#day-11" data-section="day-11">Day 11: Terraform & IaC</a></li>
+                    <li><a href="#day-12" data-section="day-12">Day 12: K8s Security & RBAC</a></li>
+                    <li><a href="#day-13" data-section="day-13">Day 13: StatefulSets & GitOps</a></li>
+                    <li><a href="#day-14" data-section="day-14">Day 14: CI/CD & DevSecOps</a></li>
+                </ul>
+            </div>
+
+            <!-- Week 3 -->
+            <div class="nav-section">
+                <h3 class="nav-section-title">📅 Week 3: Observability & Security 📈</h3>
+                <ul>
+                    <li><a href="#day-15" data-section="day-15">Day 15: PromQL & Cardinality</a></li>
+                    <li><a href="#day-16" data-section="day-16">Day 16: SLOs & Error Budgets</a></li>
+                    <li><a href="#day-17" data-section="day-17">Day 17: Container Security</a></li>
+                    <li><a href="#day-18" data-section="day-18">Day 18: Incident Management</a></li>
+                    <li><a href="#day-19" data-section="day-19">Day 19: Alerting & Runbooks</a></li>
+                    <li><a href="#day-20" data-section="day-20">Day 20: Modern Observability</a></li>
+                    <li><a href="#day-21" data-section="day-21">Day 21: Chaos Engineering</a></li>
+                </ul>
+            </div>
+
+            <!-- Week 4 -->
+            <div class="nav-section">
+                <h3 class="nav-section-title">📅 Week 4: Architecture & Scale 🌍</h3>
+                <ul>
+                    <li><a href="#day-22" data-section="day-22">Day 22: Load Balancing</a></li>
+                    <li><a href="#day-23" data-section="day-23">Day 23: Consistent Hashing</a></li>
+                    <li><a href="#day-24" data-section="day-24">Day 24: Cache Stampede</a></li>
+                    <li><a href="#day-25" data-section="day-25">Day 25: DB Replication</a></li>
+                    <li><a href="#day-26" data-section="day-26">Day 26: CDN & Edge Computing</a></li>
+                    <li><a href="#day-27" data-section="day-27">Day 27: Rate Limiting</a></li>
+                    <li><a href="#day-28" data-section="day-28">Day 28: Multi-Region Deploy</a></li>
+                    <li><a href="#day-29" data-section="day-29">Day 29: FinOps & Cost Optimization</a></li>
+                    <li><a href="#day-30" data-section="day-30">Day 30: Mock Interview</a></li>
+                </ul>
+            </div>
+
+            <!-- Appendices -->
+            <div class="nav-section">
+                <h3 class="nav-section-title">📚 Appendices</h3>
+                <ul>
+                    <li><a href="#appendix-a" data-section="appendix-a">Interview Question Bank</a></li>
+                    <li><a href="#appendix-b" data-section="appendix-b">Certification Paths</a></li>
+                    <li><a href="#appendix-c" data-section="appendix-c">Portfolio Projects</a></li>
+                    <li><a href="#appendix-d" data-section="appendix-d">Troubleshooting Scenarios</a></li>
+                    <li><a href="#appendix-e" data-section="appendix-e">Salary Negotiation</a></li>
+                    <li><a href="#appendix-f" data-section="appendix-f">90-Day Timeline</a></li>
+                    <li><a href="#appendix-g" data-section="appendix-g">Company Interview Processes</a></li>
+                    <li><a href="#appendix-h" data-section="appendix-h">Hands-On Labs</a></li>
+                    <li><a href="#appendix-i" data-section="appendix-i">Resume & LinkedIn</a></li>
+                    <li><a href="#appendix-j" data-section="appendix-j">AI Prompts Collection</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <p>Scroll Progress: <span id="scrollProgress">0%</span></p>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" role="main">
+        <button class="back-to-top" aria-label="Back to top">↑</button>
+
+        <div class="content-wrapper" id="content">
+            <!-- Content will be loaded here by script.js -->
+            <div class="loading">Loading content...</div>
+        </div>
+    </main>
+
+    <!-- Marked.js for Markdown Parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
