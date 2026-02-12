@@ -187,8 +187,34 @@ brew install \
 ### Learning Resources Setup
 - 📚 **Create GitHub Repo**: `sre-30-day-challenge` (document your journey daily)
 - 📝 **Daily Log Template**: Create `daily-logs/day-XX.md` for notes
-- 🎯 **LeetCode Account**: https://leetcode.com/ (track your 60+ problems)
 - 💼 **LinkedIn**: Update profile, prepare to post weekly learnings
+
+### Coding Practice Platforms (Choose Your Preference)
+
+**🎯 Primary Platform - LeetCode** (Most SRE interviews use this)
+- **Main Site**: https://leetcode.com/
+- **Create Account**: https://leetcode.com/accounts/signup/
+- **Curated Lists**:
+  - Grind 75: https://www.techinterviewhandbook.org/grind75 (best for time-limited prep)
+  - Blind 75: https://leetcode.com/discuss/general-discussion/460599/blind-75-leetcode-questions
+  - Top Interview Questions: https://leetcode.com/problem-list/top-interview-questions/
+
+**🔥 Alternative Platforms**:
+- **HackerRank** (Good for beginners): https://www.hackerrank.com/domains/algorithms
+- **Exercism** (Free, mentor-reviewed): https://exercism.org/tracks (Python, Go, Rust tracks)
+- **CodeWars** (Gamified): https://www.codewars.com/
+- **AlgoExpert** (Paid, video solutions): https://www.algoexpert.io/
+- **NeetCode** (Free LeetCode solutions): https://neetcode.io/
+
+**🎓 SRE-Specific Practice**:
+- **Pramp** (Mock interviews): https://www.pramp.com/ (practice with peers)
+- **Interviewing.io** (Anonymous mock interviews): https://interviewing.io/
+- **LeetCode Discuss** (Solutions & approaches): https://leetcode.com/discuss/interview-question
+
+**📊 Track Your Progress**:
+- LeetCode Profile (make it public for resume)
+- Spreadsheet: Track problem, difficulty, time, concepts
+- GitHub repo: Document solutions with explanations
 
 ### Time Commitment
 - **Mon-Sat**: 2 hours/day (15:00-17:00)
@@ -607,10 +633,17 @@ find / -xdev -type f | cut -d "/" -f 2 | sort | uniq -c | sort -rn | head -10
 
 **Achieve**: Understand Page Cache, Dirty Pages, and fsync() performance impact.
 
-15:50 Logic & DSA: 1. Easy: Valid Anagram.
-2. Medium: Top K Frequent Elements (Analyzing frequent log errors).
+**15:50 Logic & DSA (40 min):**
 
-16:40 Closing Sprint:
+1. **Easy: Valid Anagram** (15 min)
+   - Link: https://leetcode.com/problems/valid-anagram/
+   - SRE Context: String comparison for configuration validation
+
+2. **Medium: Top K Frequent Elements** (25 min)
+   - Link: https://leetcode.com/problems/top-k-frequent-elements/
+   - SRE Context: Analyzing top error types in logs, finding most frequent events
+
+**16:40 Closing Sprint (20 min):**
 
 Scenario: High iowait troubleshooting: I/O thrashing vs. hardware vs. journal config.
 
@@ -672,8 +705,15 @@ aws ec2 attach-internet-gateway --internet-gateway-id <igw-id> --vpc-id <vpc-id>
 
 **Achieve**: Explain BDP (Bandwidth-Delay Product), congestion control (Cubic/BBR). Master VPC CIDR planning, Security Group vs. NACL (stateful vs. stateless).
 
-15:50 Logic & DSA: 1. Easy: Valid Parentheses.
-2. Medium: Min Stack (Tracking state history - maps to VPC routing tables).
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Valid Parentheses** (15 min)
+   - Link: https://leetcode.com/problems/valid-parentheses/
+   - SRE Context: Validating nested configuration syntax (YAML, JSON)
+
+2. **Medium: Min Stack** (25 min)
+   - Link: https://leetcode.com/problems/min-stack/
+   - SRE Context: Tracking minimum latency across time windows, routing table optimization
 
 16:40 Closing Sprint:
 
@@ -719,8 +759,15 @@ EOF
 
 **Achieve**: Explain TCP vs. QUIC streams and Connection Migration (Wi-Fi to 5G).
 
-15:50 Logic & DSA: 1. Easy: Best Time to Buy/Sell Stock.
-2. Medium: Longest Substring Without Repeating Characters.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Best Time to Buy and Sell Stock** (15 min)
+   - Link: https://leetcode.com/problems/best-time-to-buy-and-sell-stock/
+   - SRE Context: Finding optimal scaling time (buy capacity low, use when demand high)
+
+2. **Medium: Longest Substring Without Repeating Characters** (25 min)
+   - Link: https://leetcode.com/problems/longest-substring-without-repeating-characters/
+   - SRE Context: Sliding window for monitoring metrics without duplicate alerts
 
 16:40 Closing Sprint:
 
@@ -739,8 +786,15 @@ Execute:
 
 Achieve: Understand Anonymous vs. File-backed memory. Master IAM policies (identity vs. resource-based), least-privilege principle, EC2 instance types (compute-optimized vs. memory-optimized).
 
-15:50 Logic & DSA: 1. Easy: Valid Palindrome.
-2. Medium: Longest Palindromic Substring (pattern recognition - maps to IAM policy evaluation logic).
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Valid Palindrome** (15 min)
+   - Link: https://leetcode.com/problems/valid-palindrome/
+   - SRE Context: Validating bidirectional data sync, symmetric configurations
+
+2. **Medium: Longest Palindromic Substring** (25 min)
+   - Link: https://leetcode.com/problems/longest-palindromic-substring/
+   - SRE Context: Pattern recognition in log sequences, IAM policy evaluation logic
 
 16:40 Closing Sprint:
 
@@ -781,8 +835,15 @@ sudo bpftrace -e 'kprobe:tcp_connect { printf("%s connecting to port %d\n", comm
 
 **Achieve**: Understand eBPF safety guarantees (verifier, no kernel panics), CO-RE (Compile Once, Run Everywhere), and BTF (BPF Type Format).
 
-15:50 Logic & DSA: 1. Easy: Climbing Stairs.
-2. Medium: Decode Ways (State machine pattern).
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Climbing Stairs** (15 min)
+   - Link: https://leetcode.com/problems/climbing-stairs/
+   - SRE Context: Dynamic programming for capacity planning, resource allocation
+
+2. **Medium: Decode Ways** (25 min)
+   - Link: https://leetcode.com/problems/decode-ways/
+   - SRE Context: State machine pattern, parsing configuration formats
 
 16:40 Closing Sprint:
 
@@ -803,8 +864,15 @@ Execute:
 
 Achieve: Master Span Context Propagation (W3C Trace Context), Sampling strategies. Understand cloud-native observability (CloudWatch, X-Ray) vs. self-hosted (Prometheus, Jaeger).
 
-15:50 Logic & DSA: 1. Easy: Binary Search (finding specific metric thresholds).
-2. Medium: Search in Rotated Sorted Array (anomaly detection in time-series).
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Binary Search** (15 min)
+   - Link: https://leetcode.com/problems/binary-search/
+   - SRE Context: Finding specific metric thresholds, efficient log searching
+
+2. **Medium: Search in Rotated Sorted Array** (25 min)
+   - Link: https://leetcode.com/problems/search-in-rotated-sorted-array/
+   - SRE Context: Anomaly detection in time-series data, handling data rollovers
 
 16:40 Closing Sprint:
 
@@ -831,8 +899,12 @@ Execute: Monitor K8s changes with etcdctl watch. Manually delete etcd key to obs
 
 Achieve: Explain Raft Consensus, Quorum, and Leader roles.
 
-15:50 Logic & DSA: 1. Easy: Linked List Cycle.
-2. Medium: Remove Nth Node From End of List.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Linked List Cycle** - https://leetcode.com/problems/linked-list-cycle/
+   - SRE Context: Detecting circular dependencies in service mesh routing or DNS resolution loops
+2. **Medium: Remove Nth Node From End of List** - https://leetcode.com/problems/remove-nth-node-from-end-of-list/
+   - SRE Context: Pruning old entries from circular buffers or rolling logs
 
 16:40 Closing Sprint:
 
@@ -880,8 +952,12 @@ cat /etc/cni/net.d/*.conf | jq .
 
 **Achieve**: Distinguish Overlay (VXLAN - encapsulation, flexible) from Underlay (BGP - native routing, better performance).
 
-15:50 Logic & DSA: 1. Easy: Merge Two Sorted Lists.
-2. Medium: Reorder List.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Merge Two Sorted Lists** - https://leetcode.com/problems/merge-two-sorted-lists/
+   - SRE Context: Merging time-series metrics from multiple monitoring sources (Prometheus federation)
+2. **Medium: Reorder List** - https://leetcode.com/problems/reorder-list/
+   - SRE Context: Reordering task queues based on priority and dependency constraints
 
 16:40 Closing Sprint:
 
@@ -956,8 +1032,12 @@ kubectl exec web-0 -- cat /usr/share/nginx/html/index.html
 
 **Achieve**: Master CSI lifecycle: Create → Attach → Mount → Unmount → Detach → Delete. Explain RWO (ReadWriteOnce - single node) vs. RWX (ReadWriteMany - multi-node) vs. ROX (ReadOnlyMany).
 
-15:50 Logic & DSA: 1. Easy: Reverse Linked List.
-2. Medium: Copy List with Random Pointer.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Reverse Linked List** - https://leetcode.com/problems/reverse-linked-list/
+   - SRE Context: Reversing request paths for backward compatibility or rollback procedures
+2. **Medium: Copy List with Random Pointer** - https://leetcode.com/problems/copy-list-with-random-pointer/
+   - SRE Context: Deep cloning infrastructure state with cross-references (Terraform state snapshots)
 
 16:40 Closing Sprint:
 
@@ -1330,7 +1410,12 @@ terraform plan  # Should match reality
 
 ---
 
-15:50 Logic & DSA: 1. Easy: Implement Queue using Stacks (state machines - maps to Terraform state transitions).
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Implement Queue using Stacks** - https://leetcode.com/problems/implement-queue-using-stacks/
+   - SRE Context: State machines for Terraform state transitions and workflow orchestration
+2. **Medium: Evaluate Reverse Polish Notation** - https://leetcode.com/problems/evaluate-reverse-polish-notation/
+   - SRE Context: Processing stack-based metric calculations in alerting rules (PromQL)
 2. Medium: Evaluate Reverse Polish Notation (dependency resolution - maps to Terraform resource DAG).
 
 16:40 Closing Sprint:
@@ -1432,7 +1517,12 @@ kubectl get secret db-secret -o yaml
 
 **Achieve**: Understand least-privilege design, BoundServiceAccountTokenVolume, OIDC token flow. Master secrets management (sealed-secrets, external-secrets, Vault integration). **Never store secrets in Git!**
 
-15:50 Logic & DSA: 1. Easy: Diameter of Binary Tree (trust chains - maps to certificate chains).
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Diameter of Binary Tree** - https://leetcode.com/problems/diameter-of-binary-tree/
+   - SRE Context: Measuring trust chain depth in certificate chains or dependency graphs
+2. **Medium: Validate Binary Search Tree** - https://leetcode.com/problems/validate-binary-search-tree/
+   - SRE Context: Validating configuration hierarchies and access control policies
 2. Medium: Validate Binary Search Tree (access control hierarchy validation).
 
 16:40 Closing Sprint:
@@ -1557,7 +1647,12 @@ argocd app sync my-app
 
 **Achieve**: Master ordinal index (web-0, web-1, web-2), PVC retention, podManagementPolicy (OrderedReady vs Parallel). Understand GitOps principles (Git as single source of truth), ArgoCD sync strategies (auto vs. manual), app-of-apps pattern.
 
-15:50 Logic & DSA: 1. Easy: Invert Binary Tree (state reconciliation - maps to GitOps desired state).
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Invert Binary Tree** - https://leetcode.com/problems/invert-binary-tree/
+   - SRE Context: State reconciliation in GitOps workflows (desired vs actual state)
+2. **Medium: Construct Binary Tree from Preorder and Inorder** - https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+   - SRE Context: Reconstructing dependency trees from deployment logs and audit trails
 2. Medium: Construct Binary Tree from Preorder and Inorder (DAG construction - maps to ArgoCD app dependencies).
 
 16:40 Closing Sprint:
@@ -1692,7 +1787,12 @@ gh repo edit --enable-branch-protection main \
 
 **Achieve**: Master CI/CD stages, pipeline-as-code, security gates (SAST, DAST, SCA). Understand shift-left security, artifact attestation, supply chain security (SLSA framework).
 
-15:50 Logic & DSA: 1. Easy: Balanced Binary Tree (build validation - maps to CI health checks).
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Balanced Binary Tree** - https://leetcode.com/problems/balanced-binary-tree/
+   - SRE Context: Build validation and CI health checks for deployment pipelines
+2. **Medium: Flatten Binary Tree to Linked List** - https://leetcode.com/problems/flatten-binary-tree-to-linked-list/
+   - SRE Context: Linearizing nested configuration hierarchies for serialization
 2. Medium: Flatten Binary Tree to Linked List (pipeline stage linearization).
 
 16:40 Closing Sprint:
@@ -1762,7 +1862,12 @@ curl -s 'http://localhost:9090/api/v1/label/__name__/values' | \
 
 **Achieve**: Explain why high cardinality kills Prometheus memory (each unique label combination = new time series = more RAM). 1M series ≈ 1-2GB RAM.
 
-15:50 Logic & DSA: 1. Easy: Kth Largest Element in a Stream.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Kth Largest Element in a Stream** - https://leetcode.com/problems/kth-largest-element-in-a-stream/
+   - SRE Context: Tracking top-K slowest requests or highest resource consumers in real-time
+2. **Medium: Kth Largest Element in an Array** - https://leetcode.com/problems/kth-largest-element-in-an-array/
+   - SRE Context: Finding percentile values in latency distributions (P95, P99)
 2. Medium: Kth Largest Element in an Array (Heap logic).
 
 16:40 Closing Sprint:
@@ -2158,7 +2263,12 @@ SLO = 99.99%  # Highest, if users can't log in, they can't do anything
 
 ---
 
-15:50 Logic & DSA: 1. Easy: Contains Duplicate.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Contains Duplicate** - https://leetcode.com/problems/contains-duplicate/
+   - SRE Context: Detecting duplicate entries in distributed tracing or log deduplication
+2. **Medium: Product of Array Except Self** - https://leetcode.com/problems/product-of-array-except-self/
+   - SRE Context: Calculating aggregate metrics excluding specific components (system-wide impact)
 2. Medium: Product of Array Except Self.
 
 16:40 Closing Sprint:
@@ -2277,7 +2387,12 @@ trivy image myapp:latest --exit-code 1 --severity CRITICAL
 
 **Achieve**: Understand container security layers (image scanning → admission control → runtime detection). Master admission controllers, Pod Security Standards (restricted/baseline/privileged), runtime detection (Falco) vs. prevention (OPA).
 
-15:50 Logic & DSA: 1. Easy: Missing Number (anomaly detection - maps to security outliers).
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Missing Number** - https://leetcode.com/problems/missing-number/
+   - SRE Context: Anomaly detection for missing sequence numbers in distributed logs
+2. **Medium: Find the Duplicate Number** - https://leetcode.com/problems/find-the-duplicate-number/
+   - SRE Context: Identifying duplicate resource allocations or conflicting configuration entries
 2. Medium: Find the Duplicate Number (finding compromised containers in fleet).
 
 16:40 Closing Sprint:
@@ -2363,7 +2478,12 @@ Soft Skills Practice:
 - "Our database is experiencing high replication lag" → Executive version: "Payment processing may be delayed 2-3 minutes. No data loss risk. ETA to resolution: 30 minutes."
 - Draft 3 incident update templates: Initial notification, In-progress update, Resolution notice.
 
-15:50 Logic & DSA: 1. Easy: Max Depth of Binary Tree (incident escalation hierarchy).
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Max Depth of Binary Tree** - https://leetcode.com/problems/maximum-depth-of-binary-tree/
+   - SRE Context: Measuring incident escalation hierarchy depth or service dependency layers
+2. **Medium: Binary Tree Level Order Traversal** - https://leetcode.com/problems/binary-tree-level-order-traversal/
+   - SRE Context: Processing deployment waves or cascading configuration updates by level
 2. Medium: Binary Tree Level Order Traversal (BFS for incident triage - check high-priority services first).
 
 16:40 Closing Sprint:
@@ -2478,7 +2598,12 @@ groups:
 
 **Achieve**: Understand alert fatigue (too many alerts → ignored → incidents missed). Differentiate **symptom alerts** (page: users affected) vs. **cause alerts** (ticket: might cause issue later).
 
-15:50 Logic & DSA: 1. Easy: Symmetric Tree.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Symmetric Tree** - https://leetcode.com/problems/symmetric-tree/
+   - SRE Context: Validating symmetry in multi-region active-active deployments
+2. **Medium: Binary Tree Zigzag Level Order Traversal** - https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/
+   - SRE Context: Alternating deployment strategies across availability zones
 2. Medium: Binary Tree Zigzag Level Order Traversal.
 
 16:40 Closing Sprint:
@@ -2593,7 +2718,12 @@ pyroscope.Start(pyroscope.Config{
 
 **Achieve**: Understand trade-offs: Prometheus vs. VictoriaMetrics (cost: 50% less storage, scale: 10x more metrics, compatibility: PromQL), Jaeger vs. Tempo (backend: object storage vs. Cassandra), commercial vs. open-source (Datadog: $$$, better UX; open-source: free, self-managed).
 
-15:50 Logic & DSA: 1. Easy: Merge Sorted Array (merging time-series from multiple sources).
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Merge Sorted Array** - https://leetcode.com/problems/merge-sorted-array/
+   - SRE Context: Merging time-series metrics from multiple Prometheus instances
+2. **Medium: Sort Colors** - https://leetcode.com/problems/sort-colors/
+   - SRE Context: Categorizing alerts by severity (Critical, Warning, Info) in-place
 2. Medium: Sort Colors (categorizing metrics by severity - P0/P1/P2).
 
 16:40 Closing Sprint:
@@ -2699,7 +2829,12 @@ kubectl delete stresschaos cpu-stress
 
 **Achieve**: Understand **Blast Radius** (limit % of fleet affected), **Steady State Hypothesis** (define "normal" before experiment), **Game Days** (scheduled chaos testing with team observing).
 
-15:50 Logic & DSA: 1. Easy: Pascals Triangle.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Pascal's Triangle** - https://leetcode.com/problems/pascals-triangle/
+   - SRE Context: Computing binomial coefficients for capacity planning scenarios
+2. **Medium: Unique Paths** - https://leetcode.com/problems/unique-paths/
+   - SRE Context: Calculating possible routing paths in network topology or service mesh
 2. Medium: Unique Paths (Grid DP).
 
 16:40 Closing Sprint:
@@ -2851,7 +2986,12 @@ kubectl exec envoy-pod -- curl -s http://localhost:9901/stats | grep circuit_bre
 
 **Achieve**: Compare **Round-Robin** (equal distribution), **Least-Request** (send to least busy), **Consistent Hash** (sticky sessions). Master **active** (periodic health probe) vs. **passive** (outlier detection based on errors) health checks.
 
-15:50 Logic & DSA: 1. Easy: Single Number.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Single Number** - https://leetcode.com/problems/single-number/
+   - SRE Context: Finding the unique outlier in distributed consensus scenarios
+2. **Medium: Find Peak Element** - https://leetcode.com/problems/find-peak-element/
+   - SRE Context: Identifying traffic spikes or resource usage peaks in monitoring data
 2. Medium: Find Peak Element.
 
 16:40 Closing Sprint:
@@ -2966,7 +3106,12 @@ python3 consistent_hashing.py
 
 **Achieve**: Understand Consistent Hashing as the backbone of CDNs (Akamai, Cloudflare), Load Balancers (Envoy, HAProxy), and distributed caches (Redis Cluster, Memcached). **Key insight**: Adding 1 node out of N only migrates ~1/N keys, vs. modulo sharding which migrates ~(N-1)/N keys.
 
-15:50 Logic & DSA: 1. Easy: Path Sum.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Path Sum** - https://leetcode.com/problems/path-sum/
+   - SRE Context: Validating complete request paths meet SLA latency budgets
+2. **Medium: Subarray Sum Equals K** - https://leetcode.com/problems/subarray-sum-equals-k/
+   - SRE Context: Finding time windows where cumulative error rate equals threshold
 2. Medium: Subarray Sum Equals K (Prefix sum logic).
 
 16:40 Closing Sprint:
@@ -3102,7 +3247,10 @@ wrk -t10 -c100 -d30s http://localhost:8080/popular-item
 - **Write-Through**: Write to cache + DB synchronously (slower writes, always fresh)
 - **Write-Back**: Write to cache, async write to DB (fast writes, risk of data loss)
 
-15:50 Logic & DSA: 1. Easy: Lowest Common Ancestor of a BST.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Lowest Common Ancestor of a BST** - https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
+   - SRE Context: Finding common parent service in microservices dependency tree
 2. Medium: Design Twitter (Combining OOD and DSA).
 
 16:40 Closing Sprint:
@@ -3202,7 +3350,12 @@ SELECT pg_reload_conf();
 
 **Achieve**: Master **synchronous** (zero RPO, slower writes, blocks if replica down) vs. **asynchronous** (fast writes, data loss risk, non-blocking) replication trade-offs. Understand **split-brain** (two primaries accepting writes → data divergence).
 
-15:50 Logic & DSA: 1. Easy: Happy Number.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Happy Number** - https://leetcode.com/problems/happy-number/
+   - SRE Context: Detecting convergence or infinite loops in retry/backoff algorithms
+2. **Medium: Word Break** - https://leetcode.com/problems/word-break/
+   - SRE Context: Parsing and validating composite log messages or metric identifiers
 2. Medium: Word Break (DP with memoization).
 
 16:40 Closing Sprint:
@@ -3301,7 +3454,12 @@ curl -X GET "https://api.cloudflare.com/client/v4/zones/{zone_id}/analytics/dash
 
 **Achieve**: Understand **PoP placement** (place servers geographically near users), **Anycast routing** (same IP announced from multiple locations, BGP routes to nearest), **TLS termination at edge** (decrypt at edge, faster for users).
 
-15:50 Logic & DSA: 1. Easy: Isomorphic Strings.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Isomorphic Strings** - https://leetcode.com/problems/isomorphic-strings/
+   - SRE Context: Mapping service names across different environments (dev, staging, prod)
+2. **Hard: LRU Cache** - https://leetcode.com/problems/lru-cache/
+   - SRE Context: Implementing cache eviction policies for CDN or application caches
 2. Medium: LRU Cache (Implement doubly-linked list + HashMap).
 
 16:40 Closing Sprint:
@@ -3409,7 +3567,12 @@ for i in range(150):
 
 **Achieve**: Master **distributed rate limiting** (use Redis for shared state across API servers). Understand **429 response strategies** (return Retry-After header, exponential backoff).
 
-15:50 Logic & DSA: 1. Easy: Majority Element.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Majority Element** - https://leetcode.com/problems/majority-element/
+   - SRE Context: Finding most common error type in distributed logging
+2. **Medium: Container With Most Water** - https://leetcode.com/problems/container-with-most-water/
+   - SRE Context: Optimizing resource allocation to maximize throughput capacity
 2. Medium: Container With Most Water.
 
 16:40 Closing Sprint:
@@ -3529,7 +3692,12 @@ def route_user_data(user_location, data):
 
 **Achieve**: Understand **Active-Active** (both regions active, complex sync) vs. **Active-Passive** (standby, simpler, slower failover). Master **data sovereignty** (GDPR: EU data must stay in EU, not cross borders).
 
-15:50 Logic & DSA: 1. Easy: Power of Two.
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Power of Two** - https://leetcode.com/problems/power-of-two/
+   - SRE Context: Validating resource allocations follow binary scaling patterns
+2. **Medium: 3Sum** - https://leetcode.com/problems/3sum/
+   - SRE Context: Finding resource combinations that satisfy budget constraints
 2. Medium: 3Sum (Two-pointer technique).
 
 16:40 Closing Sprint:
@@ -3686,7 +3854,12 @@ for option, cost in costs.items():
 
 **Achieve**: Master **FinOps principles** (unit economics: cost per transaction, showback/chargeback: allocate costs to teams, tagging strategy: env=prod, team=payments). Understand **cloud waste**: idle (no usage), over-provisioning (unused capacity), zombies (unattached volumes), snapshots (old backups). Learn **commitment strategies**: 1-year RI (40% discount, moderate risk), 3-year RI (60% discount, high risk), Spot (70% discount, interruptions).
 
-15:50 Logic & DSA: 1. Easy: Reverse Bits (cost bit-packing optimization).
+**15:50 Logic & DSA (40 min):**
+
+1. **Easy: Reverse Bits** - https://leetcode.com/problems/reverse-bits/
+   - SRE Context: Bit manipulation for cost optimization in resource bit-packing
+2. **Hard: Gas Station** - https://leetcode.com/problems/gas-station/
+   - SRE Context: Finding optimal starting point for cyclic deployment or failover sequences
 2. Medium: Gas Station (optimal resource allocation - greedy algorithm maps to spot instance strategy).
 
 16:40 Closing Sprint:
@@ -3717,9 +3890,12 @@ Practice STAR method for these common questions:
 6. "What's your approach to on-call rotations and preventing burnout?"
 7. "Tell me about a time you made a mistake that caused an outage."
 
-15:50 Logic & DSA (40 min - timed practice):
-1. Medium: Longest Consecutive Sequence (dependency analysis).
-2. Hard: Trapping Rain Water (resource pooling/buffering - maps to capacity planning).
+**15:50 Logic & DSA (40 min - timed practice):**
+
+1. **Medium: Longest Consecutive Sequence** - https://leetcode.com/problems/longest-consecutive-sequence/
+   - SRE Context: Analyzing longest consecutive uptime or dependency chain analysis
+2. **Hard: Trapping Rain Water** - https://leetcode.com/problems/trapping-rain-water/
+   - SRE Context: Resource pooling and buffering strategies for capacity planning
 
 16:40 Closing Sprint (20 min):
 
