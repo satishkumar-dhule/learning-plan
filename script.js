@@ -86,7 +86,47 @@ function rebuildNavigation() {
     rebuildNavSection('Week 4', sections.week4, 4);
     rebuildNavSection('Appendices', sections.appendix, 5);
 
-    console.log('Navigation rebuilt successfully');
+    // Check for missing days
+    const foundDays = new Set();
+    [...sections.week1, ...sections.week2, ...sections.week3, ...sections.week4].forEach(item => {
+        const match = /Day (\d+)/i.exec(item.text);
+        if (match) foundDays.add(Number.parseInt(match[1], 10));
+    });
+
+    const missingDays = [];
+    for (let i = 1; i <= 30; i++) {
+        if (!foundDays.has(i)) missingDays.push(i);
+    }
+
+    if (missingDays.length > 0) {
+        console.warn(`⚠️ Missing days in markdown: ${missingDays.join(', ')}`);
+        showMissingDaysBanner(missingDays);
+    }
+
+    console.log('✅ Navigation rebuilt successfully', {
+        setup: sections.setup.length,
+        week1: sections.week1.length,
+        week2: sections.week2.length,
+        week3: sections.week3.length,
+        week4: sections.week4.length,
+        appendix: sections.appendix.length,
+        missingDays: missingDays.length
+    });
+}
+
+function showMissingDaysBanner(missingDays) {
+    const content = document.getElementById('content');
+    const banner = document.createElement('div');
+    banner.className = 'callout callout-warning';
+    banner.style.marginBottom = '2rem';
+    banner.innerHTML = `
+        <h3>⚠️ Note: Some Days Are Missing</h3>
+        <p>The following days are not present in the markdown file: <strong>Day ${missingDays.join(', Day ')}</strong></p>
+        <p style="font-size: 0.875rem; opacity: 0.8; margin-top: 0.5rem;">
+            These appear as grayed-out items in the navigation sidebar.
+        </p>
+    `;
+    content.insertBefore(banner, content.firstChild);
 }
 
 function categorizeHeaders(headers) {
@@ -99,6 +139,8 @@ function categorizeHeaders(headers) {
         appendix: []
     };
 
+    const foundDays = new Set();
+
     headers.forEach(header => {
         const text = header.textContent;
         const id = header.id;
@@ -107,16 +149,21 @@ function categorizeHeaders(headers) {
         const dayMatch = /Day (\d+)/i.exec(text);
         if (dayMatch) {
             const day = Number.parseInt(dayMatch[1], 10);
-            const shortText = `Day ${day}: ${text.split(':')[1]?.trim().substring(0, 30) || text.substring(0, 40)}`;
+            foundDays.add(day);
+
+            // Get subtitle after colon, limiting length
+            const parts = text.split(':');
+            const subtitle = parts[1]?.trim().substring(0, 30) || '';
+            const shortText = subtitle ? `Day ${day}: ${subtitle}` : `Day ${day}`;
 
             if (day >= 1 && day <= 7) {
-                sections.week1.push({ id, text: shortText, fullText: text });
+                sections.week1.push({ id, text: shortText, fullText: text, day });
             } else if (day >= 8 && day <= 14) {
-                sections.week2.push({ id, text: shortText, fullText: text });
+                sections.week2.push({ id, text: shortText, fullText: text, day });
             } else if (day >= 15 && day <= 21) {
-                sections.week3.push({ id, text: shortText, fullText: text });
+                sections.week3.push({ id, text: shortText, fullText: text, day });
             } else if (day >= 22 && day <= 30) {
-                sections.week4.push({ id, text: shortText, fullText: text });
+                sections.week4.push({ id, text: shortText, fullText: text, day });
             }
             return;
         }
@@ -137,7 +184,36 @@ function categorizeHeaders(headers) {
         }
     });
 
+    // Add placeholders for missing days
+    addMissingDayPlaceholders(sections, foundDays);
+
     return sections;
+}
+
+function addMissingDayPlaceholders(sections, foundDays) {
+    const weekRanges = [
+        { section: 'week1', start: 1, end: 7 },
+        { section: 'week2', start: 8, end: 14 },
+        { section: 'week3', start: 15, end: 21 },
+        { section: 'week4', start: 22, end: 30 }
+    ];
+
+    weekRanges.forEach(({ section, start, end }) => {
+        for (let day = start; day <= end; day++) {
+            if (!foundDays.has(day)) {
+                sections[section].push({
+                    id: null,
+                    text: `Day ${day}: (Not in markdown)`,
+                    fullText: `Day ${day} is missing from the markdown file`,
+                    day,
+                    missing: true
+                });
+            }
+        }
+
+        // Sort by day number to keep them in order
+        sections[section].sort((a, b) => (a.day || 0) - (b.day || 0));
+    });
 }
 
 function rebuildNavSection(title, items, sectionIndex) {
@@ -146,18 +222,72 @@ function rebuildNavSection(title, items, sectionIndex) {
 
     const navSection = navSections[sectionIndex];
     const ul = navSection.querySelector('ul');
-    if (!ul || items.length === 0) return;
+    if (!ul) return;
 
     // Clear existing items
     ul.innerHTML = '';
 
-    // Add new items
+    // If no items, show a message
+    if (items.length === 0) {
+        const li = document.createElement('li');
+        li.style.opacity = '0.5';
+        li.style.fontStyle = 'italic';
+        li.textContent = 'No items found';
+        ul.appendChild(li);
+        return;
+    }
+
+    // Add new items with click handlers
     items.forEach(item => {
         const li = document.createElement('li');
+
+        // Handle missing items differently
+        if (item.missing) {
+            const span = document.createElement('span');
+            span.textContent = item.text;
+            span.style.opacity = '0.4';
+            span.style.fontStyle = 'italic';
+            span.style.cursor = 'not-allowed';
+            span.style.padding = '0.625rem 1.25rem';
+            span.style.display = 'block';
+            span.style.fontSize = '0.875rem';
+            span.title = item.fullText;
+            li.appendChild(span);
+            ul.appendChild(li);
+            return;
+        }
+
         const a = document.createElement('a');
         a.href = `#${item.id}`;
         a.textContent = item.text;
         a.title = item.fullText;
+
+        // Add click handler directly
+        a.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetElement = document.getElementById(item.id);
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+                // Update active state
+                document.querySelectorAll('.nav-section a').forEach(link => {
+                    link.classList.remove('active');
+                });
+                a.classList.add('active');
+
+                // Close mobile menu if open
+                if (globalThis.innerWidth <= 1024) {
+                    toggleMobileMenu();
+                }
+
+                // Update URL
+                history.pushState(null, null, `#${item.id}`);
+            }
+        });
+
         li.appendChild(a);
         ul.appendChild(li);
     });
@@ -345,7 +475,8 @@ function handleHashNavigation() {
 // Initialize All Features
 // ===========================
 function initializeFeatures() {
-    initializeNavigation();
+    // Navigation click handlers are now attached during rebuild
+    // initializeNavigation(); // No longer needed
     initializeMobileMenu();
     initializeSearch();
     initializeBackToTop();
