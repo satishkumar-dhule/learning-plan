@@ -1,0 +1,1054 @@
+{
+  "1": {
+    "day": 1,
+    "week": 1,
+    "title": "Process Lifecycle & System Calls",
+    "description": "Master fork(), clone(), execve(), wait4() and learn strace for production debugging.",
+    "topics": [
+      "fork() vs clone() vs vfork()",
+      "Copy-on-Write (COW) optimization",
+      "System call tracing with strace",
+      "/proc filesystem inspection",
+      "Zombie vs orphan processes"
+    ],
+    "resources": [
+      {
+        "title": "Linux System Programming - Ch. 3",
+        "url": "https://learning.oreilly.com/library/view/linux-system-programming/9781449341527/",
+        "duration": "15 min",
+        "type": "docs"
+      },
+      {
+        "title": "Brendan Gregg - Linux Systems Performance",
+        "url": "https://www.youtube.com/watch?v=fhBgNjU8O7g",
+        "duration": "45 min",
+        "type": "video"
+      },
+      {
+        "title": "strace Cheat Sheet",
+        "url": "https://github.com/DominicBreuker/strace-cheat-sheet",
+        "duration": "10 min",
+        "type": "article"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Two Sum",
+        "difficulty": "easy",
+        "url": "https://leetcode.com/problems/two-sum/",
+        "description": "Hash table lookups = O(1) like cache lookup in distributed systems"
+      },
+      {
+        "title": "Group Anagrams",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/group-anagrams/",
+        "description": "Categorizing similar log patterns for log aggregation"
+      }
+    ]
+  },
+  "2": {
+    "day": 2,
+    "week": 1,
+    "title": "Advanced I/O & The VFS Layer",
+    "description": "Understand page cache, dirty pages, and fsync() performance impact.",
+    "topics": [
+      "Page cache and buffer cache",
+      "Dirty page writeback",
+      "fsync() and fdatasync()",
+      "I/O scheduling algorithms",
+      "Inode and dentry caches"
+    ],
+    "resources": [
+      {
+        "title": "Linux I/O and Storage Performance",
+        "url": "https://www.youtube.com/watch?v=EqO1uJ1d5uw",
+        "duration": "18 min",
+        "type": "video"
+      },
+      {
+        "title": "Brendan Gregg - I/O Performance",
+        "url": "https://www.brendangregg.com/linuxperf.html",
+        "duration": "20 min",
+        "type": "article"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Valid Anagram",
+        "difficulty": "easy",
+        "url": "https://leetcode.com/problems/valid-anagram/",
+        "description": "String comparison for configuration validation"
+      },
+      {
+        "title": "Top K Frequent Elements",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/top-k-frequent-elements/",
+        "description": "Analyzing top error types in logs"
+      }
+    ]
+  },
+  "3": {
+    "day": 3,
+    "week": 1,
+    "title": "TCP Internals & Cloud Networking",
+    "description": "Master TCP/IP, VPC design, and cloud networking fundamentals.",
+    "topics": [
+      "TCP three-way handshake",
+      "Congestion control (Cubic, BBR)",
+      "Bandwidth-Delay Product (BDP)",
+      "AWS VPC architecture",
+      "Security Groups vs NACLs"
+    ],
+    "resources": [
+      {
+        "title": "Hussein Nasser - TCP/IP Explained",
+        "url": "https://www.youtube.com/watch?v=qqRYkcta6IE",
+        "duration": "20 min",
+        "type": "video"
+      },
+      {
+        "title": "AWS VPC Fundamentals",
+        "url": "https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Valid Parentheses",
+        "difficulty": "easy",
+        "url": "https://leetcode.com/problems/valid-parentheses/",
+        "description": "Validating nested configuration syntax"
+      },
+      {
+        "title": "Min Stack",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/min-stack/",
+        "description": "Tracking minimum latency across time windows"
+      }
+    ]
+  },
+  "4": {
+    "day": 4,
+    "week": 1,
+    "title": "HTTP/3 & The QUIC Protocol",
+    "description": "Understand HTTP/3, QUIC, and modern web transport protocols.",
+    "topics": [
+      "HTTP/2 vs HTTP/3 differences",
+      "QUIC protocol internals",
+      "Multiplexing without head-of-line blocking",
+      "TLS 1.3 integration",
+      "HTTP/3 deployment considerations"
+    ],
+    "resources": [
+      {
+        "title": "HTTP/3 Explained",
+        "url": "https://http3-explained.haxx.se/",
+        "duration": "30 min",
+        "type": "docs"
+      },
+      {
+        "title": "QUIC Protocol Overview",
+        "url": "https://datatracker.ietf.org/doc/html/draft-ietf-quic-transport",
+        "duration": "20 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "HTTP Methods Quiz",
+        "difficulty": "easy",
+        "description": "Understand HTTP methods and their use cases"
+      }
+    ]
+  },
+  "5": {
+    "day": 5,
+    "week": 1,
+    "title": "Memory Management, OOM Killer & Cloud IAM/Compute",
+    "description": "Master memory management, OOM killer, and cloud identity/compute services.",
+    "topics": [
+      "Virtual memory and paging",
+      "OOM killer mechanics",
+      "oom_score_adj tuning",
+      "AWS IAM roles and policies",
+      "EC2 instance types and sizing"
+    ],
+    "resources": [
+      {
+        "title": "Linux Memory Management",
+        "url": "https://www.kernel.org/doc/gorman/",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "AWS IAM Best Practices",
+        "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+        "duration": "20 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Memory Puzzle",
+        "difficulty": "medium",
+        "description": "Debug memory-related issues"
+      }
+    ]
+  },
+  "6": {
+    "day": 6,
+    "week": 1,
+    "title": "eBPF & Kernel Observability",
+    "description": "Learn eBPF for kernel-level observability and tracing.",
+    "topics": [
+      "eBPF fundamentals",
+      "BCC and bpftrace tools",
+      "Kernel tracing with eBPF",
+      "Performance monitoring",
+      "Security observability"
+    ],
+    "resources": [
+      {
+        "title": "Brendan Gregg - eBPF",
+        "url": "https://www.brendangregg.com/ebpf.html",
+        "duration": "30 min",
+        "type": "article"
+      },
+      {
+        "title": "eBPF.io",
+        "url": "https://ebpf.io/",
+        "duration": "20 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Trace a Process",
+        "difficulty": "medium",
+        "description": "Use bpftrace to trace system calls"
+      }
+    ]
+  },
+  "7": {
+    "day": 7,
+    "week": 1,
+    "title": "Distributed Tracing, OpenTelemetry & Cloud Observability",
+    "description": "Master distributed tracing and OpenTelemetry for cloud observability.",
+    "topics": [
+      "Distributed tracing concepts",
+      "OpenTelemetry SDK and API",
+      "Trace context propagation",
+      "Metrics and logs correlation",
+      "Cloud observability best practices"
+    ],
+    "resources": [
+      {
+        "title": "OpenTelemetry Documentation",
+        "url": "https://opentelemetry.io/docs/",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "Distributed Tracing in Practice",
+        "url": "https://www.oreilly.com/library/view/distributed-systems-observability/9781492034952/",
+        "duration": "60 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Trace a Request",
+        "difficulty": "medium",
+        "description": "Set up tracing for a simple service"
+      }
+    ]
+  },
+  "8": {
+    "day": 8,
+    "week": 2,
+    "title": "The etcd Distributed State Machine",
+    "description": "Understand etcd as the Kubernetes control plane database.",
+    "topics": [
+      "Raft consensus algorithm",
+      "etcd architecture",
+      "Watch API and changes",
+      "Performance tuning",
+      "Backup and recovery"
+    ],
+    "resources": [
+      {
+        "title": "etcd Documentation",
+        "url": "https://etcd.io/docs/",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "Raft Consensus Algorithm",
+        "url": "https://raft.github.io/",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "etcd Operations",
+        "difficulty": "medium",
+        "description": "Perform basic etcd operations"
+      }
+    ]
+  },
+  "9": {
+    "day": 9,
+    "week": 2,
+    "title": "CNI & Overlay Networking",
+    "description": "Master Container Network Interface and Kubernetes networking.",
+    "topics": [
+      "CNI plugin architecture",
+      "Overlay networks (Flannel, Calico)",
+      "Pod-to-pod communication",
+      "Service networking",
+      "Network policies"
+    ],
+    "resources": [
+      {
+        "title": "CNI Specification",
+        "url": "https://github.com/containernetworking/cni",
+        "duration": "30 min",
+        "type": "docs"
+      },
+      {
+        "title": "Kubernetes Networking",
+        "url": "https://kubernetes.io/docs/concepts/cluster-administration/networking/",
+        "duration": "45 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Network Policy",
+        "difficulty": "medium",
+        "description": "Create network policies for a namespace"
+      }
+    ]
+  },
+  "10": {
+    "day": 10,
+    "week": 2,
+    "title": "Persistent Data & CSI",
+    "description": "Understand Kubernetes storage and Container Storage Interface.",
+    "topics": [
+      "PersistentVolume and PersistentVolumeClaim",
+      "StorageClass and dynamic provisioning",
+      "CSI driver architecture",
+      "Backup strategies (Velero)",
+      "StatefulSet storage patterns"
+    ],
+    "resources": [
+      {
+        "title": "Kubernetes Storage",
+        "url": "https://kubernetes.io/docs/concepts/storage/",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "CSI Specification",
+        "url": "https://github.com/container-storage-interface/spec",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "PV and PVC",
+        "difficulty": "medium",
+        "description": "Create and use persistent volumes"
+      }
+    ]
+  },
+  "11": {
+    "day": 11,
+    "week": 2,
+    "title": "Terraform Fundamentals & Infrastructure as Code",
+    "description": "Master Terraform for infrastructure provisioning.",
+    "topics": [
+      "Terraform configuration language",
+      "State management",
+      "Modules and providers",
+      "CI/CD integration",
+      "Best practices and security"
+    ],
+    "resources": [
+      {
+        "title": "Terraform Documentation",
+        "url": "https://developer.hashicorp.com/terraform/docs",
+        "duration": "60 min",
+        "type": "docs"
+      },
+      {
+        "title": "Terraform Best Practices",
+        "url": "https://developer.hashicorp.com/terraform/tutorials/aws-get-started",
+        "duration": "45 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Provision Infrastructure",
+        "difficulty": "medium",
+        "description": "Create AWS resources with Terraform"
+      }
+    ]
+  },
+  "12": {
+    "day": 12,
+    "week": 2,
+    "title": "Kubernetes Security, RBAC, OIDC & Secrets Management",
+    "description": "Master Kubernetes security best practices.",
+    "topics": [
+      "RBAC and role definitions",
+      "Pod security policies",
+      "OIDC authentication",
+      "Secrets management (Vault, Sealed Secrets)",
+      "Network policies and CNI security"
+    ],
+    "resources": [
+      {
+        "title": "Kubernetes Security Best Practices",
+        "url": "https://kubernetes.io/docs/concepts/security/",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "RBAC Documentation",
+        "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "RBAC Configuration",
+        "difficulty": "medium",
+        "description": "Create roles and role bindings"
+      }
+    ]
+  },
+  "13": {
+    "day": 13,
+    "week": 2,
+    "title": "StatefulSets, Headless Services & GitOps with ArgoCD",
+    "description": "Master stateful applications and GitOps workflows.",
+    "topics": [
+      "StatefulSet patterns",
+      "Headless services for stateful apps",
+      "Persistent volume claims per pod",
+      "ArgoCD architecture",
+      "GitOps best practices"
+    ],
+    "resources": [
+      {
+        "title": "StatefulSet Documentation",
+        "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
+        "duration": "30 min",
+        "type": "docs"
+      },
+      {
+        "title": "ArgoCD Documentation",
+        "url": "https://argo-cd.readthedocs.io/",
+        "duration": "45 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Deploy Stateful Application",
+        "difficulty": "hard",
+        "description": "Deploy a database with StatefulSet"
+      }
+    ]
+  },
+  "14": {
+    "day": 14,
+    "week": 2,
+    "title": "CI/CD Pipelines & Pipeline Security (DevSecOps)",
+    "description": "Master CI/CD pipelines and security integration.",
+    "topics": [
+      "Pipeline architecture",
+      "Secrets management in CI/CD",
+      "SBOM and dependency scanning",
+      "Container image scanning",
+      "Pipeline security best practices"
+    ],
+    "resources": [
+      {
+        "title": "GitHub Actions Documentation",
+        "url": "https://docs.github.com/en/actions",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "DevSecOps Best Practices",
+        "url": "https://owasp.org/www-project-devsecops/",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Secure Pipeline",
+        "difficulty": "medium",
+        "description": "Create a secure CI/CD pipeline"
+      }
+    ]
+  },
+  "15": {
+    "day": 15,
+    "week": 3,
+    "title": "PromQL & High-Cardinality",
+    "description": "Master PromQL for Prometheus metrics querying.",
+    "topics": [
+      "PromQL basics and operators",
+      "Aggregation and functions",
+      "High-cardinality issues",
+      "Metric naming best practices",
+      "Alerting rules"
+    ],
+    "resources": [
+      {
+        "title": "PromQL Documentation",
+        "url": "https://prometheus.io/docs/prometheus/latest/querying/basics/",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "High-Cardinality Guide",
+        "url": "https://grafana.com/docs/grafana-cloud/send-data/prometheus/promql/high-cardinality/",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "PromQL Queries",
+        "difficulty": "medium",
+        "description": "Write PromQL queries for common scenarios"
+      }
+    ]
+  },
+  "16": {
+    "day": 16,
+    "week": 3,
+    "title": "SLOs, SLIs, and Error Budgets",
+    "description": "Master reliability metrics and error budget management.",
+    "topics": [
+      "SLI definition and measurement",
+      "SLO setting and tuning",
+      "Error budget calculation",
+      "Incident response based on error budget",
+      "Monitoring and alerting"
+    ],
+    "resources": [
+      {
+        "title": "Google SRE Handbook - SLOs",
+        "url": "https://sre.google/sre-book/service-level-objectives/",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "Error Budgets Explained",
+        "url": "https://cloud.google.com/blog/products/operations/google-sre-handbook-how-to-set-error-budgets",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Define SLOs",
+        "difficulty": "medium",
+        "description": "Define SLOs for a sample service"
+      }
+    ]
+  },
+  "17": {
+    "day": 17,
+    "week": 3,
+    "title": "Container Security & Policy Enforcement (OPA, Falco)",
+    "description": "Master container security and policy enforcement.",
+    "topics": [
+      "Container image scanning",
+      "Runtime security with Falco",
+      "Policy enforcement with OPA",
+      "Security contexts and PSPs",
+      "Supply chain security"
+    ],
+    "resources": [
+      {
+        "title": "Falco Documentation",
+        "url": "https://falco.org/docs/",
+        "duration": "30 min",
+        "type": "docs"
+      },
+      {
+        "title": "OPA Gatekeeper",
+        "url": "https://open-policy-agent.github.io/gatekeeper/website/",
+        "duration": "45 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Security Policy",
+        "difficulty": "hard",
+        "description": "Create OPA policy for Kubernetes"
+      }
+    ]
+  },
+  "18": {
+    "day": 18,
+    "week": 3,
+    "title": "Incident Management, Communication & Stakeholder Updates",
+    "description": "Master incident response and communication.",
+    "topics": [
+      "Incident command system",
+      "Communication templates",
+      "Stakeholder updates",
+      "Post-incident reviews",
+      "Blameless culture"
+    ],
+    "resources": [
+      {
+        "title": "Google SRE Handbook - Incident Response",
+        "url": "https://sre.google/sre-book/incident-response/",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "Postmortem Writing",
+        "url": "https://landing.google.com/sre/sre-book/chapters/postmortem/",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Incident Simulation",
+        "difficulty": "medium",
+        "description": "Participate in incident response drill"
+      }
+    ]
+  },
+  "19": {
+    "day": 19,
+    "week": 3,
+    "title": "Alerting Strategy & Runbooks",
+    "description": "Master alerting design and runbook creation.",
+    "topics": [
+      "Alerting best practices",
+      "Runbook structure and content",
+      "Escalation policies",
+      "On-call rotation",
+      "Alert fatigue prevention"
+    ],
+    "resources": [
+      {
+        "title": "Alerting Best Practices",
+        "url": "https://prometheus.io/docs/practices/alerting/",
+        "duration": "30 min",
+        "type": "docs"
+      },
+      {
+        "title": "Runbook Templates",
+        "url": "https://github.com/github/runbooks",
+        "duration": "20 min",
+        "type": "article"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Create Runbook",
+        "difficulty": "medium",
+        "description": "Write a runbook for a common incident"
+      }
+    ]
+  },
+  "20": {
+    "day": 20,
+    "week": 3,
+    "title": "Modern Observability Stack (VictoriaMetrics, Tempo, Pyroscope)",
+    "description": "Master modern observability tools.",
+    "topics": [
+      "VictoriaMetrics for metrics",
+      "Tempo for traces",
+      "Pyroscope for profiles",
+      "Integration patterns",
+      "Cost optimization"
+    ],
+    "resources": [
+      {
+        "title": "VictoriaMetrics Docs",
+        "url": "https://docs.victoriametrics.com/",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "Tempo Documentation",
+        "url": "https://grafana.com/docs/tempo/latest/",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Set Up Stack",
+        "difficulty": "hard",
+        "description": "Deploy VictoriaMetrics, Tempo, and Pyroscope"
+      }
+    ]
+  },
+  "21": {
+    "day": 21,
+    "week": 3,
+    "title": "Chaos Engineering & Fault Injection",
+    "description": "Master chaos engineering and fault injection testing.",
+    "topics": [
+      "Chaos engineering principles",
+      "Chaos Monkey and similar tools",
+      "Fault injection patterns",
+      "Game days and experiments",
+      "Measuring resilience"
+    ],
+    "resources": [
+      {
+        "title": "Chaos Engineering",
+        "url": "https://principlesofchaos.org/",
+        "duration": "30 min",
+        "type": "docs"
+      },
+      {
+        "title": "Chaos Mesh",
+        "url": "https://chaos-mesh.org/docs/",
+        "duration": "45 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Chaos Experiment",
+        "difficulty": "hard",
+        "description": "Run a chaos experiment on a test cluster"
+      }
+    ]
+  },
+  "22": {
+    "day": 22,
+    "week": 4,
+    "title": "Load Balancing Algorithms & Health Checks",
+    "description": "Master load balancing algorithms and health check strategies.",
+    "topics": [
+      "Round-robin, least connections, IP hash",
+      "Health check types and intervals",
+      "Active vs passive health checks",
+      "Load balancer types (L4 vs L7)",
+      "Cloud load balancer options"
+    ],
+    "resources": [
+      {
+        "title": "NGINX Load Balancing",
+        "url": "https://docs.nginx.com/nginx/admin-guide/load-balancer/",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "AWS Load Balancers",
+        "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/load-balancing.html",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Configure Load Balancer",
+        "difficulty": "medium",
+        "description": "Set up load balancing with health checks"
+      }
+    ]
+  },
+  "23": {
+    "day": 23,
+    "week": 4,
+    "title": "Consistent Hashing & Sharding",
+    "description": "Master consistent hashing and data sharding strategies.",
+    "topics": [
+      "Consistent hashing algorithm",
+      "Sharding strategies",
+      "Rebalancing and growth",
+      "Distributed cache patterns",
+      "Database sharding"
+    ],
+    "resources": [
+      {
+        "title": "Consistent Hashing",
+        "url": "https://en.wikipedia.org/wiki/Consistent_hashing",
+        "duration": "30 min",
+        "type": "article"
+      },
+      {
+        "title": "Sharding Patterns",
+        "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-cloud-architecture-principles/sharding.html",
+        "duration": "45 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Implement Consistent Hashing",
+        "difficulty": "hard",
+        "description": "Write a consistent hashing implementation"
+      }
+    ]
+  },
+  "24": {
+    "day": 24,
+    "week": 4,
+    "title": "Cache Stampede & Mitigation",
+    "description": "Master cache stampede prevention and mitigation strategies.",
+    "topics": [
+      "Cache stampede problem",
+      "Cache locking patterns",
+      "Stale-while-revalidate",
+      "Cache warming strategies",
+      "Distributed cache coordination"
+    ],
+    "resources": [
+      {
+        "title": "Cache Stampede",
+        "url": "https://en.wikipedia.org/wiki/Cache_stampede",
+        "duration": "30 min",
+        "type": "article"
+      },
+      {
+        "title": "Redis Cache Patterns",
+        "url": "https://redis.io/topics/cache-patterns",
+        "duration": "45 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Prevent Stampede",
+        "difficulty": "hard",
+        "description": "Implement cache stampede prevention"
+      }
+    ]
+  },
+  "25": {
+    "day": 25,
+    "week": 4,
+    "title": "Database Replication & Failover",
+    "description": "Master database replication and failover strategies.",
+    "topics": [
+      "Sync vs async replication",
+      "Failover mechanisms",
+      "Read replicas",
+      "Multi-region databases",
+      "Disaster recovery planning"
+    ],
+    "resources": [
+      {
+        "title": "PostgreSQL Replication",
+        "url": "https://www.postgresql.org/docs/current/warm-standby.html",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "Database Failover",
+        "url": "https://aws.amazon.com/rds/features/multi-az/",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Set Up Replication",
+        "difficulty": "hard",
+        "description": "Configure database replication"
+      }
+    ]
+  },
+  "26": {
+    "day": 26,
+    "week": 4,
+    "title": "CDN Architecture & Edge Computing",
+    "description": "Master CDN architecture and edge computing patterns.",
+    "topics": [
+      "CDN caching strategies",
+      "Edge computing platforms",
+      "Dynamic content at edge",
+      "CDN security (WAF, DDoS)",
+      "CDN monitoring and analytics"
+    ],
+    "resources": [
+      {
+        "title": "CDN Best Practices",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Performance/CDN",
+        "duration": "30 min",
+        "type": "docs"
+      },
+      {
+        "title": "Edge Computing",
+        "url": "https://aws.amazon.com/edge/",
+        "duration": "45 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "CDN Configuration",
+        "difficulty": "medium",
+        "description": "Configure CDN for static and dynamic content"
+      }
+    ]
+  },
+  "27": {
+    "day": 27,
+    "week": 4,
+    "title": "Rate Limiting & API Gateway Patterns",
+    "description": "Master rate limiting and API gateway patterns.",
+    "topics": [
+      "Rate limiting algorithms (token bucket, leaky bucket)",
+      "API gateway patterns",
+      "Throttling vs rate limiting",
+      "Rate limiting at edge",
+      "API versioning and deprecation"
+    ],
+    "resources": [
+      {
+        "title": "Rate Limiting Patterns",
+        "url": "https://docs.aws.amazon.com/whitepapers/latest/api-gateway-api-rate-limiting/overview.html",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "API Gateway Best Practices",
+        "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-best-practices.html",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Implement Rate Limiting",
+        "difficulty": "hard",
+        "description": "Set up rate limiting for an API"
+      }
+    ]
+  },
+  "28": {
+    "day": 28,
+    "week": 4,
+    "title": "Multi-Region Deployments & Global Traffic Management",
+    "description": "Master multi-region deployments and traffic routing.",
+    "topics": [
+      "Multi-region architecture",
+      "Global Traffic Manager",
+      "Active-active vs active-passive",
+      "Cross-region replication",
+      "Disaster recovery strategies"
+    ],
+    "resources": [
+      {
+        "title": "Multi-Region Architectures",
+        "url": "https://aws.amazon.com/architecture/multi-region-architecture/",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "Global Traffic Manager",
+        "url": "https://cloud.google.com/architecture/global-traffic-manager",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Multi-Region Setup",
+        "difficulty": "hard",
+        "description": "Design a multi-region deployment"
+      }
+    ]
+  },
+  "29": {
+    "day": 29,
+    "week": 4,
+    "title": "FinOps & Cloud Cost Optimization at Scale",
+    "description": "Master cloud cost optimization and FinOps practices.",
+    "topics": [
+      "Cost monitoring and allocation",
+      "Right-sizing resources",
+      "Reserved instances and savings plans",
+      "Auto-scaling optimization",
+      "FinOps culture and processes"
+    ],
+    "resources": [
+      {
+        "title": "FinOps Framework",
+        "url": "https://www.finops.org/framework/",
+        "duration": "45 min",
+        "type": "docs"
+      },
+      {
+        "title": "AWS Cost Optimization",
+        "url": "https://aws.amazon.com/cost-management/",
+        "duration": "30 min",
+        "type": "docs"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Cost Analysis",
+        "difficulty": "medium",
+        "description": "Analyze and optimize cloud costs"
+      }
+    ]
+  },
+  "30": {
+    "day": 30,
+    "week": 4,
+    "title": "Mock SRE Interview (Technical + Behavioral) & Career Prep",
+    "description": "Final day: Practice interviews and career preparation.",
+    "topics": [
+      "Technical interview questions",
+      "Behavioral interview questions",
+      "System design practice",
+      "Resume and LinkedIn review",
+      "Career roadmap planning"
+    ],
+    "resources": [
+      {
+        "title": "SRE Interview Questions",
+        "url": "https://github.com/alebcay/sre-interview-prep",
+        "duration": "60 min",
+        "type": "article"
+      },
+      {
+        "title": "System Design Primer",
+        "url": "https://github.com/donnemartin/system-design-primer",
+        "duration": "90 min",
+        "type": "article"
+      }
+    ],
+    "exercises": [
+      {
+        "title": "Mock Interview",
+        "difficulty": "medium",
+        "description": "Practice technical and behavioral interviews"
+      },
+      {
+        "title": "System Design",
+        "difficulty": "hard",
+        "description": "Design a scalable system"
+      }
+    ]
+  }
+}

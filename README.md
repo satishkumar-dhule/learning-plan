@@ -1,195 +1,224 @@
-# 30-Day SRE War Plan - GitHub Pages Site
+# 30-Day SRE Interview Prep Guide
 
-A modern, professional static website showcasing the comprehensive 30-Day SRE preparation guide.
+A modern, state-of-the-art web application for comprehensive SRE interview preparation with persistent progress tracking.
 
-## Features
+## ✨ Features
 
-### 🎨 Modern UI/UX
-- Clean, professional design with sober color scheme
-- Responsive layout (mobile, tablet, desktop)
+- **Modern Architecture**: TypeScript, Vite, modular components
+- **Progress Tracking**: Browser-based IndexedDB storage (no backend needed)
+- **Responsive Design**: Mobile, tablet, desktop optimized
+- **Week-Based Organization**: 4 weeks of structured learning (30 days)
+- **Rich Content**: Topics, resources, and practice exercises per day
+- **Fast Performance**: Optimized build, lazy loading, smooth interactions
+- **Comprehensive Testing**: Playwright E2E tests
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+
+### Installation
+
+```bash
+npm install
+```
+
+### Development
+
+```bash
+npm run dev
+```
+
+Opens at `http://localhost:5173`
+
+### Build
+
+```bash
+npm run build
+npm run preview
+```
+
+## 📊 Project Structure
+
+```
+src/
+├── main.ts              # Entry point
+├── app.ts               # App initialization & routing
+├── components/
+│   ├── sidebar.ts       # Navigation sidebar
+│   └── content.ts       # Day content display
+├── data/
+│   └── days.ts          # Day content definitions
+├── storage/
+│   └── db.ts            # IndexedDB management
+└── styles/
+    └── main.css         # Global styles
+
+tests/
+└── app.spec.ts          # E2E tests
+
+playwright.config.ts     # Test configuration
+vite.config.ts          # Build configuration
+tsconfig.json           # TypeScript configuration
+```
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run with UI
+npm run test:ui
+
+# Run headed (see browser)
+npm run test:headed
+```
+
+## 📱 Features
+
+### Progress Tracking
+- Persistent storage using IndexedDB
+- Track completed days
+- Visual progress bar
+- Automatic save on completion
+
+### Navigation
+- Sidebar with all 30 days organized by week
+- Previous/Next buttons for sequential learning
+- Quick day selection
+- Active day highlighting
+
+### Content Organization
+- **Week 1**: Systems Internals, Networking & Cloud
+- **Week 2**: Kubernetes, Infrastructure as Code & CI/CD
+- **Week 3**: Observability, Security & Incident Management
+- **Week 4**: Architecture & Global Reliability
+
+### Each Day Includes
+- Learning topics
+- Curated resources (videos, articles, docs)
+- Practice exercises (LeetCode links)
+- Navigation controls
+
+## 🎨 Design
+
+- Clean, modern UI with gradient accents
+- Color-coded weeks for visual organization
+- Responsive grid layouts
+- Smooth transitions and interactions
+- Accessible color contrast
+
+## 🔧 Technology Stack
+
+- **Frontend**: TypeScript, Vanilla JS
+- **Build**: Vite
+- **Storage**: IndexedDB
+- **Testing**: Playwright
+- **Styling**: CSS3 (Grid, Flexbox, Gradients)
+
+## 📈 Performance
+
+- Fast cold start with Vite
+- Minimal JavaScript bundle
+- Efficient DOM updates
 - Smooth scrolling and animations
-- Fixed sidebar navigation with search
-- Mobile-friendly hamburger menu
-- Back-to-top button
-- Real-time scroll progress tracker
+- Optimized for all devices
 
-### 🧭 State-of-the-Art Navigation
-- Sticky sidebar with all sections
-- Search functionality to find topics quickly
-- Active section highlighting as you scroll
-- Smooth scroll behavior
-- Deep linking support (shareable URLs with #anchors)
+## 🚀 Deployment
 
-### 📱 Responsive Design
-- Desktop: Full sidebar navigation
-- Tablet/Mobile: Collapsible hamburger menu
-- Touch-optimized controls
-- Readable typography at all screen sizes
+### GitHub Pages
 
-### ⚡ Performance
-- Vanilla JavaScript (no heavy frameworks)
-- CDN-hosted markdown parser (marked.js)
-- Optimized CSS with modern features
-- Fast page load and smooth scrolling
-
-## Project Structure
-
-```
-/Users/sdhule/learn/
-├── index.html          # Main HTML structure
-├── styles.css          # All styling and responsive design
-├── script.js           # Navigation, search, and UX features
-├── 30-day.md          # Your markdown content (source)
-└── README.md          # This file
-```
-
-## How to Deploy to GitHub Pages
-
-### Option 1: Quick Deploy (Recommended)
-
-1. **Create a new GitHub repository**
-   ```bash
-   # Initialize git (if not already done)
-   cd /Users/sdhule/learn
-   git init
-   git add index.html styles.css script.js 30-day.md README.md
-   git commit -m "Initial commit: 30-Day SRE War Plan static site"
-   ```
-
-2. **Create a repo on GitHub**
-   - Go to https://github.com/new
-   - Name it: `30-day-sre` (or your preferred name)
-   - Make it public
-   - Don't initialize with README (you already have one)
-
-3. **Push to GitHub**
-   ```bash
-   git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/30-day-sre.git
-   git push -u origin main
-   ```
-
-4. **Enable GitHub Pages**
-   - Go to your repo: Settings → Pages
-   - Source: Deploy from a branch
-   - Branch: `main` / `root`
-   - Click Save
-
-5. **Access your site**
-   - URL: `https://YOUR_USERNAME.github.io/30-day-sre/`
-   - Takes 1-2 minutes to build
-
-### Option 2: Custom Domain (Optional)
-
-1. Buy a domain (e.g., from Namecheap, Cloudflare, Google Domains)
-2. Add a `CNAME` file to your repo:
-   ```bash
-   echo "your-domain.com" > CNAME
-   git add CNAME
-   git commit -m "Add custom domain"
-   git push
-   ```
-3. Configure DNS records at your domain provider:
-   - Type: `A` → Value: `185.199.108.153`
-   - Type: `A` → Value: `185.199.109.153`
-   - Type: `A` → Value: `185.199.110.153`
-   - Type: `A` → Value: `185.199.111.153`
-   - OR Type: `CNAME` → Value: `YOUR_USERNAME.github.io`
-
-## Local Development
-
-### Test Locally
-
-You need a local web server (browsers block file:// protocol for security):
-
-**Option 1: Python**
 ```bash
-cd /Users/sdhule/learn
-python3 -m http.server 8000
-# Visit: http://localhost:8000
+npm run build
+# Push dist/ to gh-pages branch
 ```
 
-**Option 2: Node.js (http-server)**
+### Vercel
+
 ```bash
-npm install -g http-server
-cd /Users/sdhule/learn
-http-server
-# Visit: http://localhost:8080
+npm run build
+# Deploy dist/ folder
 ```
 
-**Option 3: VS Code Live Server**
-- Install "Live Server" extension
-- Right-click `index.html` → "Open with Live Server"
+### Netlify
 
-## Customization
+```bash
+npm run build
+# Deploy dist/ folder
+```
 
-### Change Colors
-Edit `styles.css` variables at the top:
-```css
-:root {
-    --primary-color: #2563eb;  /* Change this */
-    --primary-dark: #1e40af;   /* And this */
+## 🔐 Privacy
+
+- All progress stored locally in browser
+- No backend server required
+- No data sent to external services
+- Complete privacy and offline support
+
+## 📝 Adding Content
+
+Edit `src/data/days.ts` to add or modify day content:
+
+```typescript
+const days: Record<number, DayData> = {
+  1: {
+    day: 1,
+    week: 1,
+    title: 'Day Title',
+    description: 'Description',
+    topics: ['Topic 1', 'Topic 2'],
+    resources: [
+      {
+        title: 'Resource Title',
+        url: 'https://...',
+        duration: '15 min',
+        type: 'video',
+      },
+    ],
+    exercises: [
+      {
+        title: 'Exercise Title',
+        difficulty: 'easy',
+        url: 'https://leetcode.com/...',
+        description: 'Description',
+      },
+    ],
+  },
 }
 ```
 
-### Update Content
-- Edit `30-day.md` directly
-- Changes appear automatically on reload (markdown is parsed client-side)
+## 🐛 Troubleshooting
 
-### Modify Navigation
-- Edit sidebar sections in `index.html` (lines 30-110)
-- Update section IDs in `script.js` (addSectionIds function)
+### Storage not persisting
+- Check browser's IndexedDB is enabled
+- Clear browser cache and try again
+- Check browser console for errors
 
-## Browser Support
+### Styles not loading
+- Clear browser cache
+- Rebuild with `npm run build`
 
-- Chrome/Edge: Latest 2 versions ✅
-- Firefox: Latest 2 versions ✅
-- Safari: 14+ ✅
-- Mobile browsers: iOS Safari 14+, Chrome Mobile ✅
+### Tests failing
+- Ensure dev server is running: `npm run dev`
+- Clear test artifacts: `rm -rf test-results playwright-report`
 
-## Performance Tips
+## 📄 License
 
-- Site loads in < 1 second on 3G
-- No external dependencies except marked.js (78KB from CDN)
-- Markdown parsing is cached by browser
-- CSS and JS are minified for production
+MIT
 
-## Troubleshooting
+## 🤝 Contributing
 
-### Content Not Loading?
-- Make sure `30-day.md` is in the same directory
-- Check browser console for errors (F12)
-- Ensure you're using a web server (not file://)
+Contributions welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
 
-### Navigation Not Working?
-- Check that section IDs in HTML match your markdown headers
-- Verify JavaScript console for errors
-- Try hard refresh (Ctrl+Shift+R or Cmd+Shift+R)
+## 📞 Support
 
-### Mobile Menu Not Opening?
-- Check that JavaScript is enabled
-- Try different browser
-- Clear cache and reload
-
-## License
-
-This is your personal project. Add a license if you plan to share it publicly.
-
-## Credits
-
-- Built with vanilla HTML, CSS, and JavaScript
-- Markdown parsing: [marked.js](https://marked.js.org/)
-- Icons: Unicode emoji (no external icon library needed)
-
-## Next Steps
-
-1. ✅ Test locally with `python3 -m http.server 8000`
-2. ✅ Push to GitHub
-3. ✅ Enable GitHub Pages
-4. ✅ Share your link!
+For issues or questions, please open a GitHub issue.
 
 ---
 
-**Built for**: 30-Day SRE War Plan (2026 Tier-1 Prep)
-**Tech Stack**: HTML5, CSS3, Vanilla JavaScript, Marked.js
+**Status**: Production Ready  
 **Last Updated**: February 2026

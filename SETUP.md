@@ -1,184 +1,315 @@
-# 30-Day SRE Site - Setup Complete! ✅
+# Setup Guide
 
-## What Was Fixed
+## Prerequisites
 
-### 1. **Navigation Links** 🔗
-- **Problem**: Navigation sidebar links weren't matching the actual section IDs from the markdown
-- **Solution**: Created dynamic navigation that automatically rebuilds from the parsed markdown content
-- The script now:
-  - Reads all H1 and H2 headers from the parsed markdown
-  - Automatically categorizes them into Setup, Week 1-4, and Appendices
-  - Rebuilds the navigation sidebar with correct IDs
-  - Works with any markdown structure (no hardcoded IDs needed!)
+- **Node.js**: 18.0.0 or higher
+- **npm**: 9.0.0 or higher (comes with Node.js)
+- **Git**: For version control
 
-### 2. **Code Quality** 🧹
-- Fixed all linter warnings
-- Removed unused variables
-- Updated to use `globalThis` instead of `window` for better compatibility
-- Improved code organization and readability
+## Installation
 
-### 3. **Dynamic Content Loading** ⚡
-- Markdown is parsed on-the-fly using marked.js
-- Navigation automatically syncs with content
-- All links work correctly including deep links (#day-1, #day-2, etc.)
-
-## How It Works
-
-```
-User Opens Page
-    ↓
-Load 30-day.md
-    ↓
-Parse with marked.js → HTML
-    ↓
-Scan headers (H1, H2)
-    ↓
-Rebuild navigation sidebar
-    ↓
-Initialize features:
-    • Search
-    • Mobile menu
-    • Back to top
-    • Scroll tracking
-    • Active section highlighting
-```
-
-## Testing Locally
-
-### Start Server
-```bash
-cd /Users/sdhule/learn
-python3 -m http.server 8000
-```
-
-### Open Browser
-Visit: http://localhost:8000
-
-### Test These Features
-
-✅ **Navigation**
-- Click any day in sidebar → should scroll to that section
-- URL should update with #anchor
-- Refresh with #anchor → should jump to that section
-
-✅ **Search**
-- Type in search box → filters navigation items
-- Try "Day 1", "etcd", "appendix"
-
-✅ **Mobile**
-- Resize browser to < 1024px
-- Hamburger menu (☰) should appear
-- Click to open/close sidebar
-
-✅ **Scroll Features**
-- Scroll down → active section highlights in blue
-- Scroll down → "Back to top" button appears
-- Footer shows scroll progress percentage
-
-✅ **Deep Links**
-- Test: http://localhost:8000#day-1-the-process-lifecycle--system-calls
-- Should jump directly to Day 1
-
-## Deploy to GitHub Pages
+### 1. Clone or Download
 
 ```bash
-# Stop the local server first
-pkill -f "python3 -m http.server"
-
-# Initialize git (if not done)
-git init
-git add .
-git commit -m "30-Day SRE static site with dynamic navigation"
-
-# Create repo on GitHub (go to github.com/new)
-# Then:
-git remote add origin https://github.com/YOUR_USERNAME/30-day-sre.git
-git branch -M main
-git push -u origin main
-
-# Enable GitHub Pages
-# Go to: Settings → Pages → Source: main branch → Save
+git clone https://github.com/yourusername/30-day-sre-guide.git
+cd 30-day-sre-guide
 ```
 
-Your site will be live at:
-**https://YOUR_USERNAME.github.io/30-day-sre/**
+### 2. Install Dependencies
 
-## Customization
-
-### Change Colors
-Edit `styles.css` line 6-15:
-```css
-:root {
-    --primary-color: #2563eb;  /* Blue - change this! */
-    --primary-dark: #1e40af;   /* Dark blue */
-    /* ... */
-}
+```bash
+npm install
 ```
 
-### Update Content
-Just edit `30-day.md` - navigation updates automatically!
+This installs:
+- `vite` - Build tool
+- `typescript` - Type checking
+- `@playwright/test` - Testing framework
+- `marked` - Markdown parsing
 
-### Add New Sections
-Add any H2 header in the markdown:
-```markdown
-## Day 31: Bonus Content
-```
-The navigation will automatically include it.
+### 3. Verify Installation
 
-## File Structure
-
-```
-/Users/sdhule/learn/
-├── index.html          # HTML structure (sidebar + content area)
-├── styles.css          # All styling (800+ lines of clean CSS)
-├── script.js           # Navigation logic (400+ lines)
-├── 30-day.md          # Your content (source of truth)
-├── README.md          # Deployment guide
-├── SETUP.md           # This file
-└── .gitignore         # Git ignore rules
+```bash
+npm run type-check
 ```
 
-## Browser Console
+Should complete without errors.
 
-Open DevTools (F12) → Console to see:
-- "Available section IDs" - all parsed headers
-- "Navigation rebuilt successfully" - confirms dynamic nav worked
-- Any errors (there shouldn't be any!)
+## Development
+
+### Start Development Server
+
+```bash
+npm run dev
+```
+
+This:
+- Starts Vite dev server on `http://localhost:5173`
+- Opens browser automatically
+- Enables hot module replacement (HMR)
+- Watches for file changes
+
+### Make Changes
+
+1. Edit files in `src/`
+2. Browser auto-refreshes
+3. TypeScript errors show in console
+
+### Common Development Tasks
+
+**Add a new day**:
+1. Edit `src/data/days.ts`
+2. Add day object to `days` record
+3. Save and see changes immediately
+
+**Update styles**:
+1. Edit `src/styles/main.css`
+2. Changes apply instantly
+
+**Modify components**:
+1. Edit `src/components/*.ts`
+2. Browser refreshes automatically
+
+## Testing
+
+### Run All Tests
+
+```bash
+npm test
+```
+
+Runs tests in headless mode (no browser window).
+
+### Run Tests with Browser
+
+```bash
+npm run test:headed
+```
+
+Shows browser window so you can see what's happening.
+
+### Interactive Test UI
+
+```bash
+npm run test:ui
+```
+
+Opens Playwright's interactive UI for debugging.
+
+### Run Specific Test
+
+```bash
+npx playwright test tests/app.spec.ts -g "should load app"
+```
+
+### Debug a Test
+
+```bash
+npx playwright test --debug
+```
+
+Opens debugger where you can step through tests.
+
+## Building for Production
+
+### Create Production Build
+
+```bash
+npm run build
+```
+
+This:
+- Compiles TypeScript
+- Minifies JavaScript
+- Optimizes CSS
+- Outputs to `dist/` folder
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+Serves the production build locally for testing.
+
+## Deployment
+
+### GitHub Pages
+
+1. Build the project:
+   ```bash
+   npm run build
+   ```
+
+2. Push to GitHub:
+   ```bash
+   git add dist/
+   git commit -m "Build for production"
+   git push origin main
+   ```
+
+3. Enable GitHub Pages:
+   - Go to Settings → Pages
+   - Select `main` branch, `/root` folder
+   - Save
+
+### Vercel
+
+1. Push code to GitHub
+2. Go to https://vercel.com
+3. Import project
+4. Vercel auto-detects Vite
+5. Deploy
+
+### Netlify
+
+1. Push code to GitHub
+2. Go to https://netlify.com
+3. Connect GitHub account
+4. Select repository
+5. Build command: `npm run build`
+6. Publish directory: `dist`
+7. Deploy
 
 ## Troubleshooting
 
-### Links Not Working?
-1. Open browser console (F12)
-2. Look for "Navigation rebuilt successfully"
-3. Check "Available section IDs" - these are the actual IDs
-4. Verify marked.js loaded (see Network tab)
+### Port Already in Use
 
-### Styling Broken?
-1. Hard refresh: Cmd+Shift+R (Mac) or Ctrl+Shift+R (Windows)
-2. Check browser console for CSS errors
-3. Verify styles.css loaded in Network tab
+If port 5173 is already in use:
 
-### Mobile Menu Not Opening?
-1. Check browser console for JavaScript errors
-2. Verify you're on mobile size (< 1024px width)
-3. Try different browser
+```bash
+npm run dev -- --port 3000
+```
 
-## Performance
+### Module Not Found Errors
 
-- First load: ~500ms (includes 78KB marked.js from CDN)
-- Subsequent loads: ~50ms (browser cache)
-- Markdown parsing: ~100ms for 6000+ lines
-- Navigation rebuild: ~5ms
+Clear node_modules and reinstall:
+
+```bash
+rm -rf node_modules package-lock.json
+npm install
+```
+
+### TypeScript Errors
+
+Check for type errors:
+
+```bash
+npm run type-check
+```
+
+### Tests Failing
+
+1. Ensure dev server is running: `npm run dev`
+2. Clear test artifacts: `rm -rf test-results playwright-report`
+3. Run tests again: `npm test`
+
+### Storage Not Working
+
+1. Check browser's IndexedDB is enabled
+2. Open DevTools → Application → IndexedDB
+3. Look for "SREGuide" database
+4. Clear and try again
+
+### Styles Not Loading
+
+1. Clear browser cache (Cmd+Shift+R on Mac, Ctrl+Shift+R on Windows)
+2. Rebuild: `npm run build`
+3. Check `dist/` folder has CSS files
+
+## Project Structure
+
+```
+30-day-sre-guide/
+├── src/
+│   ├── main.ts              # Entry point
+│   ├── app.ts               # App initialization
+│   ├── index.html           # HTML template
+│   ├── components/
+│   │   ├── sidebar.ts       # Navigation
+│   │   └── content.ts       # Day display
+│   ├── data/
+│   │   └── days.ts          # Content definitions
+│   ├── storage/
+│   │   └── db.ts            # IndexedDB management
+│   └── styles/
+│       └── main.css         # All styles
+├── tests/
+│   └── app.spec.ts          # E2E tests
+├── dist/                    # Production build (generated)
+├── node_modules/            # Dependencies (generated)
+├── package.json             # Project metadata
+├── tsconfig.json            # TypeScript config
+├── vite.config.ts           # Build config
+├── playwright.config.ts     # Test config
+├── README.md                # User guide
+├── ARCHITECTURE.md          # Technical design
+└── SETUP.md                 # This file
+```
+
+## Environment Variables
+
+No environment variables needed for development.
+
+For production, you might want to add:
+- `VITE_API_URL` - If adding backend later
+- `VITE_ANALYTICS_ID` - If adding analytics
 
 ## Next Steps
 
-1. ✅ Test locally (done - server running)
-2. ✅ Fix all bugs (done!)
-3. 🚀 Push to GitHub
-4. 🌐 Enable GitHub Pages
-5. 📱 Share your URL!
+1. **Start Development**: `npm run dev`
+2. **Explore Code**: Check `src/` folder
+3. **Add Content**: Edit `src/data/days.ts`
+4. **Run Tests**: `npm test`
+5. **Build & Deploy**: `npm run build` then deploy `dist/`
+
+## Getting Help
+
+- Check `README.md` for overview
+- Check `ARCHITECTURE.md` for technical details
+- Look at test files for usage examples
+- Check browser console for errors
+
+## Tips & Tricks
+
+### Fast Reload
+
+Press `Cmd+Shift+R` (Mac) or `Ctrl+Shift+R` (Windows) to hard refresh.
+
+### Debug Storage
+
+In browser console:
+```javascript
+// Open IndexedDB
+const db = await new Promise((resolve, reject) => {
+  const req = indexedDB.open('SREGuide')
+  req.onsuccess = () => resolve(req.result)
+  req.onerror = () => reject(req.error)
+})
+
+// Get progress
+const tx = db.transaction('progress', 'readonly')
+const store = tx.objectStore('progress')
+const req = store.get('progress')
+req.onsuccess = () => console.log(req.result)
+```
+
+### View Network Requests
+
+Open DevTools → Network tab to see all requests.
+
+### Check Performance
+
+Open DevTools → Performance tab, record, interact, stop.
+
+## Support
+
+For issues:
+1. Check this guide
+2. Check browser console for errors
+3. Open GitHub issue with details
+4. Include browser version and OS
 
 ---
 
-**Status**: Ready to deploy! 🎉
-**Last Updated**: February 2026
+**Happy learning! 🚀**

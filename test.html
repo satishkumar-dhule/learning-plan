@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page - 30-Day SRE</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            line-height: 1.6;
+        }
+        .test { margin: 1rem 0; padding: 1rem; border-left: 4px solid #3b82f6; background: #eff6ff; }
+        .pass { border-left-color: #10b981; background: #d1fae5; }
+        .fail { border-left-color: #ef4444; background: #fee2e2; }
+        h1 { color: #1f2937; }
+        pre { background: #f3f4f6; padding: 1rem; border-radius: 4px; overflow-x: auto; }
+        button { background: #3b82f6; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+    <h1>🧪 30-Day SRE Site - Test Suite</h1>
+
+    <div class="test">
+        <h3>Test 1: Files Exist</h3>
+        <p id="test1">Testing...</p>
+    </div>
+
+    <div class="test">
+        <h3>Test 2: Marked.js Loads</h3>
+        <p id="test2">Testing...</p>
+    </div>
+
+    <div class="test">
+        <h3>Test 3: Markdown Parsing</h3>
+        <p id="test3">Testing...</p>
+        <pre id="test3-output"></pre>
+    </div>
+
+    <div class="test">
+        <h3>Test 4: Header ID Generation</h3>
+        <p id="test4">Testing...</p>
+        <pre id="test4-output"></pre>
+    </div>
+
+    <div class="test">
+        <h3>Test 5: Navigation Build</h3>
+        <p id="test5">Testing...</p>
+        <pre id="test5-output"></pre>
+    </div>
+
+    <div style="margin-top: 2rem;">
+        <button onclick="location.href='index.html'">Go to Main Site</button>
+        <button onclick="location.reload()">Rerun Tests</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <script>
+        async function runTests() {
+            // Test 1: Check files
+            try {
+                const response = await fetch('30-day.md');
+                if (response.ok) {
+                    const text = await response.text();
+                    document.getElementById('test1').innerHTML = `✅ PASS: 30-day.md loaded (${text.length} bytes, ${text.split('\n').length} lines)`;
+                    document.querySelector('#test1').parentElement.classList.add('pass');
+
+                    // Test 3: Parse markdown
+                    testMarkdownParsing(text);
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (e) {
+                document.getElementById('test1').innerHTML = `❌ FAIL: ${e.message}`;
+                document.querySelector('#test1').parentElement.classList.add('fail');
+            }
+
+            // Test 2: Marked.js
+            if (typeof marked !== 'undefined') {
+                document.getElementById('test2').innerHTML = `✅ PASS: marked.js loaded (version available)`;
+                document.querySelector('#test2').parentElement.classList.add('pass');
+            } else {
+                document.getElementById('test2').innerHTML = `❌ FAIL: marked.js not loaded`;
+                document.querySelector('#test2').parentElement.classList.add('fail');
+            }
+        }
+
+        function testMarkdownParsing(markdown) {
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                headerIds: true,
+                mangle: false,
+                sanitize: false
+            });
+
+            // Parse a sample
+            const sample = markdown.substring(0, 2000);
+            const html = marked.parse(sample);
+
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+
+            const headers = tempDiv.querySelectorAll('h1, h2, h3');
+            const headersWithIds = Array.from(headers).filter(h => h.id);
+
+            if (headersWithIds.length > 0) {
+                document.getElementById('test3').innerHTML = `✅ PASS: Found ${headersWithIds.length} headers with IDs`;
+                document.querySelector('#test3').parentElement.classList.add('pass');
+                document.getElementById('test3-output').textContent = headersWithIds
+                    .slice(0, 5)
+                    .map(h => `${h.tagName}: id="${h.id}" text="${h.textContent.substring(0, 40)}"`)
+                    .join('\n');
+            } else {
+                document.getElementById('test3').innerHTML = `⚠️ WARNING: No headers have IDs (found ${headers.length} headers total)`;
+                document.getElementById('test3-output').textContent = Array.from(headers)
+                    .slice(0, 5)
+                    .map(h => `${h.tagName}: "${h.textContent.substring(0, 40)}"`)
+                    .join('\n');
+            }
+
+            // Test 4: Header ID generation
+            testHeaderIds(markdown);
+        }
+
+        function testHeaderIds(markdown) {
+            const html = marked.parse(markdown);
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+
+            const dayHeaders = Array.from(tempDiv.querySelectorAll('h2')).filter(h =>
+                /Day \d+/i.test(h.textContent)
+            );
+
+            const daysFound = dayHeaders.map(h => {
+                const match = /Day (\d+)/i.exec(h.textContent);
+                return match ? parseInt(match[1]) : null;
+            }).filter(d => d !== null);
+
+            document.getElementById('test4').innerHTML = `✅ PASS: Found ${daysFound.length} day headers`;
+            document.querySelector('#test4').parentElement.classList.add('pass');
+            document.getElementById('test4-output').textContent =
+                `Days found: ${daysFound.sort((a, b) => a - b).join(', ')}\n\n` +
+                `First 5 headers:\n` +
+                dayHeaders.slice(0, 5).map(h =>
+                    `  id="${h.id || '(none)'}" -> "${h.textContent.substring(0, 50)}"`
+                ).join('\n');
+
+            // Test 5: Can we build navigation?
+            testNavigation(dayHeaders, daysFound);
+        }
+
+        function testNavigation(dayHeaders, daysFound) {
+            const missing = [];
+            for (let i = 1; i <= 30; i++) {
+                if (!daysFound.includes(i)) missing.push(i);
+            }
+
+            document.getElementById('test5').innerHTML =
+                `✅ Found ${daysFound.length}/30 days<br>` +
+                (missing.length > 0 ? `⚠️ Missing: Day ${missing.join(', Day ')}` : '✅ All days present');
+            document.querySelector('#test5').parentElement.classList.add(missing.length === 0 ? 'pass' : 'fail');
+            document.getElementById('test5-output').textContent =
+                `This is expected - your markdown is missing Days 5, 7, and 30.\n` +
+                `The main site should show these as grayed-out placeholders.`;
+        }
+
+        // Run tests on load
+        runTests();
+    </script>
+</body>
+</html>
