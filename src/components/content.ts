@@ -63,10 +63,10 @@ export async function renderContent(
     }
   })
 
-  // Checkpoint quiz functionality
-  document.getElementById('check-answers')?.addEventListener('click', () => {
-    checkQuizAnswers(dayData.checkpoint || [])
-  })
+  // Flashcard quiz functionality
+  if (dayData.checkpoint && dayData.checkpoint.length > 0) {
+    initFlashcardQuiz(dayData.checkpoint)
+  }
 
   // Copy GenAI prompt
   document.getElementById('copy-prompt')?.addEventListener('click', () => {
@@ -83,49 +83,102 @@ export async function renderContent(
   })
 }
 
-function checkQuizAnswers(questions: any[]) {
-  let correct = 0
-  questions.forEach((q, idx) => {
-    const selected = document.querySelector(`input[name="q${idx}"]:checked`) as HTMLInputElement
-    const questionCard = document.querySelector(`[data-question="${idx}"]`)
-    const feedback = questionCard?.querySelector('.answer-feedback') as HTMLElement
+function initFlashcardQuiz(questions: any[]) {
+  let currentIndex = 0
+  let correctCount = 0
+  let answered = false
+
+  const showQuestion = (index: number) => {
+    answered = false
+    const question = questions[index]
     
-    if (selected) {
-      const isCorrect = parseInt(selected.value) === q.correct
-      if (isCorrect) correct++
-      
-      // Show feedback
-      if (feedback) {
-        feedback.style.display = 'block'
-        feedback.className = `answer-feedback ${isCorrect ? 'correct' : 'incorrect'}`
-        
-        // Highlight correct answer
-        const options = questionCard?.querySelectorAll('.option-label')
-        options?.forEach((opt, optIdx) => {
-          if (optIdx === q.correct) {
-            opt.classList.add('correct-answer')
-          }
-          if (parseInt(selected.value) === optIdx && !isCorrect) {
-            opt.classList.add('wrong-answer')
-          }
-        })
+    document.getElementById('current-question')!.textContent = (index + 1).toString()
+    document.getElementById('question-text')!.textContent = question.question
+    document.getElementById('flashcard-feedback')!.style.display = 'none'
+    
+    const optionsContainer = document.getElementById('flashcard-options')!
+    optionsContainer.innerHTML = question.options.map((opt: string, idx: number) => `
+      <button class="flashcard-option" data-answer="${idx}">
+        ${opt}
+      </button>
+    `).join('')
+    
+    // Add click handlers to options
+    optionsContainer.querySelectorAll('.flashcard-option').forEach(btn => {
+      btn.addEventListener('click', () => handleAnswer(btn as HTMLElement, question, index))
+    })
+  }
+
+  const handleAnswer = (btn: HTMLElement, question: any, index: number) => {
+    if (answered) return
+    answered = true
+
+    const selectedAnswer = parseInt(btn.dataset.answer!)
+    const isCorrect = selectedAnswer === question.correct
+    
+    if (isCorrect) correctCount++
+
+    // Highlight all options
+    document.querySelectorAll('.flashcard-option').forEach((option, idx) => {
+      const optBtn = option as HTMLElement
+      optBtn.disabled = true
+      if (idx === question.correct) {
+        optBtn.classList.add('correct')
+      } else if (idx === selectedAnswer && !isCorrect) {
+        optBtn.classList.add('wrong')
       }
+    })
+
+    // Show feedback
+    const feedback = document.getElementById('flashcard-feedback')!
+    const result = document.getElementById('feedback-result')!
+    const explanation = document.getElementById('feedback-explanation')!
+    
+    result.textContent = isCorrect ? '✓ Correct!' : '✗ Incorrect'
+    result.className = `feedback-result ${isCorrect ? 'correct' : 'incorrect'}`
+    explanation.textContent = question.explanation
+    feedback.style.display = 'block'
+  }
+
+  document.getElementById('next-question')?.addEventListener('click', () => {
+    currentIndex++
+    if (currentIndex < questions.length) {
+      showQuestion(currentIndex)
+    } else {
+      showResults()
     }
   })
-  
-  // Show results
-  const results = document.getElementById('quiz-results')
-  if (results) {
-    const percentage = Math.round((correct / questions.length) * 100)
-    results.style.display = 'block'
-    results.innerHTML = `
-      <div class="quiz-score ${percentage >= 70 ? 'pass' : 'fail'}">
-        <h3>Your Score: ${correct}/${questions.length} (${percentage}%)</h3>
-        <p>${percentage >= 70 ? '🎉 Great job! You\'re ready to move on.' : '📚 Review the material and try again.'}</p>
+
+  const showResults = () => {
+    document.getElementById('flashcard')!.style.display = 'none'
+    const complete = document.getElementById('quiz-complete')!
+    const score = document.getElementById('final-score')!
+    const percentage = Math.round((correctCount / questions.length) * 100)
+    
+    complete.style.display = 'block'
+    score.innerHTML = `
+      <div class="score-circle ${percentage >= 70 ? 'pass' : 'fail'}">
+        <div class="score-number">${correctCount}/${questions.length}</div>
+        <div class="score-percent">${percentage}%</div>
       </div>
+      <p class="score-message">
+        ${percentage >= 70 
+          ? '🎉 Great job! You have a solid understanding of the material.' 
+          : '📚 Keep studying! Review the material and try again.'}
+      </p>
     `
-    results.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }
+
+  document.getElementById('restart-quiz')?.addEventListener('click', () => {
+    currentIndex = 0
+    correctCount = 0
+    document.getElementById('flashcard')!.style.display = 'block'
+    document.getElementById('quiz-complete')!.style.display = 'none'
+    showQuestion(0)
+  })
+
+  // Initialize first question
+  showQuestion(0)
 }
 
 function renderTopics(topics: string[]): string {
@@ -193,30 +246,40 @@ function renderExercises(exercises: any[]): string {
 function renderCheckpoint(questions: any[]): string {
   return `
     <section class="section checkpoint-section">
-      <h2>📝 Knowledge Checkpoint</h2>
-      <p class="checkpoint-intro">Test your understanding with these 10 questions:</p>
-      <div class="checkpoint-quiz" id="checkpoint-quiz">
-        ${questions.map((q, idx) => `
-          <div class="question-card" data-question="${idx}">
-            <div class="question-header">
-              <span class="question-number">Question ${idx + 1}</span>
-            </div>
-            <p class="question-text">${q.question}</p>
-            <div class="options-list">
-              ${q.options.map((opt: string, optIdx: number) => `
-                <label class="option-label">
-                  <input type="radio" name="q${idx}" value="${optIdx}" />
-                  <span class="option-text">${opt}</span>
-                </label>
-              `).join('')}
-            </div>
-            <div class="answer-feedback" style="display: none;">
-              <p class="explanation">${q.explanation}</p>
+      <div class="checkpoint-header">
+        <h2>📝 Knowledge Checkpoint</h2>
+        <p class="checkpoint-intro">Test your understanding with these 10 questions</p>
+      </div>
+      <div class="flashcard-container" id="flashcard-container">
+        <div class="flashcard-progress">
+          <span id="current-question">1</span> / ${questions.length}
+        </div>
+        <div class="flashcard" id="flashcard">
+          <div class="flashcard-question">
+            <p id="question-text">${questions[0].question}</p>
+          </div>
+          <div class="flashcard-options" id="flashcard-options">
+            ${questions[0].options.map((opt: string, idx: number) => `
+              <button class="flashcard-option" data-answer="${idx}">
+                ${opt}
+              </button>
+            `).join('')}
+          </div>
+          <div class="flashcard-feedback" id="flashcard-feedback" style="display: none;">
+            <div class="feedback-content">
+              <p class="feedback-result" id="feedback-result"></p>
+              <p class="feedback-explanation" id="feedback-explanation"></p>
+              <button class="btn btn-primary" id="next-question">Next Question →</button>
             </div>
           </div>
-        `).join('')}
-        <button class="btn btn-primary" id="check-answers">Check Answers</button>
-        <div class="quiz-results" id="quiz-results" style="display: none;"></div>
+        </div>
+        <div class="quiz-complete" id="quiz-complete" style="display: none;">
+          <div class="complete-content">
+            <h3>🎉 Quiz Complete!</h3>
+            <div class="final-score" id="final-score"></div>
+            <button class="btn btn-primary" id="restart-quiz">Restart Quiz</button>
+          </div>
+        </div>
       </div>
     </section>
   `

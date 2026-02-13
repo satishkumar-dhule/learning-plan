@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Day 1 Preview</title>
+  <style>
+    body { font-family: system-ui; max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    .section { margin: 2rem 0; padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 8px; }
+    .commands-section { background: #f9fafb; padding: 1rem; border-radius: 6px; margin-top: 1rem; }
+    pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 4px; overflow-x: auto; }
+    .question-card { background: #f9fafb; padding: 1.5rem; margin: 1rem 0; border-radius: 8px; }
+    .option-label { display: block; padding: 0.75rem; margin: 0.5rem 0; background: white; border: 2px solid #e5e7eb; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Day 1: Process Lifecycle & System Calls</h1>
+  
+  <div class="section">
+    <h2>Practice Exercises</h2>
+    
+    <h3>Easy: Trace a Hanging Process</h3>
+    <p>Use strace to debug a process that appears stuck</p>
+    <details class="commands-section">
+      <summary>Show Commands</summary>
+      <pre><code># Find a process ID
+ps aux | grep nginx
+# Attach strace to running process
+sudo strace -p &lt;PID&gt; -f -e trace=all
+# Count system calls
+sudo strace -c -p &lt;PID&gt;</code></pre>
+    </details>
+  </div>
+
+  <div class="section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <h2>📝 Knowledge Checkpoint</h2>
+    <p>Test your understanding with these questions:</p>
+    
+    <div class="question-card" style="color: #1f2937;">
+      <p><strong>Question 1:</strong> What is the main difference between fork() and vfork()?</p>
+      <label class="option-label">
+        <input type="radio" name="q1" /> vfork() creates a new process, fork() creates a thread
+      </label>
+      <label class="option-label" style="border-color: #10b981; background: #d1fae5;">
+        <input type="radio" name="q1" checked /> ✓ vfork() suspends parent until child exits or execs, fork() doesn't
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q1" /> fork() is faster than vfork()
+      </label>
+      <label class="option-label">
+        <input type="radio" name="q1" /> There is no difference
+      </label>
+      <div style="margin-top: 1rem; padding: 1rem; background: #d1fae5; border-left: 4px solid #10b981; border-radius: 6px;">
+        <strong>Explanation:</strong> vfork() suspends the parent process until the child either exits or calls exec(). This avoids copying the page table.
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+    <h2>🤖 Generate Your Study Plan</h2>
+    <p>Copy this prompt to ChatGPT, Gemini, or Claude:</p>
+    <div style="background: white; padding: 1.5rem; border-radius: 8px; color: #1f2937;">
+      <pre style="white-space: pre-wrap; word-wrap: break-word;">Create a detailed 8-hour study schedule for Day 1: Process Lifecycle & System Calls. Include: 1) Hour-by-hour breakdown with specific topics, 2) Hands-on lab exercises with actual Linux commands for fork(), strace, and /proc inspection, 3) Practice scenarios like debugging a hanging process or analyzing memory usage, 4) Real-world examples from production systems, 5) Common pitfalls and debugging tips. Make it practical and include all commands I need to run.</pre>
+      <button style="width: 100%; padding: 0.75rem; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem;">
+        📋 Copy Prompt
+      </button>
+    </div>
+  </div>
+
+</body>
+</html>
