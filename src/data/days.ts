@@ -6,6 +6,7 @@ export interface DayData {
   topics: string[]
   resources: Resource[]
   exercises: Exercise[]
+  leetcode?: LeetCodeProblem[]
   checkpoint?: CheckpointQuestion[]
   genaiPrompt?: string
 }
@@ -23,6 +24,13 @@ export interface Exercise {
   url?: string
   description: string
   commands?: string[]
+}
+
+export interface LeetCodeProblem {
+  title: string
+  difficulty: 'easy' | 'medium' | 'hard'
+  url: string
+  description: string
 }
 
 export interface CheckpointQuestion {

@@ -29,6 +29,7 @@ export async function renderContent(
         ${dayData.topics.length > 0 ? renderTopics(dayData.topics) : ''}
         ${dayData.resources.length > 0 ? renderResources(dayData.resources) : ''}
         ${dayData.exercises.length > 0 ? renderExercises(dayData.exercises) : ''}
+        ${dayData.leetcode && dayData.leetcode.length > 0 ? renderLeetCode(dayData.leetcode) : ''}
         ${dayData.checkpoint && dayData.checkpoint.length > 0 ? renderCheckpoint(dayData.checkpoint) : ''}
         ${dayData.genaiPrompt ? renderGenAIPrompt(dayData.genaiPrompt) : ''}
       </div>
@@ -216,7 +217,7 @@ function renderResources(resources: any[]): string {
 function renderExercises(exercises: any[]): string {
   return `
     <section class="section">
-      <h2>Practice Exercises</h2>
+      <h2>🛠️ Hands-On Exercises</h2>
       <div class="exercises-list">
         ${exercises
           .map(
@@ -235,6 +236,31 @@ function renderExercises(exercises: any[]): string {
             ` : ''}
             ${e.url ? `<a href="${e.url}" target="_blank" rel="noopener noreferrer" class="exercise-link">Solve →</a>` : ''}
           </div>
+        `
+          )
+          .join('')}
+      </div>
+    </section>
+  `
+}
+
+function renderLeetCode(problems: any[]): string {
+  return `
+    <section class="section leetcode-section">
+      <h2>💻 LeetCode Practice</h2>
+      <p class="section-intro">Sharpen your coding skills with these relevant problems:</p>
+      <div class="leetcode-grid">
+        ${problems
+          .map(
+            (p) => `
+          <a href="${p.url}" target="_blank" rel="noopener noreferrer" class="leetcode-card leetcode-${p.difficulty}">
+            <div class="leetcode-header">
+              <h3>${p.title}</h3>
+              <span class="difficulty-badge">${p.difficulty}</span>
+            </div>
+            <p class="leetcode-description">${p.description}</p>
+            <span class="leetcode-link">Solve on LeetCode →</span>
+          </a>
         `
           )
           .join('')}

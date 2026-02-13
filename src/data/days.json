@@ -173,7 +173,21 @@
         "explanation": "/proc/<PID>/status provides detailed information including state, memory usage, thread count, UIDs, GIDs, and more."
       }
     ],
-    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 1: Process Lifecycle & System Calls. Include: 1) Hour-by-hour breakdown with specific topics, 2) Hands-on lab exercises with actual Linux commands for fork(), strace, and /proc inspection, 3) Practice scenarios like debugging a hanging process or analyzing memory usage, 4) Real-world examples from production systems, 5) Common pitfalls and debugging tips. Make it practical and include all commands I need to run."
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 1: Process Lifecycle & System Calls. Include: 1) Hour-by-hour breakdown with specific topics, 2) Hands-on lab exercises with actual Linux commands for fork(), strace, and /proc inspection, 3) Practice scenarios like debugging a hanging process or analyzing memory usage, 4) Real-world examples from production systems, 5) Common pitfalls and debugging tips. Make it practical and include all commands I need to run.",
+    "leetcode": [
+      {
+        "title": "Two Sum",
+        "difficulty": "easy",
+        "url": "https://leetcode.com/problems/two-sum/",
+        "description": "Hash table lookups - O(1) like cache lookup in distributed systems"
+      },
+      {
+        "title": "Valid Parentheses",
+        "difficulty": "easy",
+        "url": "https://leetcode.com/problems/valid-parentheses/",
+        "description": "Stack operations - similar to parsing logs and config files"
+      }
+    ]
   },
   "2": {
     "day": 2,
@@ -345,7 +359,21 @@
         "explanation": "fsync() forces synchronous writes to disk, which is much slower than writing to cache. Excessive calls can severely impact performance."
       }
     ],
-    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 2: Advanced I/O & The VFS Layer. Include: 1) Hour-by-hour breakdown covering page cache, dirty pages, and fsync(), 2) Hands-on labs with dd, iostat, vmstat commands to measure I/O performance, 3) Experiments comparing fsync() vs non-fsync() writes, 4) Real-world scenarios like database write performance tuning, 5) Commands to monitor and clear caches, 6) Common I/O bottlenecks in production systems."
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 2: Advanced I/O & The VFS Layer. Include: 1) Hour-by-hour breakdown covering page cache, dirty pages, and fsync(), 2) Hands-on labs with dd, iostat, vmstat commands to measure I/O performance, 3) Experiments comparing fsync() vs non-fsync() writes, 4) Real-world scenarios like database write performance tuning, 5) Commands to monitor and clear caches, 6) Common I/O bottlenecks in production systems.",
+    "leetcode": [
+      {
+        "title": "LRU Cache",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/lru-cache/",
+        "description": "Implement caching strategy used in page cache and CDNs"
+      },
+      {
+        "title": "Design HashMap",
+        "difficulty": "easy",
+        "url": "https://leetcode.com/problems/design-hashmap/",
+        "description": "Understanding hash-based data structures"
+      }
+    ]
   },
   "3": {
     "day": 3,
@@ -518,7 +546,21 @@
         "explanation": "Window scaling (RFC 1323) allows TCP windows larger than 64KB, essential for high-bandwidth, high-latency networks."
       }
     ],
-    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 3: TCP Internals & Cloud Networking. Include: 1) Hour-by-hour breakdown of TCP handshake, congestion control, and VPC concepts, 2) Hands-on labs with tcpdump, ss, netstat, and iperf3 to analyze TCP behavior, 3) AWS VPC setup exercises with subnets, route tables, and security groups, 4) Real-world scenarios like debugging connection timeouts and optimizing TCP for high-latency links, 5) Packet capture analysis exercises, 6) Common networking issues in cloud environments."
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 3: TCP Internals & Cloud Networking. Include: 1) Hour-by-hour breakdown of TCP handshake, congestion control, and VPC concepts, 2) Hands-on labs with tcpdump, ss, netstat, and iperf3 to analyze TCP behavior, 3) AWS VPC setup exercises with subnets, route tables, and security groups, 4) Real-world scenarios like debugging connection timeouts and optimizing TCP for high-latency links, 5) Packet capture analysis exercises, 6) Common networking issues in cloud environments.",
+    "leetcode": [
+      {
+        "title": "Number of Islands",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/number-of-islands/",
+        "description": "Graph traversal - similar to network topology discovery"
+      },
+      {
+        "title": "Network Delay Time",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/network-delay-time/",
+        "description": "Shortest path algorithms for network routing"
+      }
+    ]
   },
   "4": {
     "day": 4,
@@ -685,7 +727,21 @@
         "explanation": "Some networks block or rate-limit UDP traffic, which can prevent QUIC/HTTP/3 from working, requiring fallback to HTTP/2."
       }
     ],
-    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 4: HTTP/3 & QUIC Protocol. Include: 1) Hour-by-hour breakdown of HTTP/2 vs HTTP/3, QUIC internals, and 0-RTT, 2) Hands-on labs testing HTTP/3 support with curl and browser DevTools, 3) Experiments comparing HTTP/2 and HTTP/3 performance, 4) Real-world scenarios like connection migration and packet loss handling, 5) Commands to test and debug QUIC connections, 6) Common deployment challenges and solutions."
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 4: HTTP/3 & QUIC Protocol. Include: 1) Hour-by-hour breakdown of HTTP/2 vs HTTP/3, QUIC internals, and 0-RTT, 2) Hands-on labs testing HTTP/3 support with curl and browser DevTools, 3) Experiments comparing HTTP/2 and HTTP/3 performance, 4) Real-world scenarios like connection migration and packet loss handling, 5) Commands to test and debug QUIC connections, 6) Common deployment challenges and solutions.",
+    "leetcode": [
+      {
+        "title": "Design Rate Limiter",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/design-rate-limiter/",
+        "description": "Implement token bucket for API rate limiting"
+      },
+      {
+        "title": "Time Based Key-Value Store",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/time-based-key-value-store/",
+        "description": "Time-series data storage"
+      }
+    ]
   },
   "5": {
     "day": 5,
@@ -859,7 +915,21 @@
         "explanation": "An IAM policy is a JSON document that defines permissions, specifying what actions are allowed or denied on which resources."
       }
     ],
-    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 5: Memory Management, OOM Killer & Cloud IAM/Compute. Include: 1) Hour-by-hour breakdown of virtual memory, OOM killer, and AWS IAM concepts, 2) Hands-on labs monitoring memory with free, ps, and /proc, 3) Exercises tuning oom_score_adj for critical processes, 4) AWS IAM policy creation and role assumption exercises, 5) EC2 instance type selection scenarios, 6) Real-world examples of OOM incidents and IAM security breaches."
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 5: Memory Management, OOM Killer & Cloud IAM/Compute. Include: 1) Hour-by-hour breakdown of virtual memory, OOM killer, and AWS IAM concepts, 2) Hands-on labs monitoring memory with free, ps, and /proc, 3) Exercises tuning oom_score_adj for critical processes, 4) AWS IAM policy creation and role assumption exercises, 5) EC2 instance type selection scenarios, 6) Real-world examples of OOM incidents and IAM security breaches.",
+    "leetcode": [
+      {
+        "title": "Merge K Sorted Lists",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/problems/merge-k-sorted-lists/",
+        "description": "Merging sorted log streams from multiple sources"
+      },
+      {
+        "title": "Top K Frequent Elements",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/top-k-frequent-elements/",
+        "description": "Finding top errors in logs"
+      }
+    ]
   },
   "6": {
     "day": 6,
@@ -1029,7 +1099,21 @@
         "explanation": "eBPF is widely used for security monitoring, detecting suspicious system calls, file access patterns, and network behavior."
       }
     ],
-    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 6: eBPF & Kernel Observability. Include: 1) Hour-by-hour breakdown of eBPF fundamentals, verifier, and BCC/bpftrace, 2) Hands-on labs with bpftrace one-liners to trace syscalls, TCP connections, and file I/O, 3) Exercises writing custom eBPF programs for performance monitoring, 4) Real-world scenarios like debugging production latency with eBPF, 5) Security monitoring examples with eBPF, 6) Common eBPF tools and their use cases."
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 6: eBPF & Kernel Observability. Include: 1) Hour-by-hour breakdown of eBPF fundamentals, verifier, and BCC/bpftrace, 2) Hands-on labs with bpftrace one-liners to trace syscalls, TCP connections, and file I/O, 3) Exercises writing custom eBPF programs for performance monitoring, 4) Real-world scenarios like debugging production latency with eBPF, 5) Security monitoring examples with eBPF, 6) Common eBPF tools and their use cases.",
+    "leetcode": [
+      {
+        "title": "Implement Trie",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/implement-trie-prefix-tree/",
+        "description": "Prefix matching for log filtering and search"
+      },
+      {
+        "title": "Word Search",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/word-search/",
+        "description": "Pattern matching in logs"
+      }
+    ]
   },
   "7": {
     "day": 7,
@@ -1196,7 +1280,21 @@
         "explanation": "The OTel Collector receives telemetry from applications, processes it, and exports to various backends (Jaeger, Prometheus, etc.)."
       }
     ],
-    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 7: Distributed Tracing & OpenTelemetry. Include: 1) Hour-by-hour breakdown of tracing concepts, spans, traces, and context propagation, 2) Hands-on labs instrumenting a microservice with OpenTelemetry, 3) Exercises setting up Jaeger and viewing traces, 4) Real-world scenarios debugging latency issues with distributed tracing, 5) Sampling strategies and their trade-offs, 6) Integration with metrics and logs for unified observability."
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 7: Distributed Tracing & OpenTelemetry. Include: 1) Hour-by-hour breakdown of tracing concepts, spans, traces, and context propagation, 2) Hands-on labs instrumenting a microservice with OpenTelemetry, 3) Exercises setting up Jaeger and viewing traces, 4) Real-world scenarios debugging latency issues with distributed tracing, 5) Sampling strategies and their trade-offs, 6) Integration with metrics and logs for unified observability.",
+    "leetcode": [
+      {
+        "title": "Design Distributed System",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "System design for distributed tracing"
+      },
+      {
+        "title": "Logger Rate Limiter",
+        "difficulty": "easy",
+        "url": "https://leetcode.com/problems/logger-rate-limiter/",
+        "description": "Rate limiting log messages"
+      }
+    ]
   },
   "8": {
     "day": 8,
@@ -1358,7 +1456,21 @@
         "explanation": "Maximizes efficiency."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 8: etcd. Include Raft, etcdctl labs, backup/restore, K8s integration, tuning."
+    "genaiPrompt": "Create 8-hour schedule for Day 8: etcd. Include Raft, etcdctl labs, backup/restore, K8s integration, tuning.",
+    "leetcode": [
+      {
+        "title": "Design Key-Value Store",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Understanding distributed key-value stores like etcd"
+      },
+      {
+        "title": "Consistent Hashing",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Load distribution across nodes"
+      }
+    ]
   },
   "9": {
     "day": 9,
@@ -1522,7 +1634,21 @@
         "explanation": "Encapsulates packets."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 9: CNI & Overlay Networking. Include CNI plugins, Flannel/Calico, pod networking, network policies, troubleshooting."
+    "genaiPrompt": "Create 8-hour schedule for Day 9: CNI & Overlay Networking. Include CNI plugins, Flannel/Calico, pod networking, network policies, troubleshooting.",
+    "leetcode": [
+      {
+        "title": "Clone Graph",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/clone-graph/",
+        "description": "Understanding network topology"
+      },
+      {
+        "title": "Course Schedule",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/course-schedule/",
+        "description": "Dependency resolution in container orchestration"
+      }
+    ]
   },
   "10": {
     "day": 10,
@@ -1686,7 +1812,21 @@
         "explanation": "Some CSI drivers support it."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 10: Persistent Storage & CSI. Include PV/PVC, StorageClass, CSI drivers, StatefulSet storage, Velero backup."
+    "genaiPrompt": "Create 8-hour schedule for Day 10: Persistent Storage & CSI. Include PV/PVC, StorageClass, CSI drivers, StatefulSet storage, Velero backup.",
+    "leetcode": [
+      {
+        "title": "Design File System",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/design-file-system/",
+        "description": "Understanding persistent storage systems"
+      },
+      {
+        "title": "Snapshot Array",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/snapshot-array/",
+        "description": "Point-in-time backups"
+      }
+    ]
   },
   "11": {
     "day": 11,
@@ -1849,7 +1989,21 @@
         "explanation": "Enables team collaboration."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 11: Terraform. Include HCL syntax, state management, modules, providers, CI/CD integration, best practices."
+    "genaiPrompt": "Create 8-hour schedule for Day 11: Terraform. Include HCL syntax, state management, modules, providers, CI/CD integration, best practices.",
+    "leetcode": [
+      {
+        "title": "Evaluate Reverse Polish Notation",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
+        "description": "Parsing and evaluating expressions in IaC"
+      },
+      {
+        "title": "Basic Calculator",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/problems/basic-calculator/",
+        "description": "Expression evaluation"
+      }
+    ]
   },
   "12": {
     "day": 12,
@@ -2011,7 +2165,21 @@
         "explanation": "Manages secrets externally."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 12: K8s Security & RBAC. Include roles, bindings, ServiceAccounts, OIDC, Sealed Secrets, Vault, Pod Security."
+    "genaiPrompt": "Create 8-hour schedule for Day 12: K8s Security & RBAC. Include roles, bindings, ServiceAccounts, OIDC, Sealed Secrets, Vault, Pod Security.",
+    "leetcode": [
+      {
+        "title": "Design Authentication System",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "RBAC and authentication flows"
+      },
+      {
+        "title": "Encode and Decode Strings",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/encode-and-decode-strings/",
+        "description": "Token encoding for secrets"
+      }
+    ]
   },
   "13": {
     "day": 13,
@@ -2175,7 +2343,21 @@
         "explanation": "Version control benefits."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 13: StatefulSets & GitOps. Include StatefulSet patterns, headless services, PVCs, ArgoCD setup, GitOps workflows."
+    "genaiPrompt": "Create 8-hour schedule for Day 13: StatefulSets & GitOps. Include StatefulSet patterns, headless services, PVCs, ArgoCD setup, GitOps workflows.",
+    "leetcode": [
+      {
+        "title": "Design Leaderboard",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/design-a-leaderboard/",
+        "description": "Maintaining ordered state in StatefulSets"
+      },
+      {
+        "title": "Insert Delete GetRandom O(1)",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/insert-delete-getrandom-o1/",
+        "description": "Efficient data structure operations"
+      }
+    ]
   },
   "14": {
     "day": 14,
@@ -2338,7 +2520,21 @@
         "explanation": "Two environments for safety."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 14: CI/CD & DevSecOps. Include pipeline design, GitHub Actions, container scanning, SBOM, secrets management, deployment strategies."
+    "genaiPrompt": "Create 8-hour schedule for Day 14: CI/CD & DevSecOps. Include pipeline design, GitHub Actions, container scanning, SBOM, secrets management, deployment strategies.",
+    "leetcode": [
+      {
+        "title": "Design CI/CD Pipeline",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Pipeline orchestration and DAG execution"
+      },
+      {
+        "title": "Task Scheduler",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/task-scheduler/",
+        "description": "Job scheduling in CI/CD"
+      }
+    ]
   },
   "15": {
     "day": 15,
@@ -2504,7 +2700,21 @@
         "explanation": "Define when to alert."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 15: PromQL & High-Cardinality. Include PromQL basics, functions, aggregations, cardinality issues, recording rules, alerting rules."
+    "genaiPrompt": "Create 8-hour schedule for Day 15: PromQL & High-Cardinality. Include PromQL basics, functions, aggregations, cardinality issues, recording rules, alerting rules.",
+    "leetcode": [
+      {
+        "title": "Time Series Data",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Storing and querying metrics"
+      },
+      {
+        "title": "Moving Average",
+        "difficulty": "easy",
+        "url": "https://leetcode.com/problems/moving-average-from-data-stream/",
+        "description": "Calculating rolling metrics"
+      }
+    ]
   },
   "16": {
     "day": 16,
@@ -2667,7 +2877,21 @@
         "explanation": "Regular reviews needed."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 16: SLOs, SLIs & Error Budgets. Include defining SLIs, setting SLOs, calculating error budgets, incident response based on budgets."
+    "genaiPrompt": "Create 8-hour schedule for Day 16: SLOs, SLIs & Error Budgets. Include defining SLIs, setting SLOs, calculating error budgets, incident response based on budgets.",
+    "leetcode": [
+      {
+        "title": "Design Metrics System",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "SLI/SLO tracking system"
+      },
+      {
+        "title": "Design Hit Counter",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/design-hit-counter/",
+        "description": "Counting requests for SLI"
+      }
+    ]
   },
   "17": {
     "day": 17,
@@ -2829,7 +3053,21 @@
         "explanation": "Intercepts API requests."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 17: Container Security & Policy Enforcement. Include image scanning, Falco, OPA Gatekeeper, security contexts, supply chain security."
+    "genaiPrompt": "Create 8-hour schedule for Day 17: Container Security & Policy Enforcement. Include image scanning, Falco, OPA Gatekeeper, security contexts, supply chain security.",
+    "leetcode": [
+      {
+        "title": "Design Security System",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Container security and policy enforcement"
+      },
+      {
+        "title": "Valid Sudoku",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/valid-sudoku/",
+        "description": "Validation logic for policies"
+      }
+    ]
   },
   "18": {
     "day": 18,
@@ -2991,7 +3229,21 @@
         "explanation": "Incident is event."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 18: Incident Management & Communication. Include incident response, communication templates, postmortems, blameless culture, on-call practices."
+    "genaiPrompt": "Create 8-hour schedule for Day 18: Incident Management & Communication. Include incident response, communication templates, postmortems, blameless culture, on-call practices.",
+    "leetcode": [
+      {
+        "title": "Design Notification System",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Incident alerting and escalation"
+      },
+      {
+        "title": "Design Phone Directory",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/design-phone-directory/",
+        "description": "On-call rotation management"
+      }
+    ]
   },
   "19": {
     "day": 19,
@@ -3159,7 +3411,21 @@
         "explanation": "Regular testing needed."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 19: Alerting Strategy & Runbooks. Include alert design, runbook creation, escalation policies, on-call rotation, alert fatigue prevention."
+    "genaiPrompt": "Create 8-hour schedule for Day 19: Alerting Strategy & Runbooks. Include alert design, runbook creation, escalation policies, on-call rotation, alert fatigue prevention.",
+    "leetcode": [
+      {
+        "title": "Design Alert System",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Alerting and runbook automation"
+      },
+      {
+        "title": "Design Search Autocomplete",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/problems/design-search-autocomplete-system/",
+        "description": "Runbook search"
+      }
+    ]
   },
   "20": {
     "day": 20,
@@ -3321,7 +3587,21 @@
         "explanation": "Correlated signals."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 20: Modern Observability Stack. Include VictoriaMetrics, Tempo, Pyroscope, integration patterns, cost optimization, unified observability."
+    "genaiPrompt": "Create 8-hour schedule for Day 20: Modern Observability Stack. Include VictoriaMetrics, Tempo, Pyroscope, integration patterns, cost optimization, unified observability.",
+    "leetcode": [
+      {
+        "title": "Design Monitoring System",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Modern observability stack"
+      },
+      {
+        "title": "Design Log System",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/design-log-storage-system/",
+        "description": "Log aggregation"
+      }
+    ]
   },
   "21": {
     "day": 21,
@@ -3485,7 +3765,21 @@
         "explanation": "Multiple tools available."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 21: Chaos Engineering. Include principles, Chaos Mesh, fault injection patterns, game days, measuring resilience, production chaos."
+    "genaiPrompt": "Create 8-hour schedule for Day 21: Chaos Engineering. Include principles, Chaos Mesh, fault injection patterns, game days, measuring resilience, production chaos.",
+    "leetcode": [
+      {
+        "title": "Random Pick with Weight",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/random-pick-with-weight/",
+        "description": "Weighted random selection for chaos experiments"
+      },
+      {
+        "title": "Shuffle an Array",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/shuffle-an-array/",
+        "description": "Randomization in chaos testing"
+      }
+    ]
   },
   "22": {
     "day": 22,
@@ -3653,7 +3947,21 @@
         "explanation": "Different layers."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 22: Load Balancing & Health Checks. Include algorithms, health check types, L4 vs L7, cloud load balancers, session affinity."
+    "genaiPrompt": "Create 8-hour schedule for Day 22: Load Balancing & Health Checks. Include algorithms, health check types, L4 vs L7, cloud load balancers, session affinity.",
+    "leetcode": [
+      {
+        "title": "Design Load Balancer",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Load balancing algorithms"
+      },
+      {
+        "title": "Random Pick Index",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/random-pick-index/",
+        "description": "Random server selection"
+      }
+    ]
   },
   "23": {
     "day": 23,
@@ -3819,7 +4127,21 @@
         "explanation": "Minimal remapping."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 23: Consistent Hashing & Sharding. Include algorithm, implementation, sharding strategies, rebalancing, distributed cache patterns."
+    "genaiPrompt": "Create 8-hour schedule for Day 23: Consistent Hashing & Sharding. Include algorithm, implementation, sharding strategies, rebalancing, distributed cache patterns.",
+    "leetcode": [
+      {
+        "title": "Design Consistent Hash Ring",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Consistent hashing implementation"
+      },
+      {
+        "title": "Design HashMap",
+        "difficulty": "easy",
+        "url": "https://leetcode.com/problems/design-hashmap/",
+        "description": "Hash function design"
+      }
+    ]
   },
   "24": {
     "day": 24,
@@ -3982,7 +4304,21 @@
         "explanation": "Unique and versioned."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 24: Cache Stampede & Mitigation. Include stampede problem, locking patterns, stale-while-revalidate, cache warming, distributed coordination."
+    "genaiPrompt": "Create 8-hour schedule for Day 24: Cache Stampede & Mitigation. Include stampede problem, locking patterns, stale-while-revalidate, cache warming, distributed coordination.",
+    "leetcode": [
+      {
+        "title": "Design Cache System",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Cache stampede prevention"
+      },
+      {
+        "title": "LFU Cache",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/problems/lfu-cache/",
+        "description": "Cache eviction policies"
+      }
+    ]
   },
   "25": {
     "day": 25,
@@ -4148,7 +4484,21 @@
         "explanation": "Catastrophic failure recovery."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 25: Database Replication & Failover. Include sync/async replication, read replicas, failover mechanisms, multi-region, DR planning."
+    "genaiPrompt": "Create 8-hour schedule for Day 25: Database Replication & Failover. Include sync/async replication, read replicas, failover mechanisms, multi-region, DR planning.",
+    "leetcode": [
+      {
+        "title": "Design Database",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Database replication and failover"
+      },
+      {
+        "title": "Design In-Memory File System",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/problems/design-in-memory-file-system/",
+        "description": "Data persistence"
+      }
+    ]
   },
   "26": {
     "day": 26,
@@ -4313,7 +4663,21 @@
         "explanation": "Lower latency."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 26: CDN Architecture & Edge Computing. Include caching strategies, edge platforms, dynamic content, CDN security, monitoring."
+    "genaiPrompt": "Create 8-hour schedule for Day 26: CDN Architecture & Edge Computing. Include caching strategies, edge platforms, dynamic content, CDN security, monitoring.",
+    "leetcode": [
+      {
+        "title": "Design CDN",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Content delivery network"
+      },
+      {
+        "title": "Design Tiny URL",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/design-tinyurl/",
+        "description": "URL shortening at edge"
+      }
+    ]
   },
   "27": {
     "day": 27,
@@ -4477,7 +4841,21 @@
         "explanation": "Path or header versioning."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 27: Rate Limiting & API Gateway. Include algorithms, API gateway patterns, throttling, versioning, edge rate limiting."
+    "genaiPrompt": "Create 8-hour schedule for Day 27: Rate Limiting & API Gateway. Include algorithms, API gateway patterns, throttling, versioning, edge rate limiting.",
+    "leetcode": [
+      {
+        "title": "Design API Gateway",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "API gateway with rate limiting"
+      },
+      {
+        "title": "Design Rate Limiter",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/design-rate-limiter/",
+        "description": "Token bucket algorithm"
+      }
+    ]
   },
   "28": {
     "day": 28,
@@ -4643,7 +5021,21 @@
         "explanation": "Higher costs."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 28: Multi-Region Deployments. Include architecture patterns, global traffic management, active-active/passive, cross-region replication, DR."
+    "genaiPrompt": "Create 8-hour schedule for Day 28: Multi-Region Deployments. Include architecture patterns, global traffic management, active-active/passive, cross-region replication, DR.",
+    "leetcode": [
+      {
+        "title": "Design Multi-Region System",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Global traffic management"
+      },
+      {
+        "title": "Design Geo-Distributed System",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Cross-region replication"
+      }
+    ]
   },
   "29": {
     "day": 29,
@@ -4808,7 +5200,21 @@
         "explanation": "Multiple tools available."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 29: FinOps & Cloud Cost Optimization. Include cost monitoring, right-sizing, reserved instances, auto-scaling, FinOps culture, optimization tools."
+    "genaiPrompt": "Create 8-hour schedule for Day 29: FinOps & Cloud Cost Optimization. Include cost monitoring, right-sizing, reserved instances, auto-scaling, FinOps culture, optimization tools.",
+    "leetcode": [
+      {
+        "title": "Design Cost Optimizer",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/discuss/interview-question/system-design/",
+        "description": "Cloud cost optimization"
+      },
+      {
+        "title": "Best Time to Buy and Sell Stock",
+        "difficulty": "easy",
+        "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+        "description": "Optimizing resource purchase timing"
+      }
+    ]
   },
   "30": {
     "day": 30,
@@ -4973,6 +5379,20 @@
         "explanation": "Clarify requirements."
       }
     ],
-    "genaiPrompt": "Create 8-hour schedule for Day 30: Mock Interview & Career Prep. Include technical questions, behavioral prep, system design practice, resume review, interview strategies."
+    "genaiPrompt": "Create 8-hour schedule for Day 30: Mock Interview & Career Prep. Include technical questions, behavioral prep, system design practice, resume review, interview strategies.",
+    "leetcode": [
+      {
+        "title": "Design URL Shortener",
+        "difficulty": "medium",
+        "url": "https://leetcode.com/problems/design-tinyurl/",
+        "description": "Classic system design problem"
+      },
+      {
+        "title": "Design Twitter",
+        "difficulty": "hard",
+        "url": "https://leetcode.com/problems/design-twitter/",
+        "description": "Scalable social media system"
+      }
+    ]
   }
 }
