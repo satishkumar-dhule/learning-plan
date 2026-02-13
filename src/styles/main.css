@@ -531,3 +531,257 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-gray-400);
 }
+
+
+/* Commands Section */
+.commands-section {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.commands-section summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--primary-color);
+  user-select: none;
+}
+
+.commands-section summary:hover {
+  color: var(--primary-hover);
+}
+
+.commands-section pre {
+  margin-top: 0.75rem;
+  padding: 1rem;
+  background: #1e1e1e;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.commands-section code {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #d4d4d4;
+}
+
+/* Checkpoint Quiz Section */
+.checkpoint-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+}
+
+.checkpoint-section h2 {
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.checkpoint-intro {
+  opacity: 0.95;
+  margin-bottom: 1.5rem;
+}
+
+.checkpoint-quiz {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  color: var(--text-primary);
+}
+
+.question-card {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  transition: border-color 0.3s;
+}
+
+.question-header {
+  margin-bottom: 1rem;
+}
+
+.question-number {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.question-text {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.option-label {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.option-label:hover {
+  border-color: var(--primary-color);
+  background: var(--bg-hover);
+}
+
+.option-label input[type="radio"] {
+  margin-right: 0.75rem;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.option-text {
+  flex: 1;
+  font-size: 1rem;
+}
+
+.option-label.correct-answer {
+  border-color: #10b981;
+  background: #d1fae5;
+}
+
+.option-label.wrong-answer {
+  border-color: #ef4444;
+  background: #fee2e2;
+}
+
+.answer-feedback {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 4px solid;
+}
+
+.answer-feedback.correct {
+  background: #d1fae5;
+  border-color: #10b981;
+  color: #065f46;
+}
+
+.answer-feedback.incorrect {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #991b1b;
+}
+
+.explanation {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.quiz-results {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.quiz-score {
+  padding: 2rem;
+  border-radius: 8px;
+  background: var(--bg-secondary);
+}
+
+.quiz-score.pass {
+  border: 3px solid #10b981;
+}
+
+.quiz-score.fail {
+  border: 3px solid #f59e0b;
+}
+
+.quiz-score h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.quiz-score p {
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+/* GenAI Prompt Section */
+.genai-section {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+}
+
+.genai-section h2 {
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.genai-intro {
+  opacity: 0.95;
+  margin-bottom: 1.5rem;
+}
+
+.genai-prompt-box {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  position: relative;
+}
+
+.genai-prompt {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  padding: 1.5rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.copy-prompt-btn {
+  width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .checkpoint-section,
+  .genai-section {
+    padding: 1.5rem;
+  }
+
+  .question-card {
+    padding: 1rem;
+  }
+
+  .question-text {
+    font-size: 1rem;
+  }
+
+  .option-label {
+    padding: 0.75rem;
+  }
+}

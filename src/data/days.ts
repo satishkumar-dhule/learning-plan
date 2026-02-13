@@ -6,6 +6,8 @@ export interface DayData {
   topics: string[]
   resources: Resource[]
   exercises: Exercise[]
+  checkpoint?: CheckpointQuestion[]
+  genaiPrompt?: string
 }
 
 export interface Resource {
@@ -20,6 +22,14 @@ export interface Exercise {
   difficulty: 'easy' | 'medium' | 'hard'
   url?: string
   description: string
+  commands?: string[]
+}
+
+export interface CheckpointQuestion {
+  question: string
+  options: string[]
+  correct: number
+  explanation: string
 }
 
 // Import JSON data with type assertion
