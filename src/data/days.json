@@ -33,18 +33,147 @@
     ],
     "exercises": [
       {
-        "title": "Two Sum",
+        "title": "Trace a Hanging Process",
         "difficulty": "easy",
-        "url": "https://leetcode.com/problems/two-sum/",
-        "description": "Hash table lookups = O(1) like cache lookup in distributed systems"
+        "description": "Use strace to debug a process that appears stuck",
+        "commands": [
+          "# Find a process ID",
+          "ps aux | grep nginx",
+          "# Attach strace to running process",
+          "sudo strace -p <PID> -f -e trace=all",
+          "# Count system calls",
+          "sudo strace -c -p <PID>"
+        ]
       },
       {
-        "title": "Group Anagrams",
+        "title": "Inspect Process Memory",
         "difficulty": "medium",
-        "url": "https://leetcode.com/problems/group-anagrams/",
-        "description": "Categorizing similar log patterns for log aggregation"
+        "description": "Analyze process memory usage via /proc filesystem",
+        "commands": [
+          "# View process status",
+          "cat /proc/<PID>/status",
+          "# Check memory maps",
+          "cat /proc/<PID>/maps",
+          "# View open file descriptors",
+          "ls -l /proc/<PID>/fd",
+          "# Check process limits",
+          "cat /proc/<PID>/limits"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "What is the main difference between fork() and vfork()?",
+        "options": [
+          "vfork() creates a new process, fork() creates a thread",
+          "vfork() suspends parent until child exits or execs, fork() doesn't",
+          "fork() is faster than vfork()",
+          "There is no difference"
+        ],
+        "correct": 1,
+        "explanation": "vfork() suspends the parent process until the child either exits or calls exec(). This avoids copying the page table."
+      },
+      {
+        "question": "What does Copy-on-Write (COW) optimization do?",
+        "options": [
+          "Copies all memory immediately after fork()",
+          "Delays memory copying until a write occurs",
+          "Prevents child processes from writing to memory",
+          "Writes data to disk instead of memory"
+        ],
+        "correct": 1,
+        "explanation": "COW delays copying memory pages until either parent or child attempts to modify them, saving time and memory."
+      },
+      {
+        "question": "Which strace flag shows only file-related system calls?",
+        "options": [
+          "strace -e trace=file",
+          "strace -f",
+          "strace -c",
+          "strace -p"
+        ],
+        "correct": 0,
+        "explanation": "The -e trace=file flag filters strace output to show only file-related system calls like open(), read(), write()."
+      },
+      {
+        "question": "What is a zombie process?",
+        "options": [
+          "A process that consumes too much CPU",
+          "A process that has terminated but still has an entry in the process table",
+          "A process that cannot be killed",
+          "A process running in the background"
+        ],
+        "correct": 1,
+        "explanation": "A zombie process has completed execution but still has an entry in the process table, waiting for its parent to read its exit status."
+      },
+      {
+        "question": "Where can you find the command line arguments of a running process?",
+        "options": [
+          "/proc/<PID>/cmd",
+          "/proc/<PID>/cmdline",
+          "/proc/<PID>/args",
+          "/proc/<PID>/status"
+        ],
+        "correct": 1,
+        "explanation": "/proc/<PID>/cmdline contains the complete command line for the process, with arguments separated by null bytes."
+      },
+      {
+        "question": "What does the -f flag do in strace?",
+        "options": [
+          "Filters output to show only failures",
+          "Follows child processes created by fork()",
+          "Shows file operations only",
+          "Runs strace in the foreground"
+        ],
+        "correct": 1,
+        "explanation": "The -f flag tells strace to follow child processes created by fork(), clone(), or vfork()."
+      },
+      {
+        "question": "Which system call replaces the current process image with a new one?",
+        "options": [
+          "fork()",
+          "clone()",
+          "execve()",
+          "wait4()"
+        ],
+        "correct": 2,
+        "explanation": "execve() replaces the current process image with a new program, loading it into the current process's memory space."
+      },
+      {
+        "question": "What happens to an orphan process?",
+        "options": [
+          "It becomes a zombie",
+          "It is killed by the kernel",
+          "It is adopted by init (PID 1)",
+          "It continues running without a parent"
+        ],
+        "correct": 2,
+        "explanation": "When a parent process dies before its child, the child becomes an orphan and is adopted by the init process (PID 1)."
+      },
+      {
+        "question": "How can you count the frequency of system calls made by a process?",
+        "options": [
+          "strace -c -p <PID>",
+          "strace -f -p <PID>",
+          "strace -e trace=all -p <PID>",
+          "strace -v -p <PID>"
+        ],
+        "correct": 0,
+        "explanation": "The -c flag provides a summary count of system calls, showing time spent in each call and call frequency."
+      },
+      {
+        "question": "What information does /proc/<PID>/status provide?",
+        "options": [
+          "Only the process state (running, sleeping, etc.)",
+          "Comprehensive process information including memory, threads, and credentials",
+          "Just the process name",
+          "Only CPU usage statistics"
+        ],
+        "correct": 1,
+        "explanation": "/proc/<PID>/status provides detailed information including state, memory usage, thread count, UIDs, GIDs, and more."
+      }
+    ],
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 1: Process Lifecycle & System Calls. Include: 1) Hour-by-hour breakdown with specific topics, 2) Hands-on lab exercises with actual Linux commands for fork(), strace, and /proc inspection, 3) Practice scenarios like debugging a hanging process or analyzing memory usage, 4) Real-world examples from production systems, 5) Common pitfalls and debugging tips. Make it practical and include all commands I need to run."
   },
   "2": {
     "day": 2,
@@ -74,18 +203,149 @@
     ],
     "exercises": [
       {
-        "title": "Valid Anagram",
+        "title": "Monitor Page Cache Usage",
         "difficulty": "easy",
-        "url": "https://leetcode.com/problems/valid-anagram/",
-        "description": "String comparison for configuration validation"
+        "description": "Analyze system page cache and buffer usage",
+        "commands": [
+          "# View memory usage including cache",
+          "free -h",
+          "# Detailed memory statistics",
+          "cat /proc/meminfo | grep -E 'Cached|Dirty|Writeback'",
+          "# Monitor I/O in real-time",
+          "vmstat 1",
+          "# Check disk I/O statistics",
+          "iostat -x 1"
+        ]
       },
       {
-        "title": "Top K Frequent Elements",
+        "title": "Test fsync() Performance Impact",
         "difficulty": "medium",
-        "url": "https://leetcode.com/problems/top-k-frequent-elements/",
-        "description": "Analyzing top error types in logs"
+        "description": "Measure the performance difference with and without fsync()",
+        "commands": [
+          "# Write without fsync (fast but unsafe)",
+          "dd if=/dev/zero of=testfile bs=1M count=1000 conv=notrunc",
+          "# Write with fsync (slower but safe)",
+          "dd if=/dev/zero of=testfile bs=1M count=1000 conv=fsync",
+          "# Monitor dirty pages during write",
+          "watch -n 1 'cat /proc/meminfo | grep Dirty'",
+          "# Clear page cache (requires root)",
+          "sudo sync && sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches'"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "What is the primary purpose of the page cache?",
+        "options": [
+          "To store CPU instructions",
+          "To cache file data in RAM to reduce disk I/O",
+          "To manage virtual memory",
+          "To store network packets"
+        ],
+        "correct": 1,
+        "explanation": "The page cache stores file data in RAM, reducing the need for expensive disk I/O operations when the same data is accessed again."
+      },
+      {
+        "question": "What are dirty pages?",
+        "options": [
+          "Pages with corrupted data",
+          "Pages that have been modified but not yet written to disk",
+          "Pages that contain malware",
+          "Pages that are no longer in use"
+        ],
+        "correct": 1,
+        "explanation": "Dirty pages are memory pages that have been modified in the page cache but haven't been written back to disk yet."
+      },
+      {
+        "question": "What does fsync() do?",
+        "options": [
+          "Synchronizes file metadata only",
+          "Forces all modified data and metadata to be written to disk",
+          "Closes a file descriptor",
+          "Reads data from disk into cache"
+        ],
+        "correct": 1,
+        "explanation": "fsync() forces all modified data and metadata for a file to be written to disk, ensuring durability."
+      },
+      {
+        "question": "How is fdatasync() different from fsync()?",
+        "options": [
+          "fdatasync() is slower than fsync()",
+          "fdatasync() only syncs data, not all metadata",
+          "fdatasync() works on directories",
+          "There is no difference"
+        ],
+        "correct": 1,
+        "explanation": "fdatasync() only syncs the file data and essential metadata (like file size), skipping non-essential metadata like access times."
+      },
+      {
+        "question": "Which command shows dirty pages in the system?",
+        "options": [
+          "free -h",
+          "cat /proc/meminfo | grep Dirty",
+          "top",
+          "df -h"
+        ],
+        "correct": 1,
+        "explanation": "/proc/meminfo contains the 'Dirty' field showing the amount of memory waiting to be written back to disk."
+      },
+      {
+        "question": "What does 'echo 3 > /proc/sys/vm/drop_caches' do?",
+        "options": [
+          "Deletes files from disk",
+          "Clears page cache, dentries, and inodes",
+          "Increases cache size",
+          "Disables caching"
+        ],
+        "correct": 1,
+        "explanation": "Writing 3 to drop_caches clears the page cache, dentry cache, and inode cache. It's useful for testing but should not be used in production."
+      },
+      {
+        "question": "What is the dentry cache?",
+        "options": [
+          "A cache for file data",
+          "A cache for directory entry information",
+          "A cache for network connections",
+          "A cache for CPU instructions"
+        ],
+        "correct": 1,
+        "explanation": "The dentry (directory entry) cache stores information about the directory structure, speeding up path lookups."
+      },
+      {
+        "question": "Which I/O scheduler is best for SSDs?",
+        "options": [
+          "CFQ (Completely Fair Queuing)",
+          "Deadline",
+          "noop or none",
+          "Anticipatory"
+        ],
+        "correct": 2,
+        "explanation": "SSDs don't have seek time penalties, so simple schedulers like noop (or none in newer kernels) work best by minimizing CPU overhead."
+      },
+      {
+        "question": "What does the 'sync' command do?",
+        "options": [
+          "Synchronizes system time",
+          "Flushes all dirty pages to disk",
+          "Syncs files between servers",
+          "Synchronizes user accounts"
+        ],
+        "correct": 1,
+        "explanation": "The sync command flushes all modified buffers (dirty pages) to disk, ensuring data is written."
+      },
+      {
+        "question": "Why might excessive fsync() calls hurt performance?",
+        "options": [
+          "It uses too much CPU",
+          "It forces synchronous disk writes, blocking the application",
+          "It corrupts data",
+          "It fills up the disk"
+        ],
+        "correct": 1,
+        "explanation": "fsync() forces synchronous writes to disk, which is much slower than writing to cache. Excessive calls can severely impact performance."
+      }
+    ],
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 2: Advanced I/O & The VFS Layer. Include: 1) Hour-by-hour breakdown covering page cache, dirty pages, and fsync(), 2) Hands-on labs with dd, iostat, vmstat commands to measure I/O performance, 3) Experiments comparing fsync() vs non-fsync() writes, 4) Real-world scenarios like database write performance tuning, 5) Commands to monitor and clear caches, 6) Common I/O bottlenecks in production systems."
   },
   "3": {
     "day": 3,
@@ -115,18 +375,150 @@
     ],
     "exercises": [
       {
-        "title": "Valid Parentheses",
+        "title": "Analyze TCP Connections",
         "difficulty": "easy",
-        "url": "https://leetcode.com/problems/valid-parentheses/",
-        "description": "Validating nested configuration syntax"
+        "description": "Monitor and analyze TCP connections on your system",
+        "commands": [
+          "# Show all TCP connections",
+          "ss -tan",
+          "# Show listening TCP ports",
+          "ss -tln",
+          "# Monitor TCP statistics",
+          "netstat -s | grep -i tcp",
+          "# Capture TCP handshake with tcpdump",
+          "sudo tcpdump -i any 'tcp[tcpflags] & (tcp-syn|tcp-ack) != 0' -nn"
+        ]
       },
       {
-        "title": "Min Stack",
+        "title": "Test Network Performance",
         "difficulty": "medium",
-        "url": "https://leetcode.com/problems/min-stack/",
-        "description": "Tracking minimum latency across time windows"
+        "description": "Measure bandwidth and latency between hosts",
+        "commands": [
+          "# Install iperf3",
+          "# Server side: iperf3 -s",
+          "# Client side: iperf3 -c <server-ip>",
+          "# Test with different window sizes",
+          "iperf3 -c <server-ip> -w 256K",
+          "# Measure latency",
+          "ping -c 10 <host>",
+          "# Traceroute to see path",
+          "traceroute <host>"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "What are the three steps in TCP's three-way handshake?",
+        "options": [
+          "CONNECT, ACK, DATA",
+          "SYN, SYN-ACK, ACK",
+          "OPEN, SEND, CLOSE",
+          "REQUEST, RESPONSE, CONFIRM"
+        ],
+        "correct": 1,
+        "explanation": "TCP handshake: Client sends SYN, server responds with SYN-ACK, client sends ACK to establish connection."
+      },
+      {
+        "question": "What is the Bandwidth-Delay Product (BDP)?",
+        "options": [
+          "The cost of network bandwidth",
+          "The product of bandwidth and round-trip time, determining optimal buffer size",
+          "The delay in bandwidth allocation",
+          "The bandwidth divided by delay"
+        ],
+        "correct": 1,
+        "explanation": "BDP = Bandwidth \u00d7 RTT. It determines how much data can be 'in flight' on the network and helps size TCP windows."
+      },
+      {
+        "question": "What is the main difference between Security Groups and NACLs in AWS?",
+        "options": [
+          "Security Groups are stateful, NACLs are stateless",
+          "NACLs are stateful, Security Groups are stateless",
+          "They are the same thing",
+          "Security Groups work at the VPC level, NACLs at instance level"
+        ],
+        "correct": 0,
+        "explanation": "Security Groups are stateful (return traffic automatically allowed), while NACLs are stateless (must explicitly allow both directions)."
+      },
+      {
+        "question": "Which TCP congestion control algorithm is designed for high-bandwidth networks?",
+        "options": [
+          "Reno",
+          "Tahoe",
+          "BBR (Bottleneck Bandwidth and RTT)",
+          "Vegas"
+        ],
+        "correct": 2,
+        "explanation": "BBR, developed by Google, is designed for high-bandwidth, high-latency networks and focuses on measuring bottleneck bandwidth."
+      },
+      {
+        "question": "What does the TIME_WAIT state in TCP do?",
+        "options": [
+          "Waits for data to arrive",
+          "Ensures all packets are received before closing connection",
+          "Delays connection establishment",
+          "Waits for timeout"
+        ],
+        "correct": 1,
+        "explanation": "TIME_WAIT ensures that delayed packets from the old connection don't interfere with new connections on the same port."
+      },
+      {
+        "question": "What command shows TCP connection states?",
+        "options": [
+          "tcp -a",
+          "ss -tan or netstat -tan",
+          "show tcp",
+          "tcpstat"
+        ],
+        "correct": 1,
+        "explanation": "ss -tan (or netstat -tan) shows all TCP connections with their states (ESTABLISHED, TIME_WAIT, etc.)."
+      },
+      {
+        "question": "What is a VPC in AWS?",
+        "options": [
+          "Virtual Private Cloud - an isolated network in AWS",
+          "Very Powerful Computer",
+          "Virtual Processing Center",
+          "VPN Connection"
+        ],
+        "correct": 0,
+        "explanation": "A VPC is a logically isolated virtual network in AWS where you can launch resources with full control over IP addressing and routing."
+      },
+      {
+        "question": "What happens during TCP slow start?",
+        "options": [
+          "Connection is delayed intentionally",
+          "Congestion window grows exponentially until a threshold",
+          "Data is sent very slowly",
+          "Connection speed is limited"
+        ],
+        "correct": 1,
+        "explanation": "Slow start exponentially increases the congestion window until reaching ssthresh or detecting packet loss."
+      },
+      {
+        "question": "Which tool captures network packets for analysis?",
+        "options": [
+          "netstat",
+          "tcpdump or wireshark",
+          "ping",
+          "traceroute"
+        ],
+        "correct": 1,
+        "explanation": "tcpdump (CLI) and Wireshark (GUI) capture and analyze network packets at the packet level."
+      },
+      {
+        "question": "What is the purpose of TCP window scaling?",
+        "options": [
+          "To resize application windows",
+          "To allow TCP windows larger than 64KB for high-bandwidth networks",
+          "To scale down bandwidth usage",
+          "To adjust screen resolution"
+        ],
+        "correct": 1,
+        "explanation": "Window scaling (RFC 1323) allows TCP windows larger than 64KB, essential for high-bandwidth, high-latency networks."
+      }
+    ],
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 3: TCP Internals & Cloud Networking. Include: 1) Hour-by-hour breakdown of TCP handshake, congestion control, and VPC concepts, 2) Hands-on labs with tcpdump, ss, netstat, and iperf3 to analyze TCP behavior, 3) AWS VPC setup exercises with subnets, route tables, and security groups, 4) Real-world scenarios like debugging connection timeouts and optimizing TCP for high-latency links, 5) Packet capture analysis exercises, 6) Common networking issues in cloud environments."
   },
   "4": {
     "day": 4,
@@ -156,11 +548,144 @@
     ],
     "exercises": [
       {
-        "title": "HTTP Methods Quiz",
+        "title": "Test HTTP/3 Support",
         "difficulty": "easy",
-        "description": "Understand HTTP methods and their use cases"
+        "description": "Check if websites support HTTP/3",
+        "commands": [
+          "# Check HTTP/3 support with curl (if built with HTTP/3)",
+          "curl --http3 -I https://cloudflare.com",
+          "# Use online tools: https://http3check.net/",
+          "# Check browser support in DevTools Network tab",
+          "# Look for 'h3' or 'h3-29' in Protocol column"
+        ]
+      },
+      {
+        "title": "Compare HTTP/2 vs HTTP/3 Performance",
+        "difficulty": "medium",
+        "description": "Measure performance differences between protocols",
+        "commands": [
+          "# Test HTTP/2 performance",
+          "curl -w '@curl-format.txt' -o /dev/null -s https://example.com",
+          "# Create curl-format.txt with timing variables",
+          "echo 'time_total: %{time_total}\\ntime_connect: %{time_connect}\\n' > curl-format.txt",
+          "# Use browser DevTools to compare load times",
+          "# Simulate packet loss to see QUIC benefits"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "What transport protocol does HTTP/3 use?",
+        "options": [
+          "TCP",
+          "UDP via QUIC",
+          "SCTP",
+          "Raw IP"
+        ],
+        "correct": 1,
+        "explanation": "HTTP/3 uses QUIC, which runs over UDP instead of TCP, eliminating head-of-line blocking at the transport layer."
+      },
+      {
+        "question": "What problem does QUIC solve that HTTP/2 has?",
+        "options": [
+          "Slow connection establishment",
+          "Head-of-line blocking at TCP level",
+          "Lack of encryption",
+          "Too much bandwidth usage"
+        ],
+        "correct": 1,
+        "explanation": "HTTP/2 over TCP suffers from head-of-line blocking when packets are lost. QUIC solves this by handling streams independently."
+      },
+      {
+        "question": "How does QUIC reduce connection establishment time?",
+        "options": [
+          "By using faster servers",
+          "By combining transport and crypto handshakes (0-RTT)",
+          "By caching connections",
+          "By using multiple connections"
+        ],
+        "correct": 1,
+        "explanation": "QUIC combines the transport and TLS handshakes, and supports 0-RTT for resumed connections, reducing latency."
+      },
+      {
+        "question": "Is TLS mandatory in QUIC?",
+        "options": [
+          "No, it's optional",
+          "Yes, TLS 1.3 is built into QUIC",
+          "Only for HTTPS",
+          "Only for production"
+        ],
+        "correct": 1,
+        "explanation": "QUIC mandates TLS 1.3 encryption, making all QUIC connections secure by default."
+      },
+      {
+        "question": "What is connection migration in QUIC?",
+        "options": [
+          "Moving data between servers",
+          "Ability to maintain connection when IP address changes",
+          "Migrating from HTTP/2 to HTTP/3",
+          "Database migration"
+        ],
+        "correct": 1,
+        "explanation": "QUIC uses connection IDs instead of IP/port tuples, allowing connections to survive network changes (e.g., WiFi to cellular)."
+      },
+      {
+        "question": "Why does QUIC use UDP instead of TCP?",
+        "options": [
+          "UDP is faster",
+          "To avoid TCP's head-of-line blocking and enable faster innovation",
+          "UDP is more secure",
+          "TCP is deprecated"
+        ],
+        "correct": 1,
+        "explanation": "UDP allows QUIC to implement custom congestion control and avoid TCP's limitations without waiting for OS kernel updates."
+      },
+      {
+        "question": "What is 0-RTT in QUIC?",
+        "options": [
+          "Zero packet loss",
+          "Zero round-trip time resumption for previously connected clients",
+          "Zero retransmissions",
+          "Zero latency"
+        ],
+        "correct": 1,
+        "explanation": "0-RTT allows clients to send application data in the first packet when resuming a connection, eliminating handshake latency."
+      },
+      {
+        "question": "How does HTTP/3 handle stream multiplexing differently than HTTP/2?",
+        "options": [
+          "It doesn't support multiplexing",
+          "Streams are independent at transport layer, no head-of-line blocking",
+          "It uses more connections",
+          "It's slower"
+        ],
+        "correct": 1,
+        "explanation": "HTTP/3 streams are independent in QUIC, so packet loss on one stream doesn't block others, unlike HTTP/2 over TCP."
+      },
+      {
+        "question": "What port does QUIC typically use?",
+        "options": [
+          "Port 80",
+          "Port 443 (UDP)",
+          "Port 8080",
+          "Port 3000"
+        ],
+        "correct": 1,
+        "explanation": "QUIC typically uses UDP port 443, the same port number as HTTPS, to avoid firewall issues."
+      },
+      {
+        "question": "What is a major deployment challenge for HTTP/3?",
+        "options": [
+          "It's too slow",
+          "UDP is often blocked or rate-limited by networks",
+          "It's not secure",
+          "It uses too much bandwidth"
+        ],
+        "correct": 1,
+        "explanation": "Some networks block or rate-limit UDP traffic, which can prevent QUIC/HTTP/3 from working, requiring fallback to HTTP/2."
+      }
+    ],
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 4: HTTP/3 & QUIC Protocol. Include: 1) Hour-by-hour breakdown of HTTP/2 vs HTTP/3, QUIC internals, and 0-RTT, 2) Hands-on labs testing HTTP/3 support with curl and browser DevTools, 3) Experiments comparing HTTP/2 and HTTP/3 performance, 4) Real-world scenarios like connection migration and packet loss handling, 5) Commands to test and debug QUIC connections, 6) Common deployment challenges and solutions."
   },
   "5": {
     "day": 5,
@@ -190,11 +715,151 @@
     ],
     "exercises": [
       {
-        "title": "Memory Puzzle",
+        "title": "Monitor Memory Usage",
+        "difficulty": "easy",
+        "description": "Analyze system memory and identify memory hogs",
+        "commands": [
+          "# View memory usage",
+          "free -h",
+          "# Show per-process memory",
+          "ps aux --sort=-%mem | head -10",
+          "# Detailed memory info",
+          "cat /proc/meminfo",
+          "# Check OOM killer logs",
+          "dmesg | grep -i 'killed process'",
+          "# View process OOM scores",
+          "for pid in $(ps -eo pid); do echo \"PID: $pid Score: $(cat /proc/$pid/oom_score 2>/dev/null)\"; done | sort -k4 -n"
+        ]
+      },
+      {
+        "title": "Tune OOM Killer Behavior",
         "difficulty": "medium",
-        "description": "Debug memory-related issues"
+        "description": "Adjust OOM scores to protect critical processes",
+        "commands": [
+          "# View current OOM score for a process",
+          "cat /proc/<PID>/oom_score",
+          "# View OOM adjustment",
+          "cat /proc/<PID>/oom_score_adj",
+          "# Protect a process from OOM killer (-1000 = never kill)",
+          "echo -1000 | sudo tee /proc/<PID>/oom_score_adj",
+          "# Make a process more likely to be killed (1000 = always kill first)",
+          "echo 1000 | sudo tee /proc/<PID>/oom_score_adj"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "What triggers the OOM (Out of Memory) killer?",
+        "options": [
+          "High CPU usage",
+          "System runs out of available memory and swap",
+          "Disk is full",
+          "Too many processes"
+        ],
+        "correct": 1,
+        "explanation": "The OOM killer is triggered when the system exhausts available memory and swap space, and cannot allocate more memory."
+      },
+      {
+        "question": "What is the range of oom_score_adj values?",
+        "options": [
+          "0 to 100",
+          "-1000 to 1000",
+          "-100 to 100",
+          "0 to 1000"
+        ],
+        "correct": 1,
+        "explanation": "oom_score_adj ranges from -1000 (never kill) to 1000 (always kill first), allowing fine-grained control over OOM killer behavior."
+      },
+      {
+        "question": "What does virtual memory allow?",
+        "options": [
+          "Faster memory access",
+          "Processes to use more memory than physically available",
+          "Multiple CPUs",
+          "Network memory sharing"
+        ],
+        "correct": 1,
+        "explanation": "Virtual memory allows processes to use more memory than physically available by using disk space (swap) as an extension of RAM."
+      },
+      {
+        "question": "What is the principle of least privilege in IAM?",
+        "options": [
+          "Give everyone admin access",
+          "Grant only the minimum permissions needed",
+          "Use root account for everything",
+          "Share passwords"
+        ],
+        "correct": 1,
+        "explanation": "Least privilege means granting only the minimum permissions necessary for users/services to perform their tasks."
+      },
+      {
+        "question": "What is an IAM role in AWS?",
+        "options": [
+          "A user account",
+          "A set of permissions that can be assumed by services or users",
+          "A security group",
+          "A type of EC2 instance"
+        ],
+        "correct": 1,
+        "explanation": "An IAM role is a set of permissions that can be temporarily assumed by AWS services, users, or applications."
+      },
+      {
+        "question": "Which command shows which process the OOM killer terminated?",
+        "options": [
+          "ps aux",
+          "dmesg | grep -i 'killed process'",
+          "top",
+          "free -h"
+        ],
+        "correct": 1,
+        "explanation": "The OOM killer logs its actions to the kernel ring buffer, which can be viewed with dmesg."
+      },
+      {
+        "question": "What is the difference between memory and swap?",
+        "options": [
+          "No difference",
+          "Memory is RAM, swap is disk space used as virtual memory",
+          "Swap is faster",
+          "Memory is for storage"
+        ],
+        "correct": 1,
+        "explanation": "Memory (RAM) is fast physical memory, while swap is disk space used as slower virtual memory when RAM is full."
+      },
+      {
+        "question": "What EC2 instance type is optimized for memory-intensive applications?",
+        "options": [
+          "t3 (burstable)",
+          "r6 or x2 (memory-optimized)",
+          "c6 (compute-optimized)",
+          "m6 (general purpose)"
+        ],
+        "correct": 1,
+        "explanation": "R and X instance families are memory-optimized, offering high memory-to-CPU ratios for memory-intensive workloads."
+      },
+      {
+        "question": "What does the 'available' memory metric in 'free' command represent?",
+        "options": [
+          "Unused memory only",
+          "Memory available for new applications without swapping",
+          "Total memory",
+          "Swap space"
+        ],
+        "correct": 1,
+        "explanation": "'Available' memory includes free memory plus reclaimable cache/buffers, showing what's available for new applications."
+      },
+      {
+        "question": "What is an IAM policy in AWS?",
+        "options": [
+          "A network rule",
+          "A JSON document defining permissions",
+          "A billing rule",
+          "A monitoring alert"
+        ],
+        "correct": 1,
+        "explanation": "An IAM policy is a JSON document that defines permissions, specifying what actions are allowed or denied on which resources."
+      }
+    ],
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 5: Memory Management, OOM Killer & Cloud IAM/Compute. Include: 1) Hour-by-hour breakdown of virtual memory, OOM killer, and AWS IAM concepts, 2) Hands-on labs monitoring memory with free, ps, and /proc, 3) Exercises tuning oom_score_adj for critical processes, 4) AWS IAM policy creation and role assumption exercises, 5) EC2 instance type selection scenarios, 6) Real-world examples of OOM incidents and IAM security breaches."
   },
   "6": {
     "day": 6,
@@ -224,11 +889,147 @@
     ],
     "exercises": [
       {
-        "title": "Trace a Process",
+        "title": "Trace System Calls with bpftrace",
+        "difficulty": "easy",
+        "description": "Use bpftrace to monitor system calls",
+        "commands": [
+          "# Install bpftrace (Ubuntu/Debian)",
+          "sudo apt-get install bpftrace",
+          "# List available probes",
+          "sudo bpftrace -l 'tracepoint:syscalls:*'",
+          "# Trace all open() syscalls",
+          "sudo bpftrace -e 'tracepoint:syscalls:sys_enter_openat { printf(\"%s %s\\n\", comm, str(args->filename)); }'",
+          "# Count syscalls by process",
+          "sudo bpftrace -e 'tracepoint:raw_syscalls:sys_enter { @[comm] = count(); }'"
+        ]
+      },
+      {
+        "title": "Monitor TCP Connections",
         "difficulty": "medium",
-        "description": "Use bpftrace to trace system calls"
+        "description": "Track TCP connection events with eBPF",
+        "commands": [
+          "# Trace TCP connections",
+          "sudo bpftrace -e 'kprobe:tcp_connect { printf(\"PID %d connecting\\n\", pid); }'",
+          "# Monitor TCP retransmits",
+          "sudo bpftrace -e 'tracepoint:tcp:tcp_retransmit_skb { @retrans[comm] = count(); }'",
+          "# Track connection latency",
+          "sudo bpftrace -e 'kprobe:tcp_v4_connect { @start[tid] = nsecs; } kretprobe:tcp_v4_connect /@start[tid]/ { @latency = hist(nsecs - @start[tid]); delete(@start[tid]); }'"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "What does eBPF stand for?",
+        "options": [
+          "Enhanced Berkeley Packet Filter",
+          "Extended Berkeley Packet Filter",
+          "Efficient Binary Program Filter",
+          "Embedded Berkeley Protocol Framework"
+        ],
+        "correct": 1,
+        "explanation": "eBPF stands for Extended Berkeley Packet Filter, though it now does much more than just packet filtering."
+      },
+      {
+        "question": "What makes eBPF safe to run in the kernel?",
+        "options": [
+          "It runs in user space",
+          "It's verified by the kernel verifier before execution",
+          "It requires root password",
+          "It's written in Python"
+        ],
+        "correct": 1,
+        "explanation": "The eBPF verifier ensures programs are safe (no infinite loops, valid memory access) before allowing them to run in kernel space."
+      },
+      {
+        "question": "What is bpftrace?",
+        "options": [
+          "A packet capture tool",
+          "A high-level tracing language for eBPF",
+          "A network monitoring tool",
+          "A debugger"
+        ],
+        "correct": 1,
+        "explanation": "bpftrace is a high-level tracing language that makes it easy to write eBPF programs for system observability."
+      },
+      {
+        "question": "Which tool provides Python/Lua bindings for eBPF?",
+        "options": [
+          "bpftrace",
+          "BCC (BPF Compiler Collection)",
+          "tcpdump",
+          "strace"
+        ],
+        "correct": 1,
+        "explanation": "BCC provides Python and Lua bindings for writing eBPF programs, along with many pre-built tools."
+      },
+      {
+        "question": "Can eBPF programs crash the kernel?",
+        "options": [
+          "Yes, easily",
+          "No, the verifier prevents unsafe operations",
+          "Only if you're root",
+          "Yes, but only on purpose"
+        ],
+        "correct": 1,
+        "explanation": "The eBPF verifier ensures programs cannot crash the kernel by checking for infinite loops, invalid memory access, etc."
+      },
+      {
+        "question": "What types of events can eBPF trace?",
+        "options": [
+          "Only network packets",
+          "System calls, kernel functions, tracepoints, and more",
+          "Only user-space functions",
+          "Only file operations"
+        ],
+        "correct": 1,
+        "explanation": "eBPF can attach to kprobes, uprobes, tracepoints, perf events, and more, providing comprehensive observability."
+      },
+      {
+        "question": "What is a kprobe in eBPF?",
+        "options": [
+          "A network probe",
+          "A dynamic probe that can attach to any kernel function",
+          "A CPU probe",
+          "A memory probe"
+        ],
+        "correct": 1,
+        "explanation": "kprobes allow eBPF programs to attach to almost any kernel function for tracing and monitoring."
+      },
+      {
+        "question": "What command lists available eBPF probes?",
+        "options": [
+          "bpftrace -l",
+          "ebpf --list",
+          "list-probes",
+          "show bpf"
+        ],
+        "correct": 0,
+        "explanation": "bpftrace -l lists all available probes, including tracepoints, kprobes, and uprobes."
+      },
+      {
+        "question": "What is the main advantage of eBPF over traditional tracing?",
+        "options": [
+          "It's easier to use",
+          "Low overhead and runs in kernel space without kernel modules",
+          "It's faster",
+          "It requires no permissions"
+        ],
+        "correct": 1,
+        "explanation": "eBPF provides low-overhead tracing directly in kernel space without requiring custom kernel modules or reboots."
+      },
+      {
+        "question": "Can eBPF be used for security monitoring?",
+        "options": [
+          "No, only for performance",
+          "Yes, it can monitor system calls, file access, and network activity",
+          "Only for network security",
+          "Only for user-space security"
+        ],
+        "correct": 1,
+        "explanation": "eBPF is widely used for security monitoring, detecting suspicious system calls, file access patterns, and network behavior."
+      }
+    ],
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 6: eBPF & Kernel Observability. Include: 1) Hour-by-hour breakdown of eBPF fundamentals, verifier, and BCC/bpftrace, 2) Hands-on labs with bpftrace one-liners to trace syscalls, TCP connections, and file I/O, 3) Exercises writing custom eBPF programs for performance monitoring, 4) Real-world scenarios like debugging production latency with eBPF, 5) Security monitoring examples with eBPF, 6) Common eBPF tools and their use cases."
   },
   "7": {
     "day": 7,
@@ -258,11 +1059,144 @@
     ],
     "exercises": [
       {
-        "title": "Trace a Request",
+        "title": "Instrument a Simple Service",
+        "difficulty": "easy",
+        "description": "Add OpenTelemetry tracing to a basic application",
+        "commands": [
+          "# Install OpenTelemetry for Python",
+          "pip install opentelemetry-api opentelemetry-sdk opentelemetry-instrumentation",
+          "# Auto-instrument a Flask app",
+          "opentelemetry-instrument python app.py",
+          "# View traces in Jaeger (run Jaeger first)",
+          "docker run -d -p 16686:16686 -p 4318:4318 jaegertracing/all-in-one:latest"
+        ]
+      },
+      {
+        "title": "Trace Context Propagation",
         "difficulty": "medium",
-        "description": "Set up tracing for a simple service"
+        "description": "Implement trace context propagation between services",
+        "commands": [
+          "# Example: Propagate trace context in HTTP headers",
+          "# traceparent: 00-trace_id-span_id-flags",
+          "curl -H 'traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01' http://localhost:8080",
+          "# Check if context is propagated in logs",
+          "# Verify trace_id appears in downstream service logs"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "What is a span in distributed tracing?",
+        "options": [
+          "A time period",
+          "A unit of work in a trace, representing an operation",
+          "A network connection",
+          "A log entry"
+        ],
+        "correct": 1,
+        "explanation": "A span represents a single operation in a distributed trace, with start time, duration, and metadata."
+      },
+      {
+        "question": "What is a trace in distributed tracing?",
+        "options": [
+          "A single log line",
+          "A collection of spans representing a request's journey through a system",
+          "A network packet",
+          "A metric"
+        ],
+        "correct": 1,
+        "explanation": "A trace is a collection of spans that together represent the complete journey of a request through a distributed system."
+      },
+      {
+        "question": "What does OpenTelemetry provide?",
+        "options": [
+          "Only tracing",
+          "Unified observability: traces, metrics, and logs",
+          "Only metrics",
+          "Only logging"
+        ],
+        "correct": 1,
+        "explanation": "OpenTelemetry provides a unified framework for collecting traces, metrics, and logs from applications."
+      },
+      {
+        "question": "How is trace context propagated between services?",
+        "options": [
+          "Through database",
+          "Through HTTP headers or message metadata",
+          "Through files",
+          "It's not propagated"
+        ],
+        "correct": 1,
+        "explanation": "Trace context is propagated via HTTP headers (like traceparent) or message metadata to maintain trace continuity across services."
+      },
+      {
+        "question": "What is the W3C Trace Context standard?",
+        "options": [
+          "A logging format",
+          "A standard for propagating trace context across systems",
+          "A metric format",
+          "A database protocol"
+        ],
+        "correct": 1,
+        "explanation": "W3C Trace Context defines a standard format for propagating trace context, ensuring interoperability between tracing systems."
+      },
+      {
+        "question": "What is sampling in distributed tracing?",
+        "options": [
+          "Collecting all traces",
+          "Collecting only a percentage of traces to reduce overhead",
+          "Deleting old traces",
+          "Compressing traces"
+        ],
+        "correct": 1,
+        "explanation": "Sampling collects only a percentage of traces to reduce storage and performance overhead while maintaining observability."
+      },
+      {
+        "question": "What is the relationship between traces and logs?",
+        "options": [
+          "They are the same",
+          "Traces provide request flow context, logs provide detailed events",
+          "Traces replace logs",
+          "No relationship"
+        ],
+        "correct": 1,
+        "explanation": "Traces show request flow across services, while logs provide detailed event information. They complement each other."
+      },
+      {
+        "question": "What is a trace ID?",
+        "options": [
+          "A process ID",
+          "A unique identifier for an entire trace across all services",
+          "A span ID",
+          "A log ID"
+        ],
+        "correct": 1,
+        "explanation": "A trace ID uniquely identifies a complete trace, allowing all spans from a request to be correlated across services."
+      },
+      {
+        "question": "What is tail-based sampling?",
+        "options": [
+          "Sampling at the start of a trace",
+          "Making sampling decisions after seeing the complete trace",
+          "Sampling the last service only",
+          "Random sampling"
+        ],
+        "correct": 1,
+        "explanation": "Tail-based sampling makes decisions after seeing the complete trace, allowing you to keep all error traces while sampling successful ones."
+      },
+      {
+        "question": "What is the OpenTelemetry Collector?",
+        "options": [
+          "A database",
+          "A vendor-agnostic agent for receiving, processing, and exporting telemetry",
+          "A web server",
+          "A monitoring dashboard"
+        ],
+        "correct": 1,
+        "explanation": "The OTel Collector receives telemetry from applications, processes it, and exports to various backends (Jaeger, Prometheus, etc.)."
+      }
+    ],
+    "genaiPrompt": "Create a detailed 8-hour study schedule for Day 7: Distributed Tracing & OpenTelemetry. Include: 1) Hour-by-hour breakdown of tracing concepts, spans, traces, and context propagation, 2) Hands-on labs instrumenting a microservice with OpenTelemetry, 3) Exercises setting up Jaeger and viewing traces, 4) Real-world scenarios debugging latency issues with distributed tracing, 5) Sampling strategies and their trade-offs, 6) Integration with metrics and logs for unified observability."
   },
   "8": {
     "day": 8,
@@ -292,11 +1226,139 @@
     ],
     "exercises": [
       {
-        "title": "etcd Operations",
+        "title": "Set Up etcd Cluster",
+        "difficulty": "easy",
+        "description": "Deploy and interact with an etcd cluster",
+        "commands": [
+          "docker run -d --name etcd quay.io/coreos/etcd:latest",
+          "etcdctl put mykey 'Hello'",
+          "etcdctl get mykey",
+          "etcdctl watch mykey"
+        ]
+      },
+      {
+        "title": "etcd Backup and Restore",
         "difficulty": "medium",
-        "description": "Perform basic etcd operations"
+        "description": "Backup and restore etcd data",
+        "commands": [
+          "etcdctl snapshot save backup.db",
+          "etcdctl snapshot restore backup.db"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "What consensus algorithm does etcd use?",
+        "options": [
+          "Paxos",
+          "Raft",
+          "Byzantine",
+          "Gossip"
+        ],
+        "correct": 1,
+        "explanation": "etcd uses Raft consensus."
+      },
+      {
+        "question": "Minimum nodes to tolerate 1 failure?",
+        "options": [
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "correct": 1,
+        "explanation": "3 nodes tolerate 1 failure."
+      },
+      {
+        "question": "What does Watch API do?",
+        "options": [
+          "Monitor CPU",
+          "Notify key changes",
+          "Watch network",
+          "Monitor disk"
+        ],
+        "correct": 1,
+        "explanation": "Notifies of key changes."
+      },
+      {
+        "question": "How does K8s use etcd?",
+        "options": [
+          "Runtime",
+          "Cluster data store",
+          "Networking",
+          "Logging"
+        ],
+        "correct": 1,
+        "explanation": "Stores all cluster state."
+      },
+      {
+        "question": "What is a lease?",
+        "options": [
+          "Rental",
+          "Time-bound key",
+          "Lock",
+          "Backup"
+        ],
+        "correct": 1,
+        "explanation": "Keys that expire automatically."
+      },
+      {
+        "question": "Snapshot command?",
+        "options": [
+          "backup",
+          "snapshot save",
+          "dump",
+          "export"
+        ],
+        "correct": 1,
+        "explanation": "etcdctl snapshot save."
+      },
+      {
+        "question": "Leader role in Raft?",
+        "options": [
+          "Monitor",
+          "Handle writes",
+          "Only reads",
+          "Backup"
+        ],
+        "correct": 1,
+        "explanation": "Handles all writes."
+      },
+      {
+        "question": "Lost quorum effect?",
+        "options": [
+          "Normal",
+          "Read-only",
+          "Shutdown",
+          "New leader"
+        ],
+        "correct": 1,
+        "explanation": "Cannot accept writes."
+      },
+      {
+        "question": "What is compaction?",
+        "options": [
+          "Compress",
+          "Remove old revisions",
+          "Defrag",
+          "Merge"
+        ],
+        "correct": 1,
+        "explanation": "Removes old revisions."
+      },
+      {
+        "question": "Why odd members?",
+        "options": [
+          "Performance",
+          "Fault tolerance",
+          "Requirement",
+          "Balance"
+        ],
+        "correct": 1,
+        "explanation": "Maximizes efficiency."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 8: etcd. Include Raft, etcdctl labs, backup/restore, K8s integration, tuning."
   },
   "9": {
     "day": 9,
@@ -326,11 +1388,141 @@
     ],
     "exercises": [
       {
-        "title": "Network Policy",
+        "title": "Inspect CNI Configuration",
+        "difficulty": "easy",
+        "description": "Examine CNI plugins in Kubernetes",
+        "commands": [
+          "kubectl get nodes -o wide",
+          "ls /etc/cni/net.d/",
+          "cat /etc/cni/net.d/10-flannel.conflist",
+          "kubectl get pods -n kube-system | grep cni"
+        ]
+      },
+      {
+        "title": "Create Network Policy",
         "difficulty": "medium",
-        "description": "Create network policies for a namespace"
+        "description": "Implement pod network isolation",
+        "commands": [
+          "kubectl create ns test-netpol",
+          "kubectl run nginx --image=nginx -n test-netpol",
+          "kubectl apply -f networkpolicy.yaml",
+          "kubectl exec -it test-pod -- curl nginx"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "What does CNI stand for?",
+        "options": [
+          "Container Node Interface",
+          "Container Network Interface",
+          "Cloud Network Interface",
+          "Cluster Network Interface"
+        ],
+        "correct": 1,
+        "explanation": "Container Network Interface."
+      },
+      {
+        "question": "CNI plugin responsibility?",
+        "options": [
+          "Storage",
+          "Network connectivity for containers",
+          "Security",
+          "Monitoring"
+        ],
+        "correct": 1,
+        "explanation": "Provides network connectivity."
+      },
+      {
+        "question": "Overlay network purpose?",
+        "options": [
+          "Storage",
+          "Virtual network over physical",
+          "Security",
+          "Monitoring"
+        ],
+        "correct": 1,
+        "explanation": "Creates virtual network."
+      },
+      {
+        "question": "Flannel vs Calico?",
+        "options": [
+          "Same thing",
+          "Flannel simpler, Calico has policies",
+          "Calico simpler",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "Calico adds network policies."
+      },
+      {
+        "question": "Network Policy default?",
+        "options": [
+          "Allow all",
+          "Deny all",
+          "No default",
+          "Random"
+        ],
+        "correct": 0,
+        "explanation": "Default allows all traffic."
+      },
+      {
+        "question": "Pod-to-pod communication?",
+        "options": [
+          "Through NAT",
+          "Direct IP without NAT",
+          "Through proxy",
+          "Through gateway"
+        ],
+        "correct": 1,
+        "explanation": "Direct IP communication."
+      },
+      {
+        "question": "Service networking uses?",
+        "options": [
+          "DNS only",
+          "kube-proxy and iptables/IPVS",
+          "CNI only",
+          "Overlay only"
+        ],
+        "correct": 1,
+        "explanation": "kube-proxy manages services."
+      },
+      {
+        "question": "Network Policy applies to?",
+        "options": [
+          "Nodes",
+          "Pods",
+          "Services",
+          "Namespaces"
+        ],
+        "correct": 1,
+        "explanation": "Applies to pods."
+      },
+      {
+        "question": "CNI config location?",
+        "options": [
+          "/etc/cni/",
+          "/var/cni/",
+          "/opt/cni/",
+          "/usr/cni/"
+        ],
+        "correct": 0,
+        "explanation": "/etc/cni/net.d/."
+      },
+      {
+        "question": "VXLAN in overlay?",
+        "options": [
+          "Storage protocol",
+          "Encapsulation protocol",
+          "Security protocol",
+          "DNS protocol"
+        ],
+        "correct": 1,
+        "explanation": "Encapsulates packets."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 9: CNI & Overlay Networking. Include CNI plugins, Flannel/Calico, pod networking, network policies, troubleshooting."
   },
   "10": {
     "day": 10,
@@ -360,11 +1552,141 @@
     ],
     "exercises": [
       {
-        "title": "PV and PVC",
+        "title": "Create PV and PVC",
+        "difficulty": "easy",
+        "description": "Set up persistent storage",
+        "commands": [
+          "kubectl apply -f pv.yaml",
+          "kubectl apply -f pvc.yaml",
+          "kubectl get pv,pvc",
+          "kubectl describe pvc my-pvc"
+        ]
+      },
+      {
+        "title": "Dynamic Provisioning",
         "difficulty": "medium",
-        "description": "Create and use persistent volumes"
+        "description": "Use StorageClass for dynamic volumes",
+        "commands": [
+          "kubectl get storageclass",
+          "kubectl apply -f pvc-dynamic.yaml",
+          "kubectl get pv",
+          "kubectl describe sc standard"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "PV vs PVC?",
+        "options": [
+          "Same thing",
+          "PV is resource, PVC is request",
+          "PVC is resource",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "PV is storage, PVC requests it."
+      },
+      {
+        "question": "StorageClass purpose?",
+        "options": [
+          "Storage monitoring",
+          "Dynamic provisioning",
+          "Storage security",
+          "Storage backup"
+        ],
+        "correct": 1,
+        "explanation": "Enables dynamic provisioning."
+      },
+      {
+        "question": "CSI stands for?",
+        "options": [
+          "Container Storage Interface",
+          "Cloud Storage Interface",
+          "Cluster Storage Interface",
+          "Compute Storage Interface"
+        ],
+        "correct": 0,
+        "explanation": "Container Storage Interface."
+      },
+      {
+        "question": "Access modes?",
+        "options": [
+          "Only RWO",
+          "RWO, ROX, RWX",
+          "Only RWX",
+          "Only ROX"
+        ],
+        "correct": 1,
+        "explanation": "ReadWriteOnce, ReadOnlyMany, ReadWriteMany."
+      },
+      {
+        "question": "Reclaim policy options?",
+        "options": [
+          "Delete only",
+          "Retain, Delete, Recycle",
+          "Retain only",
+          "No policy"
+        ],
+        "correct": 1,
+        "explanation": "Retain, Delete, or Recycle."
+      },
+      {
+        "question": "StatefulSet storage?",
+        "options": [
+          "No storage",
+          "volumeClaimTemplates",
+          "Regular volumes",
+          "No persistence"
+        ],
+        "correct": 1,
+        "explanation": "Uses volumeClaimTemplates."
+      },
+      {
+        "question": "Velero purpose?",
+        "options": [
+          "Monitoring",
+          "Backup and restore",
+          "Networking",
+          "Security"
+        ],
+        "correct": 1,
+        "explanation": "Backs up K8s resources."
+      },
+      {
+        "question": "PV binding?",
+        "options": [
+          "Manual only",
+          "Automatic based on PVC",
+          "Random",
+          "No binding"
+        ],
+        "correct": 1,
+        "explanation": "Automatically binds to PVC."
+      },
+      {
+        "question": "CSI driver runs as?",
+        "options": [
+          "Kernel module",
+          "DaemonSet and StatefulSet",
+          "Service",
+          "ConfigMap"
+        ],
+        "correct": 1,
+        "explanation": "Runs as K8s workloads."
+      },
+      {
+        "question": "Volume expansion?",
+        "options": [
+          "Not possible",
+          "Supported by some CSI drivers",
+          "Always possible",
+          "Never possible"
+        ],
+        "correct": 1,
+        "explanation": "Some CSI drivers support it."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 10: Persistent Storage & CSI. Include PV/PVC, StorageClass, CSI drivers, StatefulSet storage, Velero backup."
   },
   "11": {
     "day": 11,
@@ -394,11 +1716,140 @@
     ],
     "exercises": [
       {
-        "title": "Provision Infrastructure",
+        "title": "First Terraform Project",
+        "difficulty": "easy",
+        "description": "Create basic infrastructure",
+        "commands": [
+          "terraform init",
+          "terraform plan",
+          "terraform apply",
+          "terraform destroy"
+        ]
+      },
+      {
+        "title": "Terraform Modules",
         "difficulty": "medium",
-        "description": "Create AWS resources with Terraform"
+        "description": "Create reusable modules",
+        "commands": [
+          "mkdir modules/vpc",
+          "terraform init",
+          "terraform plan -var-file=prod.tfvars"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "Terraform state purpose?",
+        "options": [
+          "Backup",
+          "Track infrastructure",
+          "Logging",
+          "Monitoring"
+        ],
+        "correct": 1,
+        "explanation": "Tracks infrastructure state."
+      },
+      {
+        "question": "terraform init does?",
+        "options": [
+          "Apply changes",
+          "Initialize and download providers",
+          "Destroy",
+          "Plan"
+        ],
+        "correct": 1,
+        "explanation": "Downloads providers and modules."
+      },
+      {
+        "question": "terraform plan shows?",
+        "options": [
+          "Current state",
+          "Proposed changes",
+          "Errors only",
+          "Nothing"
+        ],
+        "correct": 1,
+        "explanation": "Shows what will change."
+      },
+      {
+        "question": "State file storage?",
+        "options": [
+          "Local only",
+          "Local or remote backend",
+          "Cloud only",
+          "No storage"
+        ],
+        "correct": 1,
+        "explanation": "Can be local or remote."
+      },
+      {
+        "question": "Terraform modules?",
+        "options": [
+          "Plugins",
+          "Reusable infrastructure code",
+          "Providers",
+          "Variables"
+        ],
+        "correct": 1,
+        "explanation": "Reusable code containers."
+      },
+      {
+        "question": "Provider in Terraform?",
+        "options": [
+          "User",
+          "Plugin for infrastructure platform",
+          "Module",
+          "Variable"
+        ],
+        "correct": 1,
+        "explanation": "Interfaces with platforms."
+      },
+      {
+        "question": "terraform apply without plan?",
+        "options": [
+          "Safe",
+          "Risky, shows plan first",
+          "Not possible",
+          "Recommended"
+        ],
+        "correct": 1,
+        "explanation": "Shows plan before applying."
+      },
+      {
+        "question": "State locking prevents?",
+        "options": [
+          "Reads",
+          "Concurrent modifications",
+          "Applies",
+          "Plans"
+        ],
+        "correct": 1,
+        "explanation": "Prevents concurrent changes."
+      },
+      {
+        "question": "terraform destroy does?",
+        "options": [
+          "Deletes state",
+          "Destroys all managed resources",
+          "Deletes files",
+          "Nothing"
+        ],
+        "correct": 1,
+        "explanation": "Destroys managed infrastructure."
+      },
+      {
+        "question": "Remote backend benefit?",
+        "options": [
+          "Faster",
+          "Team collaboration and locking",
+          "Cheaper",
+          "Simpler"
+        ],
+        "correct": 1,
+        "explanation": "Enables team collaboration."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 11: Terraform. Include HCL syntax, state management, modules, providers, CI/CD integration, best practices."
   },
   "12": {
     "day": 12,
@@ -428,11 +1879,139 @@
     ],
     "exercises": [
       {
-        "title": "RBAC Configuration",
+        "title": "Create RBAC Roles",
+        "difficulty": "easy",
+        "description": "Set up basic RBAC",
+        "commands": [
+          "kubectl create role pod-reader --verb=get,list --resource=pods",
+          "kubectl create rolebinding read-pods --role=pod-reader --user=jane",
+          "kubectl auth can-i get pods --as=jane"
+        ]
+      },
+      {
+        "title": "Sealed Secrets",
         "difficulty": "medium",
-        "description": "Create roles and role bindings"
+        "description": "Encrypt secrets for Git",
+        "commands": [
+          "kubeseal --fetch-cert > pub-cert.pem",
+          "kubectl create secret generic mysecret --dry-run=client -o yaml | kubeseal -o yaml > sealed-secret.yaml",
+          "kubectl apply -f sealed-secret.yaml"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "RBAC stands for?",
+        "options": [
+          "Role Based Access Control",
+          "Resource Based Access Control",
+          "Rule Based Access Control",
+          "Random Based Access Control"
+        ],
+        "correct": 0,
+        "explanation": "Role Based Access Control."
+      },
+      {
+        "question": "Role vs ClusterRole?",
+        "options": [
+          "Same",
+          "Role is namespaced, ClusterRole is cluster-wide",
+          "ClusterRole is namespaced",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "Role is namespaced."
+      },
+      {
+        "question": "RoleBinding vs ClusterRoleBinding?",
+        "options": [
+          "Same",
+          "RoleBinding is namespaced",
+          "ClusterRoleBinding is namespaced",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "RoleBinding is namespaced."
+      },
+      {
+        "question": "ServiceAccount purpose?",
+        "options": [
+          "User accounts",
+          "Identity for pods",
+          "Admin accounts",
+          "No purpose"
+        ],
+        "correct": 1,
+        "explanation": "Provides pod identity."
+      },
+      {
+        "question": "OIDC in K8s?",
+        "options": [
+          "Storage",
+          "Authentication protocol",
+          "Networking",
+          "Monitoring"
+        ],
+        "correct": 1,
+        "explanation": "Authentication protocol."
+      },
+      {
+        "question": "Sealed Secrets benefit?",
+        "options": [
+          "Faster",
+          "Safe to store in Git",
+          "Smaller",
+          "Simpler"
+        ],
+        "correct": 1,
+        "explanation": "Encrypted for Git storage."
+      },
+      {
+        "question": "Pod Security Policy?",
+        "options": [
+          "Network policy",
+          "Controls pod security settings",
+          "Storage policy",
+          "Backup policy"
+        ],
+        "correct": 1,
+        "explanation": "Controls security settings."
+      },
+      {
+        "question": "kubectl auth can-i?",
+        "options": [
+          "Create resources",
+          "Check permissions",
+          "Delete resources",
+          "List resources"
+        ],
+        "correct": 1,
+        "explanation": "Checks user permissions."
+      },
+      {
+        "question": "Default ServiceAccount?",
+        "options": [
+          "None",
+          "default in each namespace",
+          "admin",
+          "root"
+        ],
+        "correct": 1,
+        "explanation": "Each namespace has default."
+      },
+      {
+        "question": "Vault integration?",
+        "options": [
+          "Monitoring",
+          "External secrets management",
+          "Networking",
+          "Storage"
+        ],
+        "correct": 1,
+        "explanation": "Manages secrets externally."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 12: K8s Security & RBAC. Include roles, bindings, ServiceAccounts, OIDC, Sealed Secrets, Vault, Pod Security."
   },
   "13": {
     "day": 13,
@@ -462,11 +2041,141 @@
     ],
     "exercises": [
       {
-        "title": "Deploy Stateful Application",
-        "difficulty": "hard",
-        "description": "Deploy a database with StatefulSet"
+        "title": "Deploy StatefulSet",
+        "difficulty": "easy",
+        "description": "Create stateful application",
+        "commands": [
+          "kubectl apply -f statefulset.yaml",
+          "kubectl get statefulset",
+          "kubectl get pods -l app=mysql",
+          "kubectl scale statefulset mysql --replicas=3"
+        ]
+      },
+      {
+        "title": "ArgoCD Setup",
+        "difficulty": "medium",
+        "description": "Install and configure ArgoCD",
+        "commands": [
+          "kubectl create namespace argocd",
+          "kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml",
+          "kubectl port-forward svc/argocd-server -n argocd 8080:443",
+          "argocd app create myapp --repo https://github.com/user/repo --path k8s --dest-server https://kubernetes.default.svc"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "StatefulSet vs Deployment?",
+        "options": [
+          "Same",
+          "StatefulSet maintains pod identity",
+          "Deployment is stateful",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "StatefulSet maintains identity."
+      },
+      {
+        "question": "Headless Service?",
+        "options": [
+          "No service",
+          "Service with ClusterIP: None",
+          "External service",
+          "LoadBalancer"
+        ],
+        "correct": 1,
+        "explanation": "ClusterIP: None for direct pod access."
+      },
+      {
+        "question": "StatefulSet pod naming?",
+        "options": [
+          "Random",
+          "Predictable: name-0, name-1",
+          "UUID",
+          "Sequential random"
+        ],
+        "correct": 1,
+        "explanation": "Predictable sequential names."
+      },
+      {
+        "question": "GitOps principle?",
+        "options": [
+          "Manual deployment",
+          "Git as source of truth",
+          "No version control",
+          "Random deployment"
+        ],
+        "correct": 1,
+        "explanation": "Git is source of truth."
+      },
+      {
+        "question": "ArgoCD purpose?",
+        "options": [
+          "Monitoring",
+          "Continuous deployment from Git",
+          "Logging",
+          "Storage"
+        ],
+        "correct": 1,
+        "explanation": "GitOps CD tool."
+      },
+      {
+        "question": "StatefulSet scaling?",
+        "options": [
+          "Random order",
+          "Ordered: 0,1,2 up; 2,1,0 down",
+          "Parallel",
+          "No scaling"
+        ],
+        "correct": 1,
+        "explanation": "Ordered scaling."
+      },
+      {
+        "question": "PVC in StatefulSet?",
+        "options": [
+          "Shared",
+          "Per-pod persistent storage",
+          "No storage",
+          "Ephemeral"
+        ],
+        "correct": 1,
+        "explanation": "Each pod gets own PVC."
+      },
+      {
+        "question": "ArgoCD sync?",
+        "options": [
+          "Manual only",
+          "Manual or automatic",
+          "Automatic only",
+          "No sync"
+        ],
+        "correct": 1,
+        "explanation": "Can be manual or auto."
+      },
+      {
+        "question": "StatefulSet update strategy?",
+        "options": [
+          "All at once",
+          "RollingUpdate or OnDelete",
+          "Random",
+          "No updates"
+        ],
+        "correct": 1,
+        "explanation": "RollingUpdate or OnDelete."
+      },
+      {
+        "question": "GitOps benefits?",
+        "options": [
+          "Slower",
+          "Audit trail and rollback",
+          "More complex",
+          "Less secure"
+        ],
+        "correct": 1,
+        "explanation": "Version control benefits."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 13: StatefulSets & GitOps. Include StatefulSet patterns, headless services, PVCs, ArgoCD setup, GitOps workflows."
   },
   "14": {
     "day": 14,
@@ -496,11 +2205,140 @@
     ],
     "exercises": [
       {
-        "title": "Secure Pipeline",
+        "title": "GitHub Actions Pipeline",
+        "difficulty": "easy",
+        "description": "Create CI/CD pipeline",
+        "commands": [
+          "# Create .github/workflows/ci.yml",
+          "git add .github/workflows/ci.yml",
+          "git commit -m 'Add CI'",
+          "git push"
+        ]
+      },
+      {
+        "title": "Container Scanning",
         "difficulty": "medium",
-        "description": "Create a secure CI/CD pipeline"
+        "description": "Scan images for vulnerabilities",
+        "commands": [
+          "trivy image nginx:latest",
+          "docker scan nginx:latest",
+          "grype nginx:latest"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "CI/CD stands for?",
+        "options": [
+          "Continuous Integration/Deployment",
+          "Cloud Integration/Deployment",
+          "Container Integration/Deployment",
+          "Cluster Integration/Deployment"
+        ],
+        "correct": 0,
+        "explanation": "Continuous Integration/Deployment."
+      },
+      {
+        "question": "Pipeline stages?",
+        "options": [
+          "One stage",
+          "Build, Test, Deploy",
+          "Deploy only",
+          "Test only"
+        ],
+        "correct": 1,
+        "explanation": "Typically Build, Test, Deploy."
+      },
+      {
+        "question": "SBOM purpose?",
+        "options": [
+          "Monitoring",
+          "Software Bill of Materials for dependencies",
+          "Logging",
+          "Networking"
+        ],
+        "correct": 1,
+        "explanation": "Lists all dependencies."
+      },
+      {
+        "question": "Container scanning finds?",
+        "options": [
+          "Performance issues",
+          "Security vulnerabilities",
+          "Bugs",
+          "Memory leaks"
+        ],
+        "correct": 1,
+        "explanation": "Finds vulnerabilities."
+      },
+      {
+        "question": "DevSecOps means?",
+        "options": [
+          "Security after deployment",
+          "Security integrated in pipeline",
+          "No security",
+          "Manual security"
+        ],
+        "correct": 1,
+        "explanation": "Security in pipeline."
+      },
+      {
+        "question": "Secrets in CI/CD?",
+        "options": [
+          "Hardcode",
+          "Use secret management",
+          "Plain text",
+          "No secrets"
+        ],
+        "correct": 1,
+        "explanation": "Use secret management."
+      },
+      {
+        "question": "Trivy scans?",
+        "options": [
+          "Code only",
+          "Container images and filesystems",
+          "Networks",
+          "Databases"
+        ],
+        "correct": 1,
+        "explanation": "Scans images and files."
+      },
+      {
+        "question": "Pipeline as code?",
+        "options": [
+          "Manual setup",
+          "Version controlled pipeline definitions",
+          "No versioning",
+          "GUI only"
+        ],
+        "correct": 1,
+        "explanation": "Version controlled pipelines."
+      },
+      {
+        "question": "Artifact storage?",
+        "options": [
+          "Local only",
+          "Artifact registry/repository",
+          "No storage",
+          "Git"
+        ],
+        "correct": 1,
+        "explanation": "Use artifact registries."
+      },
+      {
+        "question": "Blue-green deployment?",
+        "options": [
+          "One environment",
+          "Two environments for zero-downtime",
+          "Three environments",
+          "No deployment"
+        ],
+        "correct": 1,
+        "explanation": "Two environments for safety."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 14: CI/CD & DevSecOps. Include pipeline design, GitHub Actions, container scanning, SBOM, secrets management, deployment strategies."
   },
   "15": {
     "day": 15,
@@ -530,11 +2368,143 @@
     ],
     "exercises": [
       {
-        "title": "PromQL Queries",
+        "title": "Basic PromQL Queries",
+        "difficulty": "easy",
+        "description": "Write Prometheus queries",
+        "commands": [
+          "# Rate of HTTP requests",
+          "rate(http_requests_total[5m])",
+          "# CPU usage",
+          "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode='idle'}[5m])) * 100)",
+          "# Memory usage",
+          "node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100"
+        ]
+      },
+      {
+        "title": "Aggregation Queries",
         "difficulty": "medium",
-        "description": "Write PromQL queries for common scenarios"
+        "description": "Complex PromQL aggregations",
+        "commands": [
+          "# Top 5 endpoints by request rate",
+          "topk(5, sum by (endpoint) (rate(http_requests_total[5m])))",
+          "# 95th percentile latency",
+          "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "PromQL stands for?",
+        "options": [
+          "Prometheus Query Language",
+          "Protocol Query Language",
+          "Process Query Language",
+          "Program Query Language"
+        ],
+        "correct": 0,
+        "explanation": "Prometheus Query Language."
+      },
+      {
+        "question": "rate() function?",
+        "options": [
+          "Current value",
+          "Per-second average rate",
+          "Total count",
+          "Maximum"
+        ],
+        "correct": 1,
+        "explanation": "Calculates per-second rate."
+      },
+      {
+        "question": "High cardinality issue?",
+        "options": [
+          "Better performance",
+          "Too many unique label combinations",
+          "Faster queries",
+          "More accurate"
+        ],
+        "correct": 1,
+        "explanation": "Too many unique series."
+      },
+      {
+        "question": "Metric types?",
+        "options": [
+          "One type",
+          "Counter, Gauge, Histogram, Summary",
+          "Two types",
+          "No types"
+        ],
+        "correct": 1,
+        "explanation": "Four main types."
+      },
+      {
+        "question": "Counter vs Gauge?",
+        "options": [
+          "Same",
+          "Counter only increases, Gauge can go up/down",
+          "Gauge only increases",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "Counter monotonic, Gauge variable."
+      },
+      {
+        "question": "histogram_quantile calculates?",
+        "options": [
+          "Average",
+          "Percentiles from histogram",
+          "Total",
+          "Count"
+        ],
+        "correct": 1,
+        "explanation": "Calculates percentiles."
+      },
+      {
+        "question": "Label best practice?",
+        "options": [
+          "Many labels",
+          "Low cardinality labels",
+          "No labels",
+          "Random labels"
+        ],
+        "correct": 1,
+        "explanation": "Keep cardinality low."
+      },
+      {
+        "question": "Aggregation operators?",
+        "options": [
+          "sum only",
+          "sum, avg, max, min, count",
+          "avg only",
+          "No aggregation"
+        ],
+        "correct": 1,
+        "explanation": "Multiple aggregation ops."
+      },
+      {
+        "question": "Recording rules?",
+        "options": [
+          "Record logs",
+          "Pre-compute expensive queries",
+          "Record metrics",
+          "No purpose"
+        ],
+        "correct": 1,
+        "explanation": "Pre-compute queries."
+      },
+      {
+        "question": "Alerting rules?",
+        "options": [
+          "Log alerts",
+          "Define alert conditions",
+          "No alerts",
+          "Manual alerts"
+        ],
+        "correct": 1,
+        "explanation": "Define when to alert."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 15: PromQL & High-Cardinality. Include PromQL basics, functions, aggregations, cardinality issues, recording rules, alerting rules."
   },
   "16": {
     "day": 16,
@@ -564,11 +2534,140 @@
     ],
     "exercises": [
       {
-        "title": "Define SLOs",
+        "title": "Define SLIs",
+        "difficulty": "easy",
+        "description": "Identify service level indicators",
+        "commands": [
+          "# Availability SLI: successful requests / total requests",
+          "# Latency SLI: requests under 200ms / total requests",
+          "# Error rate SLI: non-5xx responses / total responses"
+        ]
+      },
+      {
+        "title": "Calculate Error Budget",
         "difficulty": "medium",
-        "description": "Define SLOs for a sample service"
+        "description": "Compute remaining error budget",
+        "commands": [
+          "# SLO: 99.9% availability",
+          "# Error budget: 0.1% = 43.2 minutes/month",
+          "# Current uptime: 99.95%",
+          "# Remaining budget: 0.05% = 21.6 minutes"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "SLI stands for?",
+        "options": [
+          "Service Level Indicator",
+          "System Level Indicator",
+          "Service Level Interface",
+          "System Level Interface"
+        ],
+        "correct": 0,
+        "explanation": "Service Level Indicator."
+      },
+      {
+        "question": "SLO stands for?",
+        "options": [
+          "Service Level Objective",
+          "System Level Objective",
+          "Service Level Operation",
+          "System Level Operation"
+        ],
+        "correct": 0,
+        "explanation": "Service Level Objective."
+      },
+      {
+        "question": "Error budget?",
+        "options": [
+          "Money for errors",
+          "Allowed downtime based on SLO",
+          "Error count",
+          "Bug budget"
+        ],
+        "correct": 1,
+        "explanation": "Allowed downtime from SLO."
+      },
+      {
+        "question": "99.9% SLO allows?",
+        "options": [
+          "No downtime",
+          "43.2 minutes/month downtime",
+          "1 hour/month",
+          "No errors"
+        ],
+        "correct": 1,
+        "explanation": "0.1% of month = 43.2 min."
+      },
+      {
+        "question": "SLI examples?",
+        "options": [
+          "Code quality",
+          "Availability, latency, error rate",
+          "Team size",
+          "Cost"
+        ],
+        "correct": 1,
+        "explanation": "Measurable service metrics."
+      },
+      {
+        "question": "Error budget exhausted?",
+        "options": [
+          "Continue deploying",
+          "Freeze deployments, focus on reliability",
+          "Deploy faster",
+          "Ignore"
+        ],
+        "correct": 1,
+        "explanation": "Focus on reliability."
+      },
+      {
+        "question": "SLO vs SLA?",
+        "options": [
+          "Same",
+          "SLO internal, SLA contractual",
+          "SLA internal",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "SLA is contractual."
+      },
+      {
+        "question": "Good SLI characteristics?",
+        "options": [
+          "Complex",
+          "Measurable and user-centric",
+          "Internal only",
+          "Arbitrary"
+        ],
+        "correct": 1,
+        "explanation": "Measurable and user-focused."
+      },
+      {
+        "question": "Multiple SLOs?",
+        "options": [
+          "One only",
+          "Multiple for different aspects",
+          "Two maximum",
+          "No limit"
+        ],
+        "correct": 1,
+        "explanation": "Different aspects need different SLOs."
+      },
+      {
+        "question": "SLO review frequency?",
+        "options": [
+          "Never",
+          "Regularly, quarterly or when needed",
+          "Once",
+          "Daily"
+        ],
+        "correct": 1,
+        "explanation": "Regular reviews needed."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 16: SLOs, SLIs & Error Budgets. Include defining SLIs, setting SLOs, calculating error budgets, incident response based on budgets."
   },
   "17": {
     "day": 17,
@@ -598,11 +2697,139 @@
     ],
     "exercises": [
       {
-        "title": "Security Policy",
-        "difficulty": "hard",
-        "description": "Create OPA policy for Kubernetes"
+        "title": "Scan Container Image",
+        "difficulty": "easy",
+        "description": "Find vulnerabilities",
+        "commands": [
+          "trivy image nginx:latest",
+          "docker scan nginx:latest",
+          "grype nginx:latest --only-fixed"
+        ]
+      },
+      {
+        "title": "Deploy Falco",
+        "difficulty": "medium",
+        "description": "Runtime security monitoring",
+        "commands": [
+          "helm repo add falcosecurity https://falcosecurity.github.io/charts",
+          "helm install falco falcosecurity/falco",
+          "kubectl logs -f -n falco -l app=falco"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "Falco monitors?",
+        "options": [
+          "Network only",
+          "Runtime container behavior",
+          "Code quality",
+          "Performance"
+        ],
+        "correct": 1,
+        "explanation": "Runtime security monitoring."
+      },
+      {
+        "question": "OPA stands for?",
+        "options": [
+          "Open Policy Agent",
+          "Open Protocol Agent",
+          "Open Process Agent",
+          "Open Platform Agent"
+        ],
+        "correct": 0,
+        "explanation": "Open Policy Agent."
+      },
+      {
+        "question": "OPA Gatekeeper?",
+        "options": [
+          "Network gateway",
+          "K8s admission controller for policies",
+          "Load balancer",
+          "Firewall"
+        ],
+        "correct": 1,
+        "explanation": "Admission controller."
+      },
+      {
+        "question": "Container image scanning finds?",
+        "options": [
+          "Performance issues",
+          "CVEs and vulnerabilities",
+          "Bugs",
+          "Memory leaks"
+        ],
+        "correct": 1,
+        "explanation": "Finds vulnerabilities."
+      },
+      {
+        "question": "Security context in pods?",
+        "options": [
+          "Network settings",
+          "Security settings like user, capabilities",
+          "Storage settings",
+          "Monitoring"
+        ],
+        "correct": 1,
+        "explanation": "Security settings."
+      },
+      {
+        "question": "Pod Security Policy?",
+        "options": [
+          "Network policy",
+          "Cluster-wide pod security rules",
+          "Storage policy",
+          "Backup policy"
+        ],
+        "correct": 1,
+        "explanation": "Cluster-wide security."
+      },
+      {
+        "question": "Supply chain security?",
+        "options": [
+          "Logistics",
+          "Securing software dependencies and build process",
+          "Shipping",
+          "Delivery"
+        ],
+        "correct": 1,
+        "explanation": "Secure dependencies."
+      },
+      {
+        "question": "Image signing?",
+        "options": [
+          "Autographs",
+          "Cryptographic verification of images",
+          "Naming",
+          "Tagging"
+        ],
+        "correct": 1,
+        "explanation": "Cryptographic verification."
+      },
+      {
+        "question": "Falco rules?",
+        "options": [
+          "Network rules",
+          "Define suspicious behaviors to detect",
+          "Firewall rules",
+          "Routing rules"
+        ],
+        "correct": 1,
+        "explanation": "Define suspicious behaviors."
+      },
+      {
+        "question": "Admission controller?",
+        "options": [
+          "User admission",
+          "Intercepts K8s API requests",
+          "Network admission",
+          "Storage admission"
+        ],
+        "correct": 1,
+        "explanation": "Intercepts API requests."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 17: Container Security & Policy Enforcement. Include image scanning, Falco, OPA Gatekeeper, security contexts, supply chain security."
   },
   "18": {
     "day": 18,
@@ -632,11 +2859,139 @@
     ],
     "exercises": [
       {
-        "title": "Incident Simulation",
+        "title": "Incident Response Drill",
+        "difficulty": "easy",
+        "description": "Practice incident handling",
+        "commands": [
+          "# 1. Detect: Alert fires",
+          "# 2. Triage: Assess severity",
+          "# 3. Communicate: Update stakeholders",
+          "# 4. Mitigate: Apply fix",
+          "# 5. Document: Write postmortem"
+        ]
+      },
+      {
+        "title": "Write Postmortem",
         "difficulty": "medium",
-        "description": "Participate in incident response drill"
+        "description": "Document incident learnings",
+        "commands": [
+          "# Template: What happened, Impact, Root cause, Timeline, Action items"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "Incident severity levels?",
+        "options": [
+          "One level",
+          "Multiple (SEV1-SEV4 or similar)",
+          "Two levels",
+          "No levels"
+        ],
+        "correct": 1,
+        "explanation": "Multiple severity levels."
+      },
+      {
+        "question": "Incident commander role?",
+        "options": [
+          "Fix the issue",
+          "Coordinate response and communication",
+          "Write code",
+          "Monitor only"
+        ],
+        "correct": 1,
+        "explanation": "Coordinates response."
+      },
+      {
+        "question": "Blameless postmortem?",
+        "options": [
+          "Blame someone",
+          "Focus on systems, not people",
+          "No postmortem",
+          "Blame everyone"
+        ],
+        "correct": 1,
+        "explanation": "Focus on systems."
+      },
+      {
+        "question": "Stakeholder updates frequency?",
+        "options": [
+          "Once",
+          "Regular intervals during incident",
+          "Never",
+          "After resolution only"
+        ],
+        "correct": 1,
+        "explanation": "Regular updates needed."
+      },
+      {
+        "question": "Postmortem purpose?",
+        "options": [
+          "Blame",
+          "Learn and prevent recurrence",
+          "Punishment",
+          "Documentation only"
+        ],
+        "correct": 1,
+        "explanation": "Learn and improve."
+      },
+      {
+        "question": "Incident timeline?",
+        "options": [
+          "Not needed",
+          "Chronological record of events",
+          "Random notes",
+          "No timeline"
+        ],
+        "correct": 1,
+        "explanation": "Chronological record."
+      },
+      {
+        "question": "Action items from postmortem?",
+        "options": [
+          "Optional",
+          "Must be tracked and completed",
+          "Suggestions only",
+          "Ignored"
+        ],
+        "correct": 1,
+        "explanation": "Must be completed."
+      },
+      {
+        "question": "Communication channels?",
+        "options": [
+          "Email only",
+          "Dedicated incident channel (Slack, etc.)",
+          "Phone only",
+          "No communication"
+        ],
+        "correct": 1,
+        "explanation": "Dedicated channel."
+      },
+      {
+        "question": "On-call rotation?",
+        "options": [
+          "One person forever",
+          "Shared responsibility with rotation",
+          "No on-call",
+          "Random"
+        ],
+        "correct": 1,
+        "explanation": "Shared rotation."
+      },
+      {
+        "question": "Incident vs problem?",
+        "options": [
+          "Same",
+          "Incident is event, problem is root cause",
+          "Problem is event",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "Incident is event."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 18: Incident Management & Communication. Include incident response, communication templates, postmortems, blameless culture, on-call practices."
   },
   "19": {
     "day": 19,
@@ -666,11 +3021,145 @@
     ],
     "exercises": [
       {
-        "title": "Create Runbook",
+        "title": "Create Alert Rules",
+        "difficulty": "easy",
+        "description": "Define Prometheus alerts",
+        "commands": [
+          "# High CPU alert",
+          "- alert: HighCPU",
+          "  expr: cpu_usage > 80",
+          "  for: 5m",
+          "  annotations:",
+          "    summary: High CPU on {{ $labels.instance }}"
+        ]
+      },
+      {
+        "title": "Write Runbook",
         "difficulty": "medium",
-        "description": "Write a runbook for a common incident"
+        "description": "Document response procedures",
+        "commands": [
+          "# Runbook sections:",
+          "# 1. Alert description",
+          "# 2. Impact",
+          "# 3. Diagnosis steps",
+          "# 4. Resolution steps",
+          "# 5. Escalation"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "Good alert characteristics?",
+        "options": [
+          "Many alerts",
+          "Actionable, clear, not noisy",
+          "Vague",
+          "Frequent"
+        ],
+        "correct": 1,
+        "explanation": "Actionable and clear."
+      },
+      {
+        "question": "Alert fatigue?",
+        "options": [
+          "Tired alerts",
+          "Too many alerts causing desensitization",
+          "No alerts",
+          "One alert"
+        ],
+        "correct": 1,
+        "explanation": "Too many alerts."
+      },
+      {
+        "question": "Runbook purpose?",
+        "options": [
+          "Exercise guide",
+          "Step-by-step incident response",
+          "Training manual",
+          "Code documentation"
+        ],
+        "correct": 1,
+        "explanation": "Incident response steps."
+      },
+      {
+        "question": "Alert severity?",
+        "options": [
+          "All critical",
+          "Tiered: critical, warning, info",
+          "All info",
+          "No severity"
+        ],
+        "correct": 1,
+        "explanation": "Tiered severity."
+      },
+      {
+        "question": "Escalation policy?",
+        "options": [
+          "No escalation",
+          "Defined path for unresolved incidents",
+          "Random",
+          "Always escalate"
+        ],
+        "correct": 1,
+        "explanation": "Defined escalation path."
+      },
+      {
+        "question": "Alert for?",
+        "options": [
+          "Everything",
+          "Symptoms affecting users",
+          "Internal metrics only",
+          "Nothing"
+        ],
+        "correct": 1,
+        "explanation": "User-affecting symptoms."
+      },
+      {
+        "question": "Runbook location?",
+        "options": [
+          "Personal notes",
+          "Centralized, accessible documentation",
+          "Email",
+          "Nowhere"
+        ],
+        "correct": 1,
+        "explanation": "Centralized docs."
+      },
+      {
+        "question": "Alert annotations?",
+        "options": [
+          "Not needed",
+          "Provide context and runbook links",
+          "Optional",
+          "Ignored"
+        ],
+        "correct": 1,
+        "explanation": "Provide context."
+      },
+      {
+        "question": "On-call handoff?",
+        "options": [
+          "No handoff",
+          "Document ongoing issues",
+          "Verbal only",
+          "No communication"
+        ],
+        "correct": 1,
+        "explanation": "Document issues."
+      },
+      {
+        "question": "Alert testing?",
+        "options": [
+          "Never test",
+          "Regularly test alerts fire correctly",
+          "Once",
+          "No testing"
+        ],
+        "correct": 1,
+        "explanation": "Regular testing needed."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 19: Alerting Strategy & Runbooks. Include alert design, runbook creation, escalation policies, on-call rotation, alert fatigue prevention."
   },
   "20": {
     "day": 20,
@@ -700,11 +3189,139 @@
     ],
     "exercises": [
       {
-        "title": "Set Up Stack",
-        "difficulty": "hard",
-        "description": "Deploy VictoriaMetrics, Tempo, and Pyroscope"
+        "title": "Deploy VictoriaMetrics",
+        "difficulty": "easy",
+        "description": "Set up metrics storage",
+        "commands": [
+          "helm repo add vm https://victoriametrics.github.io/helm-charts/",
+          "helm install victoria-metrics vm/victoria-metrics-single",
+          "kubectl port-forward svc/victoria-metrics 8428:8428"
+        ]
+      },
+      {
+        "title": "Configure Tempo",
+        "difficulty": "medium",
+        "description": "Set up distributed tracing",
+        "commands": [
+          "helm repo add grafana https://grafana.github.io/helm-charts",
+          "helm install tempo grafana/tempo",
+          "kubectl apply -f tempo-config.yaml"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "VictoriaMetrics vs Prometheus?",
+        "options": [
+          "Same",
+          "VM is more scalable and cost-effective",
+          "Prometheus better",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "VM more scalable."
+      },
+      {
+        "question": "Tempo stores?",
+        "options": [
+          "Metrics",
+          "Distributed traces",
+          "Logs",
+          "Events"
+        ],
+        "correct": 1,
+        "explanation": "Stores traces."
+      },
+      {
+        "question": "Pyroscope purpose?",
+        "options": [
+          "Metrics",
+          "Continuous profiling",
+          "Logging",
+          "Tracing"
+        ],
+        "correct": 1,
+        "explanation": "Continuous profiling."
+      },
+      {
+        "question": "Three pillars of observability?",
+        "options": [
+          "CPU, Memory, Disk",
+          "Metrics, Logs, Traces",
+          "Alerts, Dashboards, Reports",
+          "Monitoring, Logging, Alerting"
+        ],
+        "correct": 1,
+        "explanation": "Metrics, Logs, Traces."
+      },
+      {
+        "question": "VictoriaMetrics benefits?",
+        "options": [
+          "Slower",
+          "Lower resource usage, better compression",
+          "More complex",
+          "Less features"
+        ],
+        "correct": 1,
+        "explanation": "Efficient and compressed."
+      },
+      {
+        "question": "Tempo backend storage?",
+        "options": [
+          "Memory only",
+          "S3, GCS, or local disk",
+          "Database only",
+          "No storage"
+        ],
+        "correct": 1,
+        "explanation": "Object storage or disk."
+      },
+      {
+        "question": "Profiling shows?",
+        "options": [
+          "Logs",
+          "CPU and memory usage by function",
+          "Traces",
+          "Metrics"
+        ],
+        "correct": 1,
+        "explanation": "Function-level resource usage."
+      },
+      {
+        "question": "Observability vs monitoring?",
+        "options": [
+          "Same",
+          "Observability is deeper, asks why",
+          "Monitoring is deeper",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "Observability asks why."
+      },
+      {
+        "question": "Cost optimization?",
+        "options": [
+          "Store everything",
+          "Sample, aggregate, and retain strategically",
+          "Delete all data",
+          "No optimization"
+        ],
+        "correct": 1,
+        "explanation": "Strategic retention."
+      },
+      {
+        "question": "Unified observability?",
+        "options": [
+          "Separate tools",
+          "Correlated metrics, logs, and traces",
+          "Metrics only",
+          "Logs only"
+        ],
+        "correct": 1,
+        "explanation": "Correlated signals."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 20: Modern Observability Stack. Include VictoriaMetrics, Tempo, Pyroscope, integration patterns, cost optimization, unified observability."
   },
   "21": {
     "day": 21,
@@ -734,11 +3351,141 @@
     ],
     "exercises": [
       {
-        "title": "Chaos Experiment",
-        "difficulty": "hard",
-        "description": "Run a chaos experiment on a test cluster"
+        "title": "Chaos Mesh Experiment",
+        "difficulty": "easy",
+        "description": "Inject pod failures",
+        "commands": [
+          "kubectl apply -f https://mirrors.chaos-mesh.org/latest/crd.yaml",
+          "kubectl apply -f podchaos.yaml",
+          "kubectl get podchaos",
+          "kubectl describe podchaos pod-failure"
+        ]
+      },
+      {
+        "title": "Network Chaos",
+        "difficulty": "medium",
+        "description": "Simulate network issues",
+        "commands": [
+          "# Network delay experiment",
+          "kubectl apply -f network-delay.yaml",
+          "# Packet loss experiment",
+          "kubectl apply -f packet-loss.yaml"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "Chaos engineering purpose?",
+        "options": [
+          "Break things",
+          "Proactively find weaknesses",
+          "Cause outages",
+          "Test backups"
+        ],
+        "correct": 1,
+        "explanation": "Find weaknesses proactively."
+      },
+      {
+        "question": "Chaos Monkey?",
+        "options": [
+          "Animal",
+          "Randomly terminates instances",
+          "Monitoring tool",
+          "Logging tool"
+        ],
+        "correct": 1,
+        "explanation": "Terminates instances randomly."
+      },
+      {
+        "question": "Blast radius?",
+        "options": [
+          "Explosion size",
+          "Scope of chaos experiment impact",
+          "Network range",
+          "Disk size"
+        ],
+        "correct": 1,
+        "explanation": "Experiment impact scope."
+      },
+      {
+        "question": "Steady state?",
+        "options": [
+          "Static system",
+          "Normal system behavior baseline",
+          "Stopped system",
+          "Idle system"
+        ],
+        "correct": 1,
+        "explanation": "Normal behavior baseline."
+      },
+      {
+        "question": "Hypothesis in chaos?",
+        "options": [
+          "Random guess",
+          "Expected system behavior under failure",
+          "No hypothesis",
+          "Always fails"
+        ],
+        "correct": 1,
+        "explanation": "Expected behavior."
+      },
+      {
+        "question": "Game day?",
+        "options": [
+          "Fun day",
+          "Scheduled chaos engineering exercise",
+          "Holiday",
+          "Meeting"
+        ],
+        "correct": 1,
+        "explanation": "Scheduled chaos exercise."
+      },
+      {
+        "question": "Fault injection types?",
+        "options": [
+          "One type",
+          "Network, pod, stress, IO",
+          "Two types",
+          "No types"
+        ],
+        "correct": 1,
+        "explanation": "Multiple fault types."
+      },
+      {
+        "question": "Chaos in production?",
+        "options": [
+          "Never",
+          "Yes, with safeguards",
+          "Always",
+          "Only in dev"
+        ],
+        "correct": 1,
+        "explanation": "Yes, with safeguards."
+      },
+      {
+        "question": "Resilience?",
+        "options": [
+          "Never failing",
+          "Ability to recover from failures",
+          "Perfect uptime",
+          "No errors"
+        ],
+        "correct": 1,
+        "explanation": "Recovery ability."
+      },
+      {
+        "question": "Chaos tools?",
+        "options": [
+          "One tool",
+          "Chaos Mesh, Litmus, Gremlin",
+          "No tools",
+          "Manual only"
+        ],
+        "correct": 1,
+        "explanation": "Multiple tools available."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 21: Chaos Engineering. Include principles, Chaos Mesh, fault injection patterns, game days, measuring resilience, production chaos."
   },
   "22": {
     "day": 22,
@@ -768,11 +3515,145 @@
     ],
     "exercises": [
       {
-        "title": "Configure Load Balancer",
+        "title": "Configure NGINX Load Balancer",
+        "difficulty": "easy",
+        "description": "Set up basic load balancing",
+        "commands": [
+          "# nginx.conf",
+          "upstream backend {",
+          "  server backend1:8080;",
+          "  server backend2:8080;",
+          "}",
+          "# Test configuration",
+          "nginx -t",
+          "nginx -s reload"
+        ]
+      },
+      {
+        "title": "Health Check Configuration",
         "difficulty": "medium",
-        "description": "Set up load balancing with health checks"
+        "description": "Implement health checks",
+        "commands": [
+          "# Active health check",
+          "health_check interval=5s fails=3 passes=2;",
+          "# Passive health check",
+          "max_fails=3 fail_timeout=30s;"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "Round-robin algorithm?",
+        "options": [
+          "Random",
+          "Distributes requests sequentially",
+          "Weighted",
+          "Least connections"
+        ],
+        "correct": 1,
+        "explanation": "Sequential distribution."
+      },
+      {
+        "question": "Least connections?",
+        "options": [
+          "Most connections",
+          "Routes to server with fewest connections",
+          "Random",
+          "Round-robin"
+        ],
+        "correct": 1,
+        "explanation": "Fewest connections."
+      },
+      {
+        "question": "IP hash?",
+        "options": [
+          "Random",
+          "Same client IP goes to same server",
+          "Round-robin",
+          "Least connections"
+        ],
+        "correct": 1,
+        "explanation": "Consistent client routing."
+      },
+      {
+        "question": "Active health check?",
+        "options": [
+          "Passive monitoring",
+          "Proactively sends requests to check health",
+          "No checking",
+          "Random"
+        ],
+        "correct": 1,
+        "explanation": "Proactive checking."
+      },
+      {
+        "question": "Passive health check?",
+        "options": [
+          "Active probing",
+          "Monitors actual traffic for failures",
+          "No checking",
+          "Manual"
+        ],
+        "correct": 1,
+        "explanation": "Monitors real traffic."
+      },
+      {
+        "question": "L4 vs L7 load balancer?",
+        "options": [
+          "Same",
+          "L4 is transport layer, L7 is application layer",
+          "L7 is transport",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "Different OSI layers."
+      },
+      {
+        "question": "Session affinity?",
+        "options": [
+          "No sessions",
+          "Sticky sessions to same backend",
+          "Random sessions",
+          "New session each time"
+        ],
+        "correct": 1,
+        "explanation": "Sticky sessions."
+      },
+      {
+        "question": "Health check interval?",
+        "options": [
+          "Once",
+          "Regular periodic checks",
+          "Never",
+          "Random"
+        ],
+        "correct": 1,
+        "explanation": "Periodic checks."
+      },
+      {
+        "question": "Unhealthy backend?",
+        "options": [
+          "Keep sending traffic",
+          "Remove from pool until healthy",
+          "Shutdown",
+          "Ignore"
+        ],
+        "correct": 1,
+        "explanation": "Remove from pool."
+      },
+      {
+        "question": "ALB vs NLB in AWS?",
+        "options": [
+          "Same",
+          "ALB is L7, NLB is L4",
+          "NLB is L7",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "Different layers."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 22: Load Balancing & Health Checks. Include algorithms, health check types, L4 vs L7, cloud load balancers, session affinity."
   },
   "23": {
     "day": 23,
@@ -803,10 +3684,142 @@
     "exercises": [
       {
         "title": "Implement Consistent Hashing",
-        "difficulty": "hard",
-        "description": "Write a consistent hashing implementation"
+        "difficulty": "easy",
+        "description": "Basic consistent hashing",
+        "commands": [
+          "# Python example",
+          "import hashlib",
+          "def hash_key(key):",
+          "  return int(hashlib.md5(key.encode()).hexdigest(), 16)",
+          "# Map to server ring"
+        ]
+      },
+      {
+        "title": "Database Sharding",
+        "difficulty": "medium",
+        "description": "Design sharding strategy",
+        "commands": [
+          "# Range-based sharding",
+          "# user_id 1-1000 -> shard1",
+          "# user_id 1001-2000 -> shard2",
+          "# Hash-based sharding",
+          "# shard = hash(user_id) % num_shards"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "Consistent hashing purpose?",
+        "options": [
+          "Random distribution",
+          "Minimize redistribution when nodes change",
+          "Even distribution",
+          "No purpose"
+        ],
+        "correct": 1,
+        "explanation": "Minimize redistribution."
+      },
+      {
+        "question": "Sharding?",
+        "options": [
+          "Backup",
+          "Horizontal partitioning of data",
+          "Vertical partitioning",
+          "Replication"
+        ],
+        "correct": 1,
+        "explanation": "Horizontal partitioning."
+      },
+      {
+        "question": "Shard key selection?",
+        "options": [
+          "Random",
+          "High cardinality, even distribution",
+          "Low cardinality",
+          "No key"
+        ],
+        "correct": 1,
+        "explanation": "High cardinality, even."
+      },
+      {
+        "question": "Rebalancing?",
+        "options": [
+          "Never needed",
+          "Redistributing data when shards change",
+          "Backup",
+          "Monitoring"
+        ],
+        "correct": 1,
+        "explanation": "Redistribute data."
+      },
+      {
+        "question": "Hot shard?",
+        "options": [
+          "Temperature",
+          "Shard receiving disproportionate traffic",
+          "Cold storage",
+          "Backup"
+        ],
+        "correct": 1,
+        "explanation": "Disproportionate traffic."
+      },
+      {
+        "question": "Range vs hash sharding?",
+        "options": [
+          "Same",
+          "Range uses ranges, hash uses hash function",
+          "Hash uses ranges",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "Different distribution methods."
+      },
+      {
+        "question": "Virtual nodes?",
+        "options": [
+          "VMs",
+          "Multiple hash positions per physical node",
+          "Containers",
+          "No nodes"
+        ],
+        "correct": 1,
+        "explanation": "Multiple hash positions."
+      },
+      {
+        "question": "Cross-shard queries?",
+        "options": [
+          "Easy",
+          "Complex, may need scatter-gather",
+          "Impossible",
+          "Simple"
+        ],
+        "correct": 1,
+        "explanation": "Need scatter-gather."
+      },
+      {
+        "question": "Shard count?",
+        "options": [
+          "Always 2",
+          "Based on data size and traffic",
+          "Always 10",
+          "Random"
+        ],
+        "correct": 1,
+        "explanation": "Based on requirements."
+      },
+      {
+        "question": "Consistent hashing benefit?",
+        "options": [
+          "Slower",
+          "Only K/n keys remapped when nodes change",
+          "All keys remapped",
+          "No benefit"
+        ],
+        "correct": 1,
+        "explanation": "Minimal remapping."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 23: Consistent Hashing & Sharding. Include algorithm, implementation, sharding strategies, rebalancing, distributed cache patterns."
   },
   "24": {
     "day": 24,
@@ -836,11 +3849,140 @@
     ],
     "exercises": [
       {
-        "title": "Prevent Stampede",
-        "difficulty": "hard",
-        "description": "Implement cache stampede prevention"
+        "title": "Implement Cache Locking",
+        "difficulty": "easy",
+        "description": "Prevent cache stampede",
+        "commands": [
+          "# Redis lock pattern",
+          "SET lock:key value NX EX 10",
+          "# If lock acquired, fetch data",
+          "# If lock not acquired, wait and retry"
+        ]
+      },
+      {
+        "title": "Stale-While-Revalidate",
+        "difficulty": "medium",
+        "description": "Serve stale data while updating",
+        "commands": [
+          "# Cache with TTL and grace period",
+          "# If expired but within grace, serve stale",
+          "# Async refresh in background"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "Cache stampede?",
+        "options": [
+          "Cache overflow",
+          "Many requests simultaneously fetch expired data",
+          "Cache corruption",
+          "Cache deletion"
+        ],
+        "correct": 1,
+        "explanation": "Simultaneous cache misses."
+      },
+      {
+        "question": "Cache locking?",
+        "options": [
+          "Lock cache",
+          "Only one request fetches, others wait",
+          "No locking",
+          "Lock database"
+        ],
+        "correct": 1,
+        "explanation": "Single fetch, others wait."
+      },
+      {
+        "question": "Stale-while-revalidate?",
+        "options": [
+          "Never serve stale",
+          "Serve stale while refreshing async",
+          "Always serve stale",
+          "No caching"
+        ],
+        "correct": 1,
+        "explanation": "Serve stale, refresh async."
+      },
+      {
+        "question": "Cache warming?",
+        "options": [
+          "Heat cache",
+          "Pre-populate cache before traffic",
+          "No warming",
+          "Random"
+        ],
+        "correct": 1,
+        "explanation": "Pre-populate cache."
+      },
+      {
+        "question": "Probabilistic early expiration?",
+        "options": [
+          "Random expiration",
+          "Expire early based on probability to spread load",
+          "Never expire",
+          "Always expire"
+        ],
+        "correct": 1,
+        "explanation": "Spread expiration load."
+      },
+      {
+        "question": "Cache aside pattern?",
+        "options": [
+          "No cache",
+          "Application manages cache",
+          "Cache manages itself",
+          "Database manages cache"
+        ],
+        "correct": 1,
+        "explanation": "App manages cache."
+      },
+      {
+        "question": "Write-through cache?",
+        "options": [
+          "Write to cache only",
+          "Write to cache and database simultaneously",
+          "Write to database only",
+          "No writes"
+        ],
+        "correct": 1,
+        "explanation": "Write to both."
+      },
+      {
+        "question": "TTL jitter?",
+        "options": [
+          "No TTL",
+          "Add randomness to TTL to prevent simultaneous expiration",
+          "Fixed TTL",
+          "No expiration"
+        ],
+        "correct": 1,
+        "explanation": "Randomize TTL."
+      },
+      {
+        "question": "Thundering herd?",
+        "options": [
+          "Animal problem",
+          "Many processes wake simultaneously",
+          "One process",
+          "No processes"
+        ],
+        "correct": 1,
+        "explanation": "Simultaneous wake-up."
+      },
+      {
+        "question": "Cache key design?",
+        "options": [
+          "Random",
+          "Unique, predictable, includes version",
+          "Sequential",
+          "No design"
+        ],
+        "correct": 1,
+        "explanation": "Unique and versioned."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 24: Cache Stampede & Mitigation. Include stampede problem, locking patterns, stale-while-revalidate, cache warming, distributed coordination."
   },
   "25": {
     "day": 25,
@@ -870,11 +4012,143 @@
     ],
     "exercises": [
       {
-        "title": "Set Up Replication",
-        "difficulty": "hard",
-        "description": "Configure database replication"
+        "title": "PostgreSQL Replication Setup",
+        "difficulty": "easy",
+        "description": "Configure streaming replication",
+        "commands": [
+          "# On primary",
+          "wal_level = replica",
+          "max_wal_senders = 3",
+          "# On replica",
+          "primary_conninfo = 'host=primary port=5432'",
+          "pg_basebackup -h primary -D /var/lib/postgresql/data -U replicator -P"
+        ]
+      },
+      {
+        "title": "Failover Test",
+        "difficulty": "medium",
+        "description": "Practice failover procedure",
+        "commands": [
+          "# Promote replica to primary",
+          "pg_ctl promote -D /var/lib/postgresql/data",
+          "# Update application connection string",
+          "# Verify writes work on new primary"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "Sync vs async replication?",
+        "options": [
+          "Same",
+          "Sync waits for replica, async doesn't",
+          "Async waits",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "Sync waits for confirmation."
+      },
+      {
+        "question": "Failover?",
+        "options": [
+          "Backup",
+          "Switching to standby when primary fails",
+          "Scaling",
+          "Monitoring"
+        ],
+        "correct": 1,
+        "explanation": "Switch to standby."
+      },
+      {
+        "question": "Read replica?",
+        "options": [
+          "Write replica",
+          "Read-only copy for scaling reads",
+          "Primary",
+          "No replica"
+        ],
+        "correct": 1,
+        "explanation": "Read-only for scaling."
+      },
+      {
+        "question": "Multi-region database?",
+        "options": [
+          "One region",
+          "Database replicated across regions",
+          "No regions",
+          "Local only"
+        ],
+        "correct": 1,
+        "explanation": "Cross-region replication."
+      },
+      {
+        "question": "RPO?",
+        "options": [
+          "Recovery Point Objective - acceptable data loss",
+          "Recovery Process Objective",
+          "Replication Point Objective",
+          "Random Point Objective"
+        ],
+        "correct": 0,
+        "explanation": "Acceptable data loss."
+      },
+      {
+        "question": "RTO?",
+        "options": [
+          "Recovery Time Objective - acceptable downtime",
+          "Replication Time Objective",
+          "Recovery Test Objective",
+          "Random Time Objective"
+        ],
+        "correct": 0,
+        "explanation": "Acceptable downtime."
+      },
+      {
+        "question": "Split-brain?",
+        "options": [
+          "Medical condition",
+          "Multiple nodes think they're primary",
+          "One primary",
+          "No brain"
+        ],
+        "correct": 1,
+        "explanation": "Multiple primaries."
+      },
+      {
+        "question": "Automatic failover?",
+        "options": [
+          "Manual only",
+          "System automatically promotes replica",
+          "Never fails over",
+          "Random"
+        ],
+        "correct": 1,
+        "explanation": "Automatic promotion."
+      },
+      {
+        "question": "Replication lag?",
+        "options": [
+          "No lag",
+          "Delay between primary and replica",
+          "Network lag",
+          "No replication"
+        ],
+        "correct": 1,
+        "explanation": "Replica delay."
+      },
+      {
+        "question": "Disaster recovery?",
+        "options": [
+          "No recovery",
+          "Plan to recover from catastrophic failure",
+          "Backup only",
+          "Monitoring"
+        ],
+        "correct": 1,
+        "explanation": "Catastrophic failure recovery."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 25: Database Replication & Failover. Include sync/async replication, read replicas, failover mechanisms, multi-region, DR planning."
   },
   "26": {
     "day": 26,
@@ -904,11 +4178,142 @@
     ],
     "exercises": [
       {
-        "title": "CDN Configuration",
+        "title": "Configure CDN Caching",
+        "difficulty": "easy",
+        "description": "Set up CloudFront caching",
+        "commands": [
+          "# Cache-Control headers",
+          "Cache-Control: public, max-age=31536000",
+          "# Vary header for dynamic content",
+          "Vary: Accept-Encoding",
+          "# Invalidate cache",
+          "aws cloudfront create-invalidation --distribution-id ID --paths '/*'"
+        ]
+      },
+      {
+        "title": "Edge Function",
         "difficulty": "medium",
-        "description": "Configure CDN for static and dynamic content"
+        "description": "Deploy Lambda@Edge",
+        "commands": [
+          "# Create Lambda function",
+          "# Attach to CloudFront distribution",
+          "# Test edge logic"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "CDN purpose?",
+        "options": [
+          "Database",
+          "Cache content closer to users",
+          "Compute",
+          "Storage"
+        ],
+        "correct": 1,
+        "explanation": "Cache content at edge."
+      },
+      {
+        "question": "Edge location?",
+        "options": [
+          "Data center",
+          "CDN server close to users",
+          "Cloud region",
+          "Office"
+        ],
+        "correct": 1,
+        "explanation": "CDN server near users."
+      },
+      {
+        "question": "Cache-Control header?",
+        "options": [
+          "No purpose",
+          "Controls caching behavior",
+          "Security header",
+          "Routing header"
+        ],
+        "correct": 1,
+        "explanation": "Controls caching."
+      },
+      {
+        "question": "Edge computing?",
+        "options": [
+          "Cloud computing",
+          "Processing at edge locations",
+          "Data center computing",
+          "No computing"
+        ],
+        "correct": 1,
+        "explanation": "Processing at edge."
+      },
+      {
+        "question": "CDN invalidation?",
+        "options": [
+          "Create cache",
+          "Remove cached content",
+          "Add content",
+          "No action"
+        ],
+        "correct": 1,
+        "explanation": "Remove cached content."
+      },
+      {
+        "question": "Origin server?",
+        "options": [
+          "CDN server",
+          "Source server behind CDN",
+          "Edge server",
+          "No server"
+        ],
+        "correct": 1,
+        "explanation": "Source behind CDN."
+      },
+      {
+        "question": "TTL in CDN?",
+        "options": [
+          "Time To Live - cache duration",
+          "Total Transfer Limit",
+          "Traffic Throttle Limit",
+          "No meaning"
+        ],
+        "correct": 0,
+        "explanation": "Cache duration."
+      },
+      {
+        "question": "WAF at edge?",
+        "options": [
+          "No security",
+          "Web Application Firewall protection",
+          "Network firewall",
+          "No firewall"
+        ],
+        "correct": 1,
+        "explanation": "Web app firewall."
+      },
+      {
+        "question": "Dynamic content at edge?",
+        "options": [
+          "Not possible",
+          "Edge functions can personalize",
+          "Static only",
+          "No content"
+        ],
+        "correct": 1,
+        "explanation": "Edge functions enable it."
+      },
+      {
+        "question": "CDN benefits?",
+        "options": [
+          "Slower",
+          "Lower latency, reduced origin load",
+          "More expensive",
+          "Complex"
+        ],
+        "correct": 1,
+        "explanation": "Lower latency."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 26: CDN Architecture & Edge Computing. Include caching strategies, edge platforms, dynamic content, CDN security, monitoring."
   },
   "27": {
     "day": 27,
@@ -938,11 +4343,141 @@
     ],
     "exercises": [
       {
-        "title": "Implement Rate Limiting",
-        "difficulty": "hard",
-        "description": "Set up rate limiting for an API"
+        "title": "Token Bucket Implementation",
+        "difficulty": "easy",
+        "description": "Basic rate limiting",
+        "commands": [
+          "# Redis-based token bucket",
+          "# Add tokens at fixed rate",
+          "# Consume tokens per request",
+          "# Reject if no tokens available"
+        ]
+      },
+      {
+        "title": "API Gateway Rate Limiting",
+        "difficulty": "medium",
+        "description": "Configure API Gateway",
+        "commands": [
+          "# AWS API Gateway",
+          "# Set throttle limits",
+          "# Burst capacity",
+          "# Per-client rate limits"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "Token bucket algorithm?",
+        "options": [
+          "Random",
+          "Tokens added at rate, consumed per request",
+          "No algorithm",
+          "Fixed rate"
+        ],
+        "correct": 1,
+        "explanation": "Tokens added and consumed."
+      },
+      {
+        "question": "Leaky bucket?",
+        "options": [
+          "Broken bucket",
+          "Requests processed at fixed rate",
+          "Random rate",
+          "No bucket"
+        ],
+        "correct": 1,
+        "explanation": "Fixed processing rate."
+      },
+      {
+        "question": "Rate limiting vs throttling?",
+        "options": [
+          "Same",
+          "Rate limiting rejects, throttling delays",
+          "Throttling rejects",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "Different handling."
+      },
+      {
+        "question": "429 status code?",
+        "options": [
+          "Success",
+          "Too Many Requests",
+          "Not Found",
+          "Server Error"
+        ],
+        "correct": 1,
+        "explanation": "Too Many Requests."
+      },
+      {
+        "question": "Retry-After header?",
+        "options": [
+          "No purpose",
+          "Tells client when to retry",
+          "Security header",
+          "Cache header"
+        ],
+        "correct": 1,
+        "explanation": "When to retry."
+      },
+      {
+        "question": "Per-user vs global limits?",
+        "options": [
+          "Same",
+          "Per-user prevents single user abuse",
+          "Global better",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "Prevents single user abuse."
+      },
+      {
+        "question": "API Gateway pattern?",
+        "options": [
+          "Direct access",
+          "Single entry point for APIs",
+          "Multiple entries",
+          "No gateway"
+        ],
+        "correct": 1,
+        "explanation": "Single entry point."
+      },
+      {
+        "question": "Rate limit storage?",
+        "options": [
+          "Memory only",
+          "Redis or similar for distributed",
+          "Database",
+          "No storage"
+        ],
+        "correct": 1,
+        "explanation": "Distributed storage."
+      },
+      {
+        "question": "Burst capacity?",
+        "options": [
+          "No bursts",
+          "Allow temporary spikes above rate",
+          "Always burst",
+          "Random"
+        ],
+        "correct": 1,
+        "explanation": "Allow temporary spikes."
+      },
+      {
+        "question": "API versioning?",
+        "options": [
+          "No versioning",
+          "URL path or header-based versioning",
+          "Random",
+          "One version"
+        ],
+        "correct": 1,
+        "explanation": "Path or header versioning."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 27: Rate Limiting & API Gateway. Include algorithms, API gateway patterns, throttling, versioning, edge rate limiting."
   },
   "28": {
     "day": 28,
@@ -972,11 +4507,143 @@
     ],
     "exercises": [
       {
-        "title": "Multi-Region Setup",
-        "difficulty": "hard",
-        "description": "Design a multi-region deployment"
+        "title": "Multi-Region Architecture Design",
+        "difficulty": "easy",
+        "description": "Design multi-region setup",
+        "commands": [
+          "# Components:",
+          "# - Global load balancer (Route53, Traffic Manager)",
+          "# - Regional clusters",
+          "# - Cross-region replication",
+          "# - Failover strategy"
+        ]
+      },
+      {
+        "title": "Traffic Routing",
+        "difficulty": "medium",
+        "description": "Configure global traffic management",
+        "commands": [
+          "# Route53 routing policies",
+          "# - Latency-based",
+          "# - Geolocation",
+          "# - Failover",
+          "# - Weighted"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "Active-active vs active-passive?",
+        "options": [
+          "Same",
+          "Active-active serves traffic in all regions",
+          "Active-passive serves in all",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "Active-active in all regions."
+      },
+      {
+        "question": "Global Traffic Manager?",
+        "options": [
+          "Local balancer",
+          "Routes traffic across regions",
+          "Single region",
+          "No routing"
+        ],
+        "correct": 1,
+        "explanation": "Cross-region routing."
+      },
+      {
+        "question": "Cross-region replication?",
+        "options": [
+          "No replication",
+          "Data replicated across regions",
+          "Single region",
+          "Local only"
+        ],
+        "correct": 1,
+        "explanation": "Data across regions."
+      },
+      {
+        "question": "Latency-based routing?",
+        "options": [
+          "Random",
+          "Routes to lowest latency region",
+          "Highest latency",
+          "No routing"
+        ],
+        "correct": 1,
+        "explanation": "Lowest latency region."
+      },
+      {
+        "question": "Geolocation routing?",
+        "options": [
+          "Random",
+          "Routes based on user location",
+          "No location",
+          "Fixed"
+        ],
+        "correct": 1,
+        "explanation": "Based on user location."
+      },
+      {
+        "question": "Multi-region benefits?",
+        "options": [
+          "More complex",
+          "Higher availability, lower latency",
+          "Slower",
+          "More expensive only"
+        ],
+        "correct": 1,
+        "explanation": "HA and low latency."
+      },
+      {
+        "question": "Data consistency across regions?",
+        "options": [
+          "Always consistent",
+          "Eventually consistent or strongly consistent",
+          "Never consistent",
+          "Random"
+        ],
+        "correct": 1,
+        "explanation": "Eventually or strongly consistent."
+      },
+      {
+        "question": "Regional failover?",
+        "options": [
+          "No failover",
+          "Automatic switch to healthy region",
+          "Manual only",
+          "Random"
+        ],
+        "correct": 1,
+        "explanation": "Auto switch to healthy."
+      },
+      {
+        "question": "Health checks for regions?",
+        "options": [
+          "No checks",
+          "Monitor regional endpoints",
+          "One check",
+          "Random"
+        ],
+        "correct": 1,
+        "explanation": "Monitor endpoints."
+      },
+      {
+        "question": "Cost of multi-region?",
+        "options": [
+          "Free",
+          "Higher due to replication and resources",
+          "Lower",
+          "Same"
+        ],
+        "correct": 1,
+        "explanation": "Higher costs."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 28: Multi-Region Deployments. Include architecture patterns, global traffic management, active-active/passive, cross-region replication, DR."
   },
   "29": {
     "day": 29,
@@ -1007,10 +4674,141 @@
     "exercises": [
       {
         "title": "Cost Analysis",
+        "difficulty": "easy",
+        "description": "Analyze cloud spending",
+        "commands": [
+          "# AWS Cost Explorer",
+          "aws ce get-cost-and-usage --time-period Start=2024-01-01,End=2024-01-31",
+          "# Group by service",
+          "# Identify top costs"
+        ]
+      },
+      {
+        "title": "Right-Sizing",
         "difficulty": "medium",
-        "description": "Analyze and optimize cloud costs"
+        "description": "Optimize instance sizes",
+        "commands": [
+          "# Analyze utilization",
+          "aws cloudwatch get-metric-statistics",
+          "# Identify underutilized instances",
+          "# Recommend smaller sizes",
+          "# Calculate savings"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "FinOps stands for?",
+        "options": [
+          "Financial Operations",
+          "Finance Optimization",
+          "Final Operations",
+          "Fixed Operations"
+        ],
+        "correct": 0,
+        "explanation": "Financial Operations."
+      },
+      {
+        "question": "Right-sizing?",
+        "options": [
+          "Biggest instances",
+          "Matching instance size to workload",
+          "Smallest instances",
+          "Random sizing"
+        ],
+        "correct": 1,
+        "explanation": "Match size to workload."
+      },
+      {
+        "question": "Reserved instances?",
+        "options": [
+          "No commitment",
+          "Commit for discount",
+          "On-demand",
+          "Spot"
+        ],
+        "correct": 1,
+        "explanation": "Commit for savings."
+      },
+      {
+        "question": "Spot instances?",
+        "options": [
+          "Fixed price",
+          "Unused capacity at discount, can be interrupted",
+          "Reserved",
+          "On-demand"
+        ],
+        "correct": 1,
+        "explanation": "Discounted, interruptible."
+      },
+      {
+        "question": "Auto-scaling benefit?",
+        "options": [
+          "Fixed capacity",
+          "Scale resources with demand",
+          "Always max",
+          "Always min"
+        ],
+        "correct": 1,
+        "explanation": "Scale with demand."
+      },
+      {
+        "question": "Cost allocation tags?",
+        "options": [
+          "No purpose",
+          "Track costs by team/project",
+          "Security tags",
+          "Network tags"
+        ],
+        "correct": 1,
+        "explanation": "Track by team/project."
+      },
+      {
+        "question": "Savings plans?",
+        "options": [
+          "No savings",
+          "Flexible commitment for discount",
+          "On-demand",
+          "Spot"
+        ],
+        "correct": 1,
+        "explanation": "Flexible commitment."
+      },
+      {
+        "question": "Idle resource detection?",
+        "options": [
+          "Keep all",
+          "Identify and remove unused resources",
+          "Add more",
+          "Random"
+        ],
+        "correct": 1,
+        "explanation": "Remove unused."
+      },
+      {
+        "question": "FinOps culture?",
+        "options": [
+          "Finance team only",
+          "Shared responsibility for costs",
+          "Engineering only",
+          "No responsibility"
+        ],
+        "correct": 1,
+        "explanation": "Shared responsibility."
+      },
+      {
+        "question": "Cost optimization tools?",
+        "options": [
+          "None",
+          "Cost Explorer, Trusted Advisor, third-party",
+          "Manual only",
+          "No tools"
+        ],
+        "correct": 1,
+        "explanation": "Multiple tools available."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 29: FinOps & Cloud Cost Optimization. Include cost monitoring, right-sizing, reserved instances, auto-scaling, FinOps culture, optimization tools."
   },
   "30": {
     "day": 30,
@@ -1040,15 +4838,141 @@
     ],
     "exercises": [
       {
-        "title": "Mock Interview",
-        "difficulty": "medium",
-        "description": "Practice technical and behavioral interviews"
+        "title": "Technical Interview Practice",
+        "difficulty": "easy",
+        "description": "Common SRE questions",
+        "commands": [
+          "# Practice questions:",
+          "# - Explain TCP 3-way handshake",
+          "# - How does Kubernetes scheduler work?",
+          "# - Design a monitoring system",
+          "# - Debug high latency"
+        ]
       },
       {
         "title": "System Design",
-        "difficulty": "hard",
-        "description": "Design a scalable system"
+        "difficulty": "medium",
+        "description": "Design scalable system",
+        "commands": [
+          "# Design URL shortener",
+          "# Requirements: High availability, low latency",
+          "# Components: Load balancer, app servers, database, cache",
+          "# Scaling: Sharding, replication, CDN"
+        ]
       }
-    ]
+    ],
+    "checkpoint": [
+      {
+        "question": "STAR method for behavioral?",
+        "options": [
+          "Random",
+          "Situation, Task, Action, Result",
+          "No method",
+          "Story only"
+        ],
+        "correct": 1,
+        "explanation": "Structured response format."
+      },
+      {
+        "question": "System design approach?",
+        "options": [
+          "Jump to solution",
+          "Clarify requirements, then design",
+          "No approach",
+          "Random"
+        ],
+        "correct": 1,
+        "explanation": "Clarify first."
+      },
+      {
+        "question": "CAP theorem?",
+        "options": [
+          "One property",
+          "Consistency, Availability, Partition tolerance - pick 2",
+          "All three",
+          "No theorem"
+        ],
+        "correct": 1,
+        "explanation": "Pick 2 of 3."
+      },
+      {
+        "question": "Load balancer in design?",
+        "options": [
+          "Not needed",
+          "Distribute traffic across servers",
+          "One server",
+          "No distribution"
+        ],
+        "correct": 1,
+        "explanation": "Distribute traffic."
+      },
+      {
+        "question": "Database choice factors?",
+        "options": [
+          "Random",
+          "Data model, scale, consistency needs",
+          "Always SQL",
+          "Always NoSQL"
+        ],
+        "correct": 1,
+        "explanation": "Based on requirements."
+      },
+      {
+        "question": "Caching layer?",
+        "options": [
+          "Not needed",
+          "Reduces database load, improves latency",
+          "Slows down",
+          "No benefit"
+        ],
+        "correct": 1,
+        "explanation": "Reduces load, improves speed."
+      },
+      {
+        "question": "Monitoring in design?",
+        "options": [
+          "After deployment",
+          "Design observability from start",
+          "Not needed",
+          "Optional"
+        ],
+        "correct": 1,
+        "explanation": "Design from start."
+      },
+      {
+        "question": "Scalability vs performance?",
+        "options": [
+          "Same",
+          "Scalability is handling growth, performance is speed",
+          "Performance is growth",
+          "No difference"
+        ],
+        "correct": 1,
+        "explanation": "Different concepts."
+      },
+      {
+        "question": "Interview preparation?",
+        "options": [
+          "No prep",
+          "Practice, review fundamentals, mock interviews",
+          "Wing it",
+          "Memorize only"
+        ],
+        "correct": 1,
+        "explanation": "Practice and review."
+      },
+      {
+        "question": "Follow-up questions?",
+        "options": [
+          "Avoid",
+          "Ask clarifying questions",
+          "Never ask",
+          "Assume"
+        ],
+        "correct": 1,
+        "explanation": "Clarify requirements."
+      }
+    ],
+    "genaiPrompt": "Create 8-hour schedule for Day 30: Mock Interview & Career Prep. Include technical questions, behavioral prep, system design practice, resume review, interview strategies."
   }
 }
