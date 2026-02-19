@@ -13,10 +13,16 @@
     ],
     "resources": [
       {
-        "title": "Linux System Programming - Ch. 3",
-        "url": "https://learning.oreilly.com/library/view/linux-system-programming/9781449341527/",
+        "title": "Linux System Calls Explained",
+        "url": "https://www.youtube.com/watch?v=lhToWeuWWfw",
         "duration": "15 min",
-        "type": "docs"
+        "type": "video"
+      },
+      {
+        "title": "Understanding fork() and exec()",
+        "url": "https://www.youtube.com/watch?v=PZrQ4eGm-hM",
+        "duration": "20 min",
+        "type": "video"
       },
       {
         "title": "Brendan Gregg - Linux Systems Performance",
@@ -202,6 +208,18 @@
       "Inode and dentry caches"
     ],
     "resources": [
+      {
+        "title": "Linux I/O and VFS Layer Explained",
+        "url": "https://www.youtube.com/watch?v=YxxmNFQ8I7g",
+        "duration": "18 min",
+        "type": "video"
+      },
+      {
+        "title": "Understanding Linux File System",
+        "url": "https://www.youtube.com/watch?v=tuxCH5BSxRs",
+        "duration": "25 min",
+        "type": "video"
+      },
       {
         "title": "Linux I/O and Storage Performance",
         "url": "https://www.youtube.com/watch?v=EqO1uJ1d5uw",
@@ -389,16 +407,22 @@
     ],
     "resources": [
       {
+        "title": "TCP Protocol Deep Dive",
+        "url": "https://www.youtube.com/watch?v=JFch3ctY6nE",
+        "duration": "22 min",
+        "type": "video"
+      },
+      {
+        "title": "AWS VPC and Networking Tutorial",
+        "url": "https://www.youtube.com/watch?v=fpxDGU2KdkA",
+        "duration": "30 min",
+        "type": "video"
+      },
+      {
         "title": "Hussein Nasser - TCP/IP Explained",
         "url": "https://www.youtube.com/watch?v=qqRYkcta6IE",
         "duration": "20 min",
         "type": "video"
-      },
-      {
-        "title": "AWS VPC Fundamentals",
-        "url": "https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html",
-        "duration": "30 min",
-        "type": "docs"
       }
     ],
     "exercises": [
@@ -576,16 +600,16 @@
     ],
     "resources": [
       {
-        "title": "HTTP/3 Explained",
-        "url": "https://http3-explained.haxx.se/",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "HTTP/3 and QUIC Protocol Explained",
+        "url": "https://www.youtube.com/watch?v=ai8cf0hZ9cQ",
+        "duration": "20 min",
+        "type": "video"
       },
       {
-        "title": "QUIC Protocol Overview",
-        "url": "https://datatracker.ietf.org/doc/html/draft-ietf-quic-transport",
-        "duration": "20 min",
-        "type": "docs"
+        "title": "QUIC Protocol Deep Dive",
+        "url": "https://www.youtube.com/watch?v=B1SQFjIXJtc",
+        "duration": "25 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -758,15 +782,15 @@
     "resources": [
       {
         "title": "Linux Memory Management",
-        "url": "https://www.kernel.org/doc/gorman/",
-        "duration": "45 min",
-        "type": "docs"
+        "url": "https://www.youtube.com/watch?v=0XYrET8cc6s",
+        "duration": "25 min",
+        "type": "video"
       },
       {
-        "title": "AWS IAM Best Practices",
-        "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+        "title": "AWS IAM Tutorial",
+        "url": "https://www.youtube.com/watch?v=Ul6FW4UANGc",
         "duration": "20 min",
-        "type": "docs"
+        "type": "video"
       }
     ],
     "exercises": [
@@ -945,16 +969,22 @@
     ],
     "resources": [
       {
+        "title": "eBPF Introduction and Tutorial",
+        "url": "https://www.youtube.com/watch?v=_5Z2AU7QTH4",
+        "duration": "30 min",
+        "type": "video"
+      },
+      {
+        "title": "Getting Started with eBPF",
+        "url": "https://www.youtube.com/watch?v=99jUcLt3rSk",
+        "duration": "22 min",
+        "type": "video"
+      },
+      {
         "title": "Brendan Gregg - eBPF",
         "url": "https://www.brendangregg.com/ebpf.html",
         "duration": "30 min",
         "type": "article"
-      },
-      {
-        "title": "eBPF.io",
-        "url": "https://ebpf.io/",
-        "duration": "20 min",
-        "type": "docs"
       }
     ],
     "exercises": [
@@ -1129,16 +1159,16 @@
     ],
     "resources": [
       {
-        "title": "OpenTelemetry Documentation",
-        "url": "https://opentelemetry.io/docs/",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "Distributed Tracing with OpenTelemetry",
+        "url": "https://www.youtube.com/watch?v=r8UvWSX3KA8",
+        "duration": "28 min",
+        "type": "video"
       },
       {
-        "title": "Distributed Tracing in Practice",
-        "url": "https://www.oreilly.com/library/view/distributed-systems-observability/9781492034952/",
-        "duration": "60 min",
-        "type": "docs"
+        "title": "OpenTelemetry Complete Tutorial",
+        "url": "https://www.youtube.com/watch?v=1TKEtYc5tlQ",
+        "duration": "35 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -1310,16 +1340,16 @@
     ],
     "resources": [
       {
-        "title": "etcd Documentation",
-        "url": "https://etcd.io/docs/",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "Understanding etcd and Distributed Consensus",
+        "url": "https://www.youtube.com/watch?v=DfAq4XPD0wY",
+        "duration": "25 min",
+        "type": "video"
       },
       {
-        "title": "Raft Consensus Algorithm",
-        "url": "https://raft.github.io/",
+        "title": "etcd Deep Dive",
+        "url": "https://www.youtube.com/watch?v=1HgpJZw2X7c",
         "duration": "30 min",
-        "type": "docs"
+        "type": "video"
       }
     ],
     "exercises": [
@@ -1486,16 +1516,16 @@
     ],
     "resources": [
       {
-        "title": "CNI Specification",
-        "url": "https://github.com/containernetworking/cni",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "Kubernetes CNI Explained",
+        "url": "https://www.youtube.com/watch?v=l2BS_kuQxBA",
+        "duration": "22 min",
+        "type": "video"
       },
       {
-        "title": "Kubernetes Networking",
-        "url": "https://kubernetes.io/docs/concepts/cluster-administration/networking/",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "Container Networking Deep Dive",
+        "url": "https://www.youtube.com/watch?v=yDVb_JT4gFg",
+        "duration": "28 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -1664,16 +1694,16 @@
     ],
     "resources": [
       {
-        "title": "Kubernetes Storage",
-        "url": "https://kubernetes.io/docs/concepts/storage/",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "Kubernetes Storage and CSI",
+        "url": "https://www.youtube.com/watch?v=qWmV7kZN1t4",
+        "duration": "25 min",
+        "type": "video"
       },
       {
-        "title": "CSI Specification",
-        "url": "https://github.com/container-storage-interface/spec",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "Understanding Kubernetes Persistent Volumes",
+        "url": "https://www.youtube.com/watch?v=0swOh5C3OVM",
+        "duration": "20 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -1842,16 +1872,16 @@
     ],
     "resources": [
       {
-        "title": "Terraform Documentation",
-        "url": "https://developer.hashicorp.com/terraform/docs",
-        "duration": "60 min",
-        "type": "docs"
+        "title": "Terraform Tutorial for Beginners",
+        "url": "https://www.youtube.com/watch?v=7xngnjfIlK4",
+        "duration": "35 min",
+        "type": "video"
       },
       {
-        "title": "Terraform Best Practices",
-        "url": "https://developer.hashicorp.com/terraform/tutorials/aws-get-started",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "Infrastructure as Code with Terraform",
+        "url": "https://www.youtube.com/watch?v=tomUWcQ0P3k",
+        "duration": "30 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -2020,15 +2050,15 @@
     "resources": [
       {
         "title": "Kubernetes Security Best Practices",
-        "url": "https://kubernetes.io/docs/concepts/security/",
-        "duration": "45 min",
-        "type": "docs"
+        "url": "https://www.youtube.com/watch?v=oBf5lrmquYI",
+        "duration": "28 min",
+        "type": "video"
       },
       {
-        "title": "RBAC Documentation",
-        "url": "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "RBAC in Kubernetes Explained",
+        "url": "https://www.youtube.com/watch?v=BLprV3zZjTQ",
+        "duration": "25 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -2195,16 +2225,16 @@
     ],
     "resources": [
       {
-        "title": "StatefulSet Documentation",
-        "url": "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "Kubernetes StatefulSets Tutorial",
+        "url": "https://www.youtube.com/watch?v=pPQKAR1pA9U",
+        "duration": "22 min",
+        "type": "video"
       },
       {
-        "title": "ArgoCD Documentation",
-        "url": "https://argo-cd.readthedocs.io/",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "ArgoCD Tutorial - GitOps with Kubernetes",
+        "url": "https://www.youtube.com/watch?v=MeU5_k9ssrs",
+        "duration": "30 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -2373,16 +2403,16 @@
     ],
     "resources": [
       {
-        "title": "GitHub Actions Documentation",
-        "url": "https://docs.github.com/en/actions",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "CI/CD Pipeline Tutorial",
+        "url": "https://www.youtube.com/watch?v=scEDHsr3APg",
+        "duration": "28 min",
+        "type": "video"
       },
       {
-        "title": "DevSecOps Best Practices",
-        "url": "https://owasp.org/www-project-devsecops/",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "DevSecOps Pipeline Security",
+        "url": "https://www.youtube.com/watch?v=nrhxNNH5lt0",
+        "duration": "25 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -2550,16 +2580,16 @@
     ],
     "resources": [
       {
-        "title": "PromQL Documentation",
-        "url": "https://prometheus.io/docs/prometheus/latest/querying/basics/",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "PromQL Tutorial and Deep Dive",
+        "url": "https://www.youtube.com/watch?v=hvACEhHpFCo",
+        "duration": "30 min",
+        "type": "video"
       },
       {
-        "title": "High-Cardinality Guide",
-        "url": "https://grafana.com/docs/grafana-cloud/send-data/prometheus/promql/high-cardinality/",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "Prometheus Query Language Explained",
+        "url": "https://www.youtube.com/watch?v=7WFPcj3Z8Nc",
+        "duration": "25 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -2730,16 +2760,16 @@
     ],
     "resources": [
       {
-        "title": "Google SRE Handbook - SLOs",
-        "url": "https://sre.google/sre-book/service-level-objectives/",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "SLOs, SLIs, and Error Budgets",
+        "url": "https://www.youtube.com/watch?v=tEylFyxbDLE",
+        "duration": "22 min",
+        "type": "video"
       },
       {
-        "title": "Error Budgets Explained",
-        "url": "https://cloud.google.com/blog/products/operations/google-sre-handbook-how-to-set-error-budgets",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "Google SRE - Service Level Objectives",
+        "url": "https://www.youtube.com/watch?v=_TdJRWZvyxE",
+        "duration": "28 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -2907,16 +2937,16 @@
     ],
     "resources": [
       {
-        "title": "Falco Documentation",
-        "url": "https://falco.org/docs/",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "Container Security Best Practices",
+        "url": "https://www.youtube.com/watch?v=WK6A_xRXdDs",
+        "duration": "25 min",
+        "type": "video"
       },
       {
-        "title": "OPA Gatekeeper",
-        "url": "https://open-policy-agent.github.io/gatekeeper/website/",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "Open Policy Agent (OPA) Tutorial",
+        "url": "https://www.youtube.com/watch?v=Yup1FUc2Qn0",
+        "duration": "30 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -3083,16 +3113,10 @@
     ],
     "resources": [
       {
-        "title": "Google SRE Handbook - Incident Response",
-        "url": "https://sre.google/sre-book/incident-response/",
-        "duration": "45 min",
-        "type": "docs"
-      },
-      {
-        "title": "Postmortem Writing",
-        "url": "https://landing.google.com/sre/sre-book/chapters/postmortem/",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "Incident Management for SRE",
+        "url": "https://www.youtube.com/watch?v=QCRe-Vo-PPo",
+        "duration": "22 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -3259,10 +3283,16 @@
     ],
     "resources": [
       {
-        "title": "Alerting Best Practices",
-        "url": "https://prometheus.io/docs/practices/alerting/",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "Effective Alerting Strategy",
+        "url": "https://www.youtube.com/watch?v=b_Z2lY9-j8M",
+        "duration": "25 min",
+        "type": "video"
+      },
+      {
+        "title": "Building Better Runbooks",
+        "url": "https://www.youtube.com/watch?v=4E7f9l0u7Bk",
+        "duration": "20 min",
+        "type": "video"
       },
       {
         "title": "Runbook Templates",
@@ -3441,16 +3471,16 @@
     ],
     "resources": [
       {
-        "title": "VictoriaMetrics Docs",
-        "url": "https://docs.victoriametrics.com/",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "Modern Observability Stack Overview",
+        "url": "https://www.youtube.com/watch?v=qAMNwJZU6Lw",
+        "duration": "28 min",
+        "type": "video"
       },
       {
-        "title": "Tempo Documentation",
-        "url": "https://grafana.com/docs/tempo/latest/",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "Continuous Profiling with Pyroscope",
+        "url": "https://www.youtube.com/watch?v=mK5g_qUsFak",
+        "duration": "25 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -3617,16 +3647,16 @@
     ],
     "resources": [
       {
-        "title": "Chaos Engineering",
-        "url": "https://principlesofchaos.org/",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "Chaos Engineering Principles",
+        "url": "https://www.youtube.com/watch?v=QOTNBKx9Irc",
+        "duration": "25 min",
+        "type": "video"
       },
       {
-        "title": "Chaos Mesh",
-        "url": "https://chaos-mesh.org/docs/",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "Getting Started with Chaos Engineering",
+        "url": "https://www.youtube.com/watch?v=1dfV8xPRjf8",
+        "duration": "30 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -3795,16 +3825,10 @@
     ],
     "resources": [
       {
-        "title": "NGINX Load Balancing",
-        "url": "https://docs.nginx.com/nginx/admin-guide/load-balancer/",
-        "duration": "45 min",
-        "type": "docs"
-      },
-      {
-        "title": "AWS Load Balancers",
-        "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/load-balancing.html",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "Load Balancing Algorithms Explained",
+        "url": "https://www.youtube.com/watch?v=K0Ta65OqQkY",
+        "duration": "22 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -3977,16 +4001,22 @@
     ],
     "resources": [
       {
+        "title": "Consistent Hashing Explained",
+        "url": "https://www.youtube.com/watch?v=zaRkONvyGr8",
+        "duration": "20 min",
+        "type": "video"
+      },
+      {
+        "title": "Sharding Database Strategies",
+        "url": "https://www.youtube.com/watch?v=kSH4bt8ypOQ",
+        "duration": "25 min",
+        "type": "video"
+      },
+      {
         "title": "Consistent Hashing",
         "url": "https://en.wikipedia.org/wiki/Consistent_hashing",
         "duration": "30 min",
         "type": "article"
-      },
-      {
-        "title": "Sharding Patterns",
-        "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-cloud-architecture-principles/sharding.html",
-        "duration": "45 min",
-        "type": "docs"
       }
     ],
     "exercises": [
@@ -4157,16 +4187,22 @@
     ],
     "resources": [
       {
+        "title": "Cache Stampede Problem and Solutions",
+        "url": "https://www.youtube.com/watch?v=xrizarXJgC8",
+        "duration": "18 min",
+        "type": "video"
+      },
+      {
+        "title": "Caching Strategies and Best Practices",
+        "url": "https://www.youtube.com/watch?v=U3RkDLtS7uY",
+        "duration": "25 min",
+        "type": "video"
+      },
+      {
         "title": "Cache Stampede",
         "url": "https://en.wikipedia.org/wiki/Cache_stampede",
         "duration": "30 min",
         "type": "article"
-      },
-      {
-        "title": "Redis Cache Patterns",
-        "url": "https://redis.io/topics/cache-patterns",
-        "duration": "45 min",
-        "type": "docs"
       }
     ],
     "exercises": [
@@ -4334,16 +4370,16 @@
     ],
     "resources": [
       {
-        "title": "PostgreSQL Replication",
-        "url": "https://www.postgresql.org/docs/current/warm-standby.html",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "Database Replication Explained",
+        "url": "https://www.youtube.com/watch?v=_8KA6N0M7ms",
+        "duration": "22 min",
+        "type": "video"
       },
       {
-        "title": "Database Failover",
-        "url": "https://aws.amazon.com/rds/features/multi-az/",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "Database Failover Strategies",
+        "url": "https://www.youtube.com/watch?v=JbCBZDYO2j0",
+        "duration": "28 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -4514,16 +4550,16 @@
     ],
     "resources": [
       {
-        "title": "CDN Best Practices",
-        "url": "https://developer.mozilla.org/en-US/docs/Web/Performance/CDN",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "CDN Architecture and How it Works",
+        "url": "https://www.youtube.com/watch?v=RI9np1LWzqw",
+        "duration": "25 min",
+        "type": "video"
       },
       {
-        "title": "Edge Computing",
-        "url": "https://aws.amazon.com/edge/",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "Edge Computing Explained",
+        "url": "https://www.youtube.com/watch?v=yOP5-3_WFus",
+        "duration": "20 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -4693,16 +4729,16 @@
     ],
     "resources": [
       {
-        "title": "Rate Limiting Patterns",
-        "url": "https://docs.aws.amazon.com/whitepapers/latest/api-gateway-api-rate-limiting/overview.html",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "Rate Limiting Algorithms",
+        "url": "https://www.youtube.com/watch?v=FU4WlwfS3G0",
+        "duration": "22 min",
+        "type": "video"
       },
       {
-        "title": "API Gateway Best Practices",
-        "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-best-practices.html",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "API Gateway Patterns",
+        "url": "https://www.youtube.com/watch?v=vHQqQBYJtLI",
+        "duration": "28 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -4871,16 +4907,16 @@
     ],
     "resources": [
       {
-        "title": "Multi-Region Architectures",
-        "url": "https://aws.amazon.com/architecture/multi-region-architecture/",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "Multi-Region Architecture Design",
+        "url": "https://www.youtube.com/watch?v=GN3UsEP8qZs",
+        "duration": "30 min",
+        "type": "video"
       },
       {
-        "title": "Global Traffic Manager",
-        "url": "https://cloud.google.com/architecture/global-traffic-manager",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "Global Traffic Management",
+        "url": "https://www.youtube.com/watch?v=4g8RWnfOSvw",
+        "duration": "25 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -5051,16 +5087,16 @@
     ],
     "resources": [
       {
-        "title": "FinOps Framework",
-        "url": "https://www.finops.org/framework/",
-        "duration": "45 min",
-        "type": "docs"
+        "title": "FinOps and Cloud Cost Optimization",
+        "url": "https://www.youtube.com/watch?v=VDrcgEne6lU",
+        "duration": "28 min",
+        "type": "video"
       },
       {
-        "title": "AWS Cost Optimization",
-        "url": "https://aws.amazon.com/cost-management/",
-        "duration": "30 min",
-        "type": "docs"
+        "title": "AWS Cost Optimization Strategies",
+        "url": "https://www.youtube.com/watch?v=bVU5kTVzWgM",
+        "duration": "32 min",
+        "type": "video"
       }
     ],
     "exercises": [
@@ -5229,6 +5265,18 @@
       "Career roadmap planning"
     ],
     "resources": [
+      {
+        "title": "SRE Interview Preparation Guide",
+        "url": "https://www.youtube.com/watch?v=kCBUGUQsNZg",
+        "duration": "35 min",
+        "type": "video"
+      },
+      {
+        "title": "System Design Interview Tips",
+        "url": "https://www.youtube.com/watch?v=DSGsa0pu8-k",
+        "duration": "30 min",
+        "type": "video"
+      },
       {
         "title": "SRE Interview Questions",
         "url": "https://github.com/alebcay/sre-interview-prep",
